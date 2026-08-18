@@ -65,14 +65,16 @@ MIRAGE is build-ready but not published to PyPI or npm. The intended Python dist
 | Execution timeout, cancellation, input/output budget checks, and policy provenance | Implemented for the policy-gated runtime |
 | Declarative backend sandbox assessment and checkpoint revalidation | Implemented; no OS isolation or automatic resume is claimed |
 | Inspection-only CoppeliaSim adapter boundary | Implemented as unavailable and non-connecting; no simulator control is exposed |
-| Simulator adapters and verified URCP execution | Planned; CoppeliaSim boundary is documented but unavailable |
+| Fixture-backed read-only simulator metadata and state extraction | Implemented with deterministic contract fixtures, policy checks, timeout handling, and sandbox assessment evidence |
+| CoppeliaSim read-only transport | Unavailable until transport and semantics are verified; no connection or control is attempted |
+| Simulator control and verified URCP execution | Planned; explicit safety review and verified adapter behavior are required |
 | Research-paper and robotics-format ingestion | Planned |
 | Autonomous experiments and optimization | Planned |
 | Physical hardware execution | Planned; requires additional safety gates |
 
 ## Documentation
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-hardening.md](docs/guides/execution-hardening.md) for timeout and cancellation behavior, [docs/guides/sandbox-checkpoint-revalidation.md](docs/guides/sandbox-checkpoint-revalidation.md) for sandbox and checkpoint safety, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations, [docs/guides/distribution.md](docs/guides/distribution.md) for release readiness, and [docs/guides/core-features.md](docs/guides/core-features.md) for the upcoming core roadmap. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-hardening.md](docs/guides/execution-hardening.md) for timeout and cancellation behavior, [docs/guides/read-only-simulator-adapter.md](docs/guides/read-only-simulator-adapter.md) for metadata and state extraction boundaries, [docs/guides/sandbox-checkpoint-revalidation.md](docs/guides/sandbox-checkpoint-revalidation.md) for sandbox and checkpoint safety, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations, [docs/guides/distribution.md](docs/guides/distribution.md) for release readiness, and [docs/guides/core-features.md](docs/guides/core-features.md) for the upcoming core roadmap. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
 
 ## Authorship and contact
 

@@ -26,3 +26,12 @@
 - [x] Add CLI inspection, contract tests, and safe fixture examples.
 - [x] Document current sandbox limitations, upcoming hardening work, and workflow continuation state.
 - [x] Run final verification, update code review, commit, and report the iteration.
+
+## Read-Only Simulator Adapter Iteration
+
+- [x] Inspect current simulator boundaries, transport assumptions, fixtures, and safety constraints.
+- [x] Define a narrow metadata and state-extraction protocol with no control operation.
+- [x] Implement a fixture-backed read-only adapter with timeout and sandbox assessment behavior.
+- [x] Add contract tests, CLI inspection, and fixture examples for verified state extraction.
+- [x] Document adapter limits, update roadmap and workflow context, and refresh final code review.
+- [x] Run complete verification, commit, and report the iteration.

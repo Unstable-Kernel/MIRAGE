@@ -27,9 +27,11 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Inspection-only CoppeliaSim adapter contract that never connects or controls a simulator.
 - Declarative backend sandbox envelope assessment that denies unsupported OS-level resource restrictions.
 - Checkpoint revalidation for policy provenance, capability versions, and backend allow-lists without resume behavior.
+- Fixture-backed read-only simulator project metadata and state extraction with sandbox assessment, policy checks, timeout handling, and cancellation-token cooperation.
+- `mirage simulator-metadata` for deterministic fixture inspection, with an explicitly unavailable non-connecting CoppeliaSim read-only boundary.
 
 ### Not yet included
 
-- Simulator or hardware execution.
+- Simulator control, real simulator transport integration, or hardware execution.
 - Persistent ESG/EKG/TESG knowledge stores.
 - MCP, research-paper ingestion, autonomous experiments, optimization, or physical actuation.

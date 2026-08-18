@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "project_id": "fixture.pick-and-place",
+    "project_name": "Fixture pick and place cell",
+    "simulator": "fixture",
+    "simulator_version": "1",
+    "scene_name": "pick_and_place",
+    "scene_path": "scenes/pick_and_place.scene",
+    "model_count": 1,
+    "object_count": 3,
+    "observations": {
+      "source": "deterministic read-only fixture",
+      "control": "unavailable"
+    }
+  },
+  "snapshot": {
+    "snapshot_id": "fixture.pick-and-place.t0",
+    "project_id": "fixture.pick-and-place",
+    "simulation_time_seconds": 0.0,
+    "world_frame": "world",
+    "objects": [
+      {
+        "object_id": "robot-arm",
+        "object_name": "Fixture arm",
+        "object_type": "robot",
+        "position_m": [0.0, 0.0, 0.0],
+        "orientation_rpy_rad": [0.0, 0.0, 0.0],
+        "linear_velocity_mps": [0.0, 0.0, 0.0]
+      },
+      {
+        "object_id": "workpiece",
+        "object_name": "Blue workpiece",
+        "object_type": "rigid_body",
+        "position_m": [0.35, 0.05, 0.02],
+        "orientation_rpy_rad": [0.0, 0.0, 0.0],
+        "linear_velocity_mps": [0.0, 0.0, 0.0]
+      },
+      {
+        "object_id": "target",
+        "object_name": "Target tray",
+        "object_type": "reference_frame",
+        "position_m": [0.6, -0.25, 0.02],
+        "orientation_rpy_rad": [0.0, 0.0, 0.0],
+        "linear_velocity_mps": [0.0, 0.0, 0.0]
+      }
+    ],
+    "observations": {
+      "source": "fixture",
+      "simulation_running": "unknown"
+    }
+  }
+}

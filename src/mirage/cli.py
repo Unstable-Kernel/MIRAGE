@@ -14,9 +14,11 @@ from .knowledge import EngineeringStateGraph
 from .runtime import (
     BackendSandboxCapabilities,
     CapabilityExecutor,
+    CoppeliaSimReadOnlyAdapter,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
+    FixtureSimulatorAdapter,
     SandboxEnvelope,
     WorkflowCheckpoint,
     assess_sandbox,
@@ -25,6 +27,7 @@ from .runtime import (
 )
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
+FIXTURE_ARGUMENT = typer.Argument(default=None, help="Deterministic read-only fixture JSON path.")
 
 
 def _result(path: Path) -> Any:
@@ -111,6 +114,35 @@ def simulator_inspect(backend: str = "coppeliasim", endpoint: str | None = None)
         typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "inspection backend is not registered"}))
         raise typer.Exit(1)
     typer.echo(asyncio.run(inspector.inspect()).model_dump_json())
+
+
+@app.command("simulator-metadata")
+def simulator_metadata(
+    fixture: Path | None = FIXTURE_ARGUMENT,
+    backend: str = "fixture",
+    endpoint: str | None = None,
+    include_state: bool = False,
+    timeout_seconds: float | None = None,
+) -> None:
+    """Read project metadata and an optional state snapshot without simulator control."""
+    if fixture is not None:
+        adapter = FixtureSimulatorAdapter.from_file(fixture)
+    elif backend == "coppeliasim":
+        adapter = CoppeliaSimReadOnlyAdapter(endpoint=endpoint)
+    else:
+        typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "fixture path is required"}))
+        raise typer.Exit(1)
+    policy = ExecutionPolicy(allow_read_only=True, allowed_backends={adapter.name})
+    metadata = asyncio.run(adapter.read_project_metadata(policy=policy, timeout_seconds=timeout_seconds))
+    payload: dict[str, Any] = {"metadata": metadata.model_dump(mode="json")}
+    statuses = [metadata.status.value]
+    if include_state:
+        snapshot = asyncio.run(adapter.read_state_snapshot(policy=policy, timeout_seconds=timeout_seconds))
+        payload["snapshot"] = snapshot.model_dump(mode="json")
+        statuses.append(snapshot.status.value)
+    typer.echo(json.dumps(payload, sort_keys=True))
+    if any(status != "available" for status in statuses):
+        raise typer.Exit(1)
 
 
 @app.command("sandbox-assess")

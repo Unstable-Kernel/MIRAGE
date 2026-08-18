@@ -178,3 +178,23 @@ The next safe implementation should add one verified read-only simulator metadat
 ## Updated verification
 
 The suite now passes with 30 tests. Ruff, EIR schema consistency, sandbox assessment CLI, denied sandbox budget CLI, checkpoint revalidation CLI for both denied and explicitly allowed cases, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No checkpoint was resumed, no process isolation was claimed, and no simulator connection or control operation occurred.
+
+## Read-only simulator adapter iteration review
+
+`src/mirage/runtime/simulator_adapter.py` introduces a deliberately narrow protocol. The only public adapter operations are `read_project_metadata()` and `read_state_snapshot()`. The models describe static project metadata and bounded object observations. They contain no instruction, command, write, start, stop, reset, or step field.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/simulator_adapter.py` | Fixture reads are deterministic and deep-copied; all results include a sandbox assessment and force `control_available` to false |
+| `src/mirage/runtime/urcp.py` | `inspect_simulator_state@0.1` is classified as read-only and declares its adapter requirement |
+| `src/mirage/cli.py` | `simulator-metadata` accepts a fixture path and optional state output, with no simulator control flags |
+| `tests/test_simulator_adapter.py` | Covers deterministic reads, policy and sandbox denial, timeout cancellation, unavailable CoppeliaSim behavior, and CLI output |
+| `examples/07-simulator-adapter/` | Provides a deterministic state-extraction fixture rather than a live or control-capable simulation |
+
+The adapter correctly treats CoppeliaSim as unavailable. Supplying an endpoint is evidence only that a configuration string exists. No socket, RPC call, simulator command, state mutation, or physical action is performed. The fixture backend is marked as transport verified only in the narrow sense that the local fixture read contract is deterministic and tested. It must not be interpreted as verification of a real simulator transport.
+
+Timeout handling follows the existing cooperative `CancellationToken` pattern. This protects the in-process task boundary but does not form an OS sandbox or guarantee interruption of a future non-cooperative external transport. The next real adapter must retain this typed result model while adding adapter-specific transport verification, snapshot consistency semantics, authentication boundaries, independent fixtures, and a separate safety review.
+
+## Updated verification
+
+The complete repository suite passes with 35 tests. Ruff, EIR schema consistency, fixture CLI inspection, unavailable CoppeliaSim CLI behavior, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, physical actuation, external side effect, package publication, or branch push occurred in this iteration.

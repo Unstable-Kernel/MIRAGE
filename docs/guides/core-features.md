@@ -8,7 +8,8 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 
 | Priority | Feature | Intended outcome | Explicit boundary |
 |---|---|---|---|
-| Next | Verified simulator inspection adapter | Read simulator project metadata and state through a tested transport | No simulation control, experiment execution, or actuator path |
+| Current | Fixture-backed read-only simulator adapter | Read deterministic project metadata and bounded state snapshots with policy, timeout, cancellation, and sandbox assessment evidence | No simulator connection, control, experiment execution, or actuator path |
+| Next | Verified real simulator read-only transport | Read project metadata and state through an adapter-specific verified transport | No simulation control, experiment execution, or actuator path |
 | Current | Declarative sandbox envelope | Deny backend work when requested OS-level limits cannot be enforced and preserve the assessment as evidence | No claim of process isolation, cgroups, or container enforcement |
 | Next | Ledger integrity and retention | Add locking, retention, tamper-evident records, and storage migration | No claim of distributed coordination yet |
 | Current | Checkpoint revalidation | Revalidate policy provenance, capability versions, and backend availability before manual resume review | Never automatically execute on load |

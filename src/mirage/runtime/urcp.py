@@ -101,4 +101,14 @@ def default_registry() -> CapabilityRegistry:
             deterministic=False,
             resource_requirements={"requires": "simulator_adapter"},
         ),
+        CapabilityDescriptor(
+            capability_id="inspect_simulator_state",
+            version="0.1",
+            description="Read simulator project metadata and a bounded state snapshot without control.",
+            compatible_backends=["fixture", "coppeliasim"],
+            security_class=SecurityClass.READ_ONLY,
+            deterministic=False,
+            resource_requirements={"requires": "verified_read_only_simulator_transport"},
+            postconditions=["no simulator control operation is attempted"],
+        ),
     ])

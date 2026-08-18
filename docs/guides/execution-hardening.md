@@ -37,15 +37,19 @@ Every `ExecutionPolicy` carries a `PolicyProvenance` record. The default local p
 
 `ResourceLimits` currently enforce request timeout, input size, and output size. CPU, memory, network, disk, GPU, and process limits require a verified backend sandbox and are not yet claimed.
 
-## Simulator inspection boundary
+## Read-only simulator extraction boundary
 
-`simulator-inspect` exposes only an inspection contract. The CoppeliaSim boundary returns an explicit `unavailable` status, records whether an endpoint was supplied, and never opens a connection, reads state, starts a simulation, writes an artifact, or sends a control command. This is a safe preparation point for a later verified state-extraction adapter.
+`simulator-metadata` reads a deterministic fixture through the `FixtureSimulatorAdapter`. It returns typed project metadata and an optional bounded state snapshot. Each result includes a policy-derived sandbox assessment, reports `control_available: false`, and is isolated from real simulator transport. A request may be denied before reading when the policy disables read-only access, denies the selected backend, exceeds the timeout budget, requests an unsupported sandbox envelope, or would exceed the output budget.
+
+The adapter uses a `CancellationToken` during its cooperative timeout path. A timeout returns `timed_out`, cancels the supplied token with a reason, and does not attempt a follow-on action. This is cooperative task cancellation, not operating-system process enforcement.
+
+The `CoppeliaSimReadOnlyAdapter` intentionally returns `unavailable`. It records whether an endpoint was supplied, labels its transport as unverified, and never opens a connection, reads real state, starts or stops a simulation, steps a simulator, writes an artifact, sends a control command, or actuates physical hardware.
 
 ```bash
 mirage simulator-inspect
-mirage execute run_simulation --allow-simulation --timeout-seconds 1
+mirage simulator-metadata examples/07-simulator-adapter/fixture-simulation.json --include-state
 ```
 
 ## Current limitations
 
-The local simulation backend is deterministic test infrastructure. It is not sandboxed. CoppeliaSim remains unverified and unavailable. There is no simulator state extraction, simulator control, experiment scheduler, external side effect adapter, or physical actuation path.
+The fixture adapter is deterministic test infrastructure. It is not a real simulator connection and it is not OS sandboxed. CoppeliaSim remains unverified and unavailable. There is no simulator control, experiment scheduler, external side effect adapter, or physical actuation path.

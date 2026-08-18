@@ -2,49 +2,46 @@
 
 ## Task
 
-Complete the MIRAGE declarative backend sandbox and checkpoint revalidation safety iteration.
+Complete the MIRAGE read-only simulator project metadata and state-extraction adapter iteration.
 
 ## Current status
 
-The sandbox and checkpoint revalidation implementation is verified and ready for a focused local commit on `feat/iteration-1-foundation`. Do not push or publish without an explicit user request.
+The fixture-backed read-only adapter implementation, contract tests, CLI, examples, documentation, roadmap, code review, and continuation context are ready for final verification and a focused local commit on `feat/iteration-1-foundation`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
-The execution runtime includes policy provenance, requested timeout limits, cooperative cancellation tokens, input/output byte budgets, structured `cancelled` and `timed_out` outcomes, and a non-connecting CoppeliaSim inspection boundary. The new sandbox envelope assesses requested operating-system-level restrictions against explicit backend capability declarations. Unsupported requests are denied before backend invocation. The local backend is identified as declarative only, never as an isolated runtime.
+`src/mirage/runtime/simulator_adapter.py` defines `SimulatorProjectMetadata`, `SimulatorObjectState`, `SimulatorStateSnapshot`, `ReadOnlySimulatorAdapter`, and `ReadOnlySimulatorResult`. The public protocol includes only metadata and state-snapshot reads. Every result includes a sandbox assessment and reports `control_available: false`.
 
-`WorkflowCheckpoint.revalidate()` now checks stored policy provenance, exact required capability versions, active capability permission, and explicit backend allow-lists. It returns a typed result for manual review and never resumes, mutates, or executes a workflow.
+`FixtureSimulatorAdapter` loads a validated local JSON fixture and deep-copies deterministic metadata and snapshots. It supports policy allow/deny checks, backend allow-lists, unsupported sandbox-envelope denial, output-size limits, request timeouts, and cooperative `CancellationToken` handling. `CoppeliaSimReadOnlyAdapter` stays unavailable and non-connecting until a real transport and state semantics are independently verified.
 
-Safe CLI surfaces include `mirage sandbox-assess` and `mirage checkpoint-revalidate`. The example in `examples/06-sandbox-checkpoint/` demonstrates a denied default simulation policy followed by an explicitly permitted local review. No command starts a simulator or changes host resource controls.
+The URCP registry now exposes `inspect_simulator_state@0.1` as a read-only descriptor. The `mirage simulator-metadata` command reads the fixture path and can include the matching snapshot. The deterministic fixture lives in `examples/07-simulator-adapter/`.
 
 ## Verification
 
 | Check | Result |
 |---|---|
-| Python tests | 30 passed |
-| Ruff | Passed for `src`, `tests`, and `scripts` |
-| EIR schema consistency | Passed |
-| Sandbox CLI | Declarative local assessment and unsupported memory budget denial passed |
-| Checkpoint CLI | Denied default policy and explicit local simulation policy revalidation passed |
-| Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
+| Focused adapter tests | 5 passed |
+| Focused Ruff check | Passed |
+| Fixture CLI | Returned typed metadata and state snapshot results with declarative sandbox assessment |
 
 ## Known limitations
 
-The sandbox is a declarative assessment only. It does not provide cgroups, containers, filesystem mounts, CPU/RAM/disk/network/process enforcement, command interception, or cleanup. Cooperative cancellation and serialized byte budgets are not OS isolation. CoppeliaSim remains unavailable and unverified, and no side-effecting or physical execution path exists.
+The fixture adapter is not a real simulator transport. Its `transport_verified` result only means fixture parsing and result semantics are deterministic and covered by tests. No network connection, simulator state read, simulator control, scene change, host command, external side effect, or physical actuation exists.
 
-The exact `mirage` registry name remains occupied by unrelated packages. `mirage-engineering` and `@unstable-kernel/mirage` must be rechecked immediately before any explicitly approved release. Distribution artifacts remain build-ready but unpublished.
+The CoppeliaSim adapter is intentionally unavailable. Endpoint configuration is recorded without a connection attempt. Sandbox controls remain declarative on the local backend and do not provide cgroups, containers, filesystem mounts, CPU/RAM/disk quotas, network enforcement, or subprocess isolation.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `src/mirage/runtime/sandbox.py` | Sandbox envelope and backend capability assessment |
-| `src/mirage/runtime/checkpoint.py` | Typed checkpoint revalidation without resume behavior |
-| `src/mirage/runtime/execution.py` | Sandbox assessment before backend dispatch |
-| `tests/test_sandbox_checkpoint.py` | Safety and revalidation contract coverage |
-| `docs/guides/sandbox-checkpoint-revalidation.md` | Sandbox and checkpoint safety guide |
-| `docs/guides/core-features.md` | Prioritized next MIRAGE core features |
-| `code_review.md` | Final review and risk record for the completed iteration |
+| `src/mirage/runtime/simulator_adapter.py` | Read-only models, protocol, deterministic fixture adapter, unavailable CoppeliaSim boundary |
+| `src/mirage/runtime/sandbox.py` | Conservative sandbox assessment recorded by every adapter result |
+| `src/mirage/runtime/execution.py` | Policy and cancellation model shared by adapter requests |
+| `src/mirage/cli.py` | `simulator-metadata` inspection command |
+| `tests/test_simulator_adapter.py` | Read-only adapter contract suite |
+| `docs/guides/read-only-simulator-adapter.md` | Adapter contract, limitations, and verification guide |
+| `examples/07-simulator-adapter/` | Canonical deterministic fixture and CLI example |
 
 ## Next recommended action
 
-Inspect the final diff, run the complete verification suite, and create a focused local commit. Push only on explicit user request. The next implementation slice should be a verified read-only simulator project metadata and state-extraction adapter with documented transport, test fixtures, timeout handling, and no control capability.
+Run the complete repository verification suite, inspect the final diff, and create a focused local commit. Push only on explicit user request. The next technical slice should be an independently verified real read-only simulator transport, or a separately enforced OS-level backend sandbox. Neither slice should introduce simulator control without a distinct safety design and approval path.
