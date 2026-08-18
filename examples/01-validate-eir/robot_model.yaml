@@ -1,0 +1,41 @@
+eir_version: "0.1"
+id: quadrotor-inspection
+provenance:
+  source_type: manual
+  source_path: examples/01-validate-eir/robot_model.yaml
+  extraction_method: authored
+nodes:
+  - id: robot.quadrotor
+    type: Robot
+    provenance:
+      source_type: manual
+    properties:
+      name: inspection_quadrotor
+      mass: 2.0
+      unit: kg
+  - id: objective.inspect
+    type: Objective
+    provenance:
+      source_type: manual
+    properties:
+      description: inspect a wind turbine safely
+  - id: controller.position
+    type: Controller
+    provenance:
+      source_type: manual
+    properties:
+      kind: pid
+      unit: "1"
+relationships:
+  - id: rel.controller.robot
+    type: controls
+    source_id: controller.position
+    target_id: robot.quadrotor
+    provenance:
+      source_type: manual
+  - id: rel.objective.robot
+    type: depends_on
+    source_id: objective.inspect
+    target_id: robot.quadrotor
+    provenance:
+      source_type: manual

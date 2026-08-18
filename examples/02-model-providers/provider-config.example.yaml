@@ -1,0 +1,34 @@
+providers:
+  openai:
+    type: openai
+    model: "${MIRAGE_OPENAI_MODEL}"
+    base_url: "${OPENAI_BASE_URL:-https://api.openai.com/v1}"
+    api_key: "${OPENAI_API_KEY}"
+  anthropic:
+    type: anthropic
+    model: "${MIRAGE_ANTHROPIC_MODEL}"
+    base_url: "${ANTHROPIC_BASE_URL:-https://api.anthropic.com}"
+    api_key: "${ANTHROPIC_API_KEY}"
+  compatible:
+    type: openai_compatible
+    model: "${MIRAGE_COMPATIBLE_MODEL}"
+    base_url: "${MIRAGE_COMPATIBLE_BASE_URL}"
+    api_key: "${MIRAGE_COMPATIBLE_API_KEY}"
+  ollama:
+    type: ollama
+    model: "${MIRAGE_OLLAMA_MODEL}"
+    base_url: "${OLLAMA_BASE_URL:-http://localhost:11434/v1}"
+  vllm:
+    type: vllm
+    model: "${MIRAGE_VLLM_MODEL}"
+    base_url: "${VLLM_BASE_URL:-http://localhost:8000/v1}"
+    api_key: "${VLLM_API_KEY:-EMPTY}"
+  llama_cpp:
+    type: llama_cpp
+    model: "${MIRAGE_LLAMA_CPP_MODEL}"
+    base_url: "${LLAMA_CPP_BASE_URL:-http://localhost:8080/v1}"
+    api_key: "${LLAMA_CPP_API_KEY:-EMPTY}"
+roles:
+  planning_reasoning: [openai, anthropic, compatible, ollama]
+  code_generation: [openai, compatible, vllm, llama_cpp]
+  local_fallback: [ollama, vllm, llama_cpp]

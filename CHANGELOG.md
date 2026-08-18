@@ -1,0 +1,20 @@
+# Changelog
+
+All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows independent versioning for EIR, runtime, and adapters.
+
+## [Unreleased] — Iteration 1
+
+### Added
+
+- Organization-level architecture, governance, security, contribution, support, and roadmap documents.
+- EIR 0.1 schema, provenance primitives, deterministic validation, JSON/YAML serialization, and JSON Schema export.
+- Provider-neutral model protocol and role-based orchestrator.
+- OpenAI, Anthropic, generic OpenAI-compatible, Ollama, vLLM, and llama.cpp adapters.
+- `mirage validate`, `mirage inspect`, and `mirage doctor` CLI commands.
+- Mocked provider contract tests and optional live smoke-test harness.
+
+### Not yet included
+
+- Simulator or hardware execution.
+- Persistent ESG/EKG/TESG knowledge stores.
+- MCP, research-paper ingestion, autonomous experiments, optimization, or physical actuation.

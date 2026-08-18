@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.pyre/
+
+# Environments
+.venv/
+venv/
+env/
+.env
+.env.*
+!.env.example
+
+# Build outputs
+build/
+dist/
+*.whl
+*.tar.gz
+uv.lock.tmp
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Secrets and local provider configuration
+*.secret
+*credentials*.yaml
+*credentials*.yml
+provider-config.local.yaml
+provider-config.local.yml
+
+# Robotics and engineering artifacts that should not be committed by default
+*.bag
+*.db3
+*.mcap
+*.slx
+*.mat
+*.step
+*.stp
+*.iges
+*.igs
+*.stl
+*.obj
+*.fbx
+*.onnx
+models/
+artifacts/
+
+# Local review artifacts
+repository-review.md

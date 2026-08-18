@@ -1,0 +1,336 @@
+{
+  "$defs": {
+    "EIRNode": {
+      "additionalProperties": true,
+      "properties": {
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "created_at": {
+          "format": "date-time",
+          "title": "Created At",
+          "type": "string"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "metadata": {
+          "additionalProperties": true,
+          "title": "Metadata",
+          "type": "object"
+        },
+        "properties": {
+          "additionalProperties": true,
+          "title": "Properties",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "schema_version": {
+          "default": "0.1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_refs": {
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Source Refs",
+          "type": "array"
+        },
+        "type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "updated_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Updated At"
+        },
+        "validation_status": {
+          "$ref": "#/$defs/ValidationStatus",
+          "default": "unknown"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "provenance"
+      ],
+      "title": "EIRNode",
+      "type": "object"
+    },
+    "EIRRelationship": {
+      "additionalProperties": true,
+      "properties": {
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "id": {
+          "minLength": 1,
+          "title": "Id",
+          "type": "string"
+        },
+        "properties": {
+          "additionalProperties": true,
+          "title": "Properties",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "target_id": {
+          "minLength": 1,
+          "title": "Target Id",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/RelationshipType"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "source_id",
+        "target_id",
+        "provenance"
+      ],
+      "title": "EIRRelationship",
+      "type": "object"
+    },
+    "NodeType": {
+      "enum": [
+        "Robot",
+        "Link",
+        "Joint",
+        "Sensor",
+        "Actuator",
+        "Controller",
+        "Objective",
+        "Constraint",
+        "Metric",
+        "Experiment",
+        "Assumption",
+        "Requirement"
+      ],
+      "title": "NodeType",
+      "type": "string"
+    },
+    "Provenance": {
+      "additionalProperties": true,
+      "properties": {
+        "extracted_at": {
+          "format": "date-time",
+          "title": "Extracted At",
+          "type": "string"
+        },
+        "extraction_method": {
+          "default": "manual",
+          "title": "Extraction Method",
+          "type": "string"
+        },
+        "extractor_version": {
+          "default": "mirage-0.1",
+          "title": "Extractor Version",
+          "type": "string"
+        },
+        "source_location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Location"
+        },
+        "source_path": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Path"
+        },
+        "source_type": {
+          "title": "Source Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_type"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "RelationshipType": {
+      "enum": [
+        "controls",
+        "senses",
+        "derives_from",
+        "depends_on",
+        "validates",
+        "contradicts",
+        "implements",
+        "generated_by"
+      ],
+      "title": "RelationshipType",
+      "type": "string"
+    },
+    "SourceRef": {
+      "additionalProperties": true,
+      "properties": {
+        "confidence": {
+          "default": 1.0,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "page": {
+          "anyOf": [
+            {
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page"
+        },
+        "ref_type": {
+          "title": "Ref Type",
+          "type": "string"
+        },
+        "section": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Section"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "uri": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uri"
+        }
+      },
+      "required": [
+        "ref_type"
+      ],
+      "title": "SourceRef",
+      "type": "object"
+    },
+    "ValidationStatus": {
+      "enum": [
+        "unknown",
+        "valid",
+        "invalid",
+        "partial"
+      ],
+      "title": "ValidationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": true,
+  "properties": {
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "eir_version": {
+      "default": "0.1",
+      "title": "Eir Version",
+      "type": "string"
+    },
+    "id": {
+      "minLength": 1,
+      "title": "Id",
+      "type": "string"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    },
+    "nodes": {
+      "items": {
+        "$ref": "#/$defs/EIRNode"
+      },
+      "title": "Nodes",
+      "type": "array"
+    },
+    "provenance": {
+      "$ref": "#/$defs/Provenance"
+    },
+    "relationships": {
+      "items": {
+        "$ref": "#/$defs/EIRRelationship"
+      },
+      "title": "Relationships",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "provenance"
+  ],
+  "title": "EIRDocument",
+  "type": "object"
+}
