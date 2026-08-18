@@ -20,6 +20,9 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Append-only JSONL execution ledger with request IDs and secret redaction.
 - Validated workflow checkpoints with revisioning and explicit non-executing resume semantics.
 - `mirage ledger-inspect` and `mirage checkpoint-inspect` commands.
+- Build-ready `mirage-engineering` Python distribution metadata with dynamic in-package versioning.
+- Private `@unstable-kernel/mirage` npm launcher with local forwarding and package artifact checks.
+- Local Python wheel and source distribution verification, plus CI package safeguards that do not publish.
 
 ### Not yet included
 

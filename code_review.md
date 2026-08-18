@@ -70,3 +70,37 @@ Keep EIR, ESG, and URCP versioned independently. Do not add simulator-specific f
 ## Recommended next slice
 
 Add file locking or a transactional storage backend, request-level timeout and cancellation semantics, resource limits, ledger retention and integrity policy, and stronger policy provenance. Then verify one simulator adapter, starting with project inspection and state extraction before simulation control or experiment execution.
+
+## Distribution readiness review
+
+The release-readiness slice keeps the Python runtime authoritative and makes the npm surface intentionally thin. The `mirage-engineering` Python distribution is configured through Hatchling with the in-package `mirage.__version__` as its version source. The current alpha version is `0.1.0a0`, which is both PEP 440 compliant and accurately signals pre-release status.
+
+```mermaid
+flowchart LR
+    PYPI[mirage-engineering wheel and source archive] --> PYCLI[mirage Python CLI]
+    NPM[@unstable-kernel/mirage private launcher] --> PYCLI
+    PYCLI --> CORE[MIRAGE runtime]
+    CORE --> EIR[EIR and validation]
+    CORE --> SAFE[URCP policy-gated execution]
+```
+
+| File | Distribution responsibility |
+|---|---|
+| `pyproject.toml` | Registry-safe Python project identity, classifiers, URLs, dynamic version source, console script, and Hatchling wheel configuration |
+| `src/mirage/__init__.py` | Installed package version and maintainer identity |
+| `tests/test_distribution.py` | Validates in-package and installed distribution metadata agreement |
+| `packages/npm-launcher/` | Private scoped launcher that forwards to the installed Python CLI |
+| `docs/guides/distribution.md` | Package naming, artifact checks, release ownership, and non-publication boundary |
+| `.github/workflows/ci.yml` | Python artifact and npm launcher checks with no publishing workflow |
+
+The npm launcher forwards CLI arguments to the `mirage` binary or to `MIRAGE_COMMAND` for controlled environments. It correctly fails with an actionable message when the runtime is absent. It does not install Python automatically, download binaries, send telemetry, or duplicate the engineering runtime in JavaScript.
+
+## Release-specific risks
+
+The names `mirage-engineering` and `@unstable-kernel/mirage` were available during this build but registry availability is time-sensitive. A maintainer must check both names again immediately before publishing. No publish token, registry credential, or release automation belongs in this repository or CI until explicit release ownership and trusted-publishing configuration are approved.
+
+The Python CI artifact job must install the built wheel in an environment that is not shadowed by the checkout when this becomes a release gate. The local verification confirms the wheel metadata and command entry point, but a future isolated environment test will provide stronger assurance. The npm launcher is deliberately marked `private: true`; changing that flag is a release decision, not a routine code change.
+
+## Updated verification
+
+The full suite now passes with 21 tests. Ruff, EIR schema consistency, Python source and wheel builds, `twine check`, installed-wheel metadata verification, `mirage doctor`, npm launcher forwarding tests, Node syntax checks, and `npm pack --dry-run` all passed. The build phase did not publish, reserve, or upload an artifact to any registry.

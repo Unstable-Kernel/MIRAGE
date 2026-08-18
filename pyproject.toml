@@ -1,11 +1,21 @@
 [project]
-name = "mirage"
-version = "0.1.0"
+name = "mirage-engineering"
+dynamic = ["version"]
 description = "AI-native engineering compiler and runtime for robotics and autonomous systems"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MPL-2.0" }
 authors = [{ name = "Erebuzzz", email = "kshitiz23kumar@gmail.com" }]
+keywords = ["robotics", "engineering", "compiler", "autonomous-systems", "engineering-intermediate-representation"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Scientific/Engineering",
+]
 dependencies = [
   "pydantic>=2.7,<3",
   "PyYAML>=6.0,<7",
@@ -28,6 +38,12 @@ providers = [
 
 [project.scripts]
 mirage = "mirage.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/Unstable-Kernel/MIRAGE"
+Documentation = "https://github.com/Unstable-Kernel/MIRAGE#readme"
+Repository = "https://github.com/Unstable-Kernel/MIRAGE"
+Issues = "https://github.com/Unstable-Kernel/MIRAGE/issues"
 
 [tool.uv]
 default-groups = ["dev"]
@@ -57,6 +73,9 @@ ignore_missing_imports = true
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/mirage/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/mirage"]
