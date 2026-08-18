@@ -18,11 +18,11 @@ The system must preserve provenance, model independence, simulator independence,
 
 ## Architecture
 
-MIRAGE consists of Cognitive, Knowledge, and Execution planes joined by an Engineering Compiler. Provider and future simulator adapters implement replaceable contracts.
+MIRAGE consists of Cognitive, Knowledge, and Execution planes joined by an Engineering Compiler. Provider adapters, deterministic fixture adapters, and future verified simulator adapters implement replaceable contracts.
 
 ## Interfaces
 
-Public interfaces are EIR schemas, provider protocol types, future URCP capability definitions, CLI commands, and serialized evidence/decision artifacts.
+Public interfaces are EIR schemas, provider protocol types, URCP capability definitions, CLI commands, serialized ESG snapshots, execution records, checkpoints, and adapter results.
 
 ## Data flow
 
@@ -38,7 +38,7 @@ External artifacts and model output are untrusted. Credentials are runtime-only.
 
 ## Open questions
 
-ESG persistence, URCP transport, long-running scheduling, and simulator capability coverage remain future design work.
+ESG concurrency and durable storage, verified real URCP transports, long-running scheduling, and simulator capability coverage remain future design work.
 
 ## Validation strategy
 

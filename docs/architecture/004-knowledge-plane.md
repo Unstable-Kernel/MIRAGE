@@ -6,11 +6,11 @@ Define a replaceable boundary for this MIRAGE subsystem while preserving EIR, pr
 
 ## Non-goals
 
-This document does not claim that the subsystem is implemented in Iteration 1 unless the status is stated in the repository README.
+This document describes the implemented ESG foundation and the knowledge-plane components that remain planned.
 
 ## Terminology
 
-The subsystem consumes validated EIR and emits typed artifacts, requests, results, or evidence. Provider and backend details remain behind adapters.
+The subsystem consumes validated EIR and preserves typed engineering state, events, and future evidence. Provider and backend details remain behind adapters.
 
 ## Requirements
 
@@ -18,15 +18,15 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The subsystem is a future modular service inside MIRAGE. Iteration 1 establishes documentation and adjacent contracts; implementation is scheduled by ROADMAP.md.
+The current knowledge-plane implementation is `EngineeringStateGraph`: a revisioned project-level wrapper around a validated EIR document with append-only unique events. It persists as validated JSON and provides deterministic state inspection. EKG, TESG, evidence graphs, EDRs, concurrency control, and durable storage are planned separately.
 
 ## Interfaces
 
-Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics.
+Public interfaces include the versioned EIR schema, `EngineeringStateGraph`, typed event records, validated JSON snapshots, and structured diagnostics.
 
 ## Data flow
 
-Context and EIR enter the subsystem; deterministic checks run before external effects; results are recorded with provenance and configuration.
+Validated EIR enters the graph; typed events advance its revision; persisted snapshots preserve the current EIR, event history, and optional event details for inspection.
 
 ## Failure modes
 
@@ -38,7 +38,7 @@ Treat external artifacts, model output, generated code, and execution results as
 
 ## Open questions
 
-Transport, persistence, scaling, and simulator/hardware-specific policy require future RFCs.
+Concurrency, transactional persistence, event replay, retention, EKG/TESG relationships, evidence graphs, and scaling require future RFCs.
 
 ## Validation strategy
 

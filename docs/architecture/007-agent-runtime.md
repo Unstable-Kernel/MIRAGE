@@ -6,7 +6,7 @@ Define a replaceable boundary for this MIRAGE subsystem while preserving EIR, pr
 
 ## Non-goals
 
-This document does not claim that the subsystem is implemented in Iteration 1 unless the status is stated in the repository README.
+This document records a planned subsystem. The current repository baseline does not implement an autonomous agent runtime.
 
 ## Terminology
 
@@ -18,7 +18,7 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The subsystem is a future modular service inside MIRAGE. Iteration 1 establishes documentation and adjacent contracts; implementation is scheduled by ROADMAP.md.
+The agent runtime is a planned modular service inside MIRAGE. The implemented EIR, provider, ESG, URCP, policy, ledger, checkpoint, and fixture-inspection contracts are adjacent foundations, but they do not constitute autonomous planning or workflow execution. Implementation is scheduled by ROADMAP.md.
 
 ## Interfaces
 

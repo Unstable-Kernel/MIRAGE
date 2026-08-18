@@ -18,7 +18,7 @@ Treat research papers, repositories, CAD files, configuration files, datasets, l
 
 ## Execution boundaries
 
-Iteration 1 does not execute simulators or hardware. Future execution must use capability allowlists, least privilege, isolated workspaces, network policy, resource limits, timeouts, cancellation, approval gates, audit logs, and emergency-stop integration. An LLM must never directly emit unrestricted physical actuation commands.
+MIRAGE does not execute real simulators or hardware. The fixture-backed read-only adapter only parses deterministic local data and cannot connect to, control, or step a simulator. Future real execution must use capability allow-lists, least privilege, isolated workspaces, verifiable network and resource enforcement, timeouts, cancellation, approval gates, audit logs, and emergency-stop integration. An LLM must never directly emit unrestricted physical actuation commands.
 
 ## Verification
 

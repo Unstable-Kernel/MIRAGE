@@ -30,6 +30,11 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Fixture-backed read-only simulator project metadata and state extraction with sandbox assessment, policy checks, timeout handling, and cancellation-token cooperation.
 - `mirage simulator-metadata` for deterministic fixture inspection, with an explicitly unavailable non-connecting CoppeliaSim read-only boundary.
 
+### Changed
+
+- Reconciled README, architecture records, runtime guides, URCP specification, security boundaries, examples, roadmap, collaborator review, and workflow continuation context with the current execution and read-only adapter baseline.
+- Added a delivery-status guide that distinguishes completed milestones, the partial M3 foundation, planned milestones, remaining delivery streams, and cross-cutting hardening work.
+
 ### Not yet included
 
 - Simulator control, real simulator transport integration, or hardware execution.

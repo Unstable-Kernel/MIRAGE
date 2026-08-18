@@ -18,7 +18,7 @@ Provider selection is role-based and replaceable. Prompts and responses must pre
 
 ## Architecture
 
-The plane contains future planning, reasoning, debate, reflection, and explanation components. Iteration 1 supplies only the provider-neutral orchestrator.
+The plane contains planned planning, reasoning, debate, reflection, and explanation components. The current baseline supplies the provider-neutral orchestrator and six explicit provider adapters, but no autonomous cognitive workflow.
 
 ## Interfaces
 

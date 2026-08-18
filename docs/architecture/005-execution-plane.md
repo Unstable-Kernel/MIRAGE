@@ -6,7 +6,7 @@ Define a replaceable boundary for this MIRAGE subsystem while preserving EIR, pr
 
 ## Non-goals
 
-This document does not claim that the subsystem is implemented in Iteration 1 unless the status is stated in the repository README.
+This document describes the implemented execution-plane foundation and preserves boundaries for future transports and control-capable adapters.
 
 ## Terminology
 

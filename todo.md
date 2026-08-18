@@ -35,3 +35,11 @@
 - [x] Add contract tests, CLI inspection, and fixture examples for verified state extraction.
 - [x] Document adapter limits, update roadmap and workflow context, and refresh final code review.
 - [x] Run complete verification, commit, and report the iteration.
+
+## Documentation Reconciliation and Delivery
+
+- [x] Inventory all repository documentation and compare implementation claims against the current runtime surface.
+- [x] Reconcile README, guides, specifications, architecture records, examples, and roadmap language.
+- [x] Refresh `code_review.md`, `workflow-context.md`, and a quantified remaining-work assessment for collaborators.
+- [x] Run documentation and repository integrity verification.
+- [ ] Commit documentation updates, push the branch, update pull request #8, and report the remaining work.

@@ -2,7 +2,24 @@
 
 ## Review scope
 
-This review covers the ESG and URCP vertical slice, policy-gated execution, the append-only execution ledger, workflow checkpoints, backend boundaries, CLI commands, specifications, examples, and tests added through Iteration 3.
+This review accumulates the ESG and URCP vertical slices, policy-gated execution, append-only execution ledger, workflow checkpoints, sandbox assessment, checkpoint revalidation, and read-only adapter work. Historical sections retain the implementation order; the current baseline is summarized below.
+
+## Current baseline audit
+
+The current baseline is commit `40f55b1` plus this documentation reconciliation pass. The repository has 35 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, and deterministic fixture-backed read-only simulator metadata and state extraction.
+
+| Surface | Current status | Boundary that remains explicit |
+|---|---|---|
+| EIR and ESG | Implemented and persisted as validated local JSON | No concurrent or transactional graph storage |
+| Providers | Six explicit adapters with mocked contracts | Live integrations remain opt-in and provider dependent |
+| URCP runtime | Policy-gated execution, ledger, timeout, cancellation, and resource budgets | No arbitrary host commands or unrestricted side effects |
+| Sandbox and checkpoint safety | Declarative preflight and non-executing revalidation | No OS isolation or automatic resume |
+| Simulator adapter | Deterministic fixture metadata and state extraction | No real transport, simulator connection, or control |
+| Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
+
+The remaining primary delivery streams are a real verified read-only simulator transport, an enforced backend sandbox, M4 goal-to-evaluate workflow, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
+
+The documentation reconciliation verified every tracked Markdown file for local link targets and scanned the corpus for superseded implementation-status statements. The current full suite passes with 35 tests; Ruff, EIR schema consistency, CLI capability discovery, deterministic fixture inspection, secret scanning, no-em-dash scanning, and diff integrity checks passed. PR #8 is already merged, so the post-push review surface must be a new pull request.
 
 ## Architecture summary
 
@@ -61,13 +78,13 @@ The default registry includes simulator names for planning and filtering only. T
 
 ## Tests and verification
 
-The current verification suite passes with 19 tests. Ruff passes for source, tests, and scripts. The EIR schema consistency check passes. ESG CLI snapshot inspection, URCP backend filtering, policy denial, deterministic local execution, unavailable CoppeliaSim behavior, audit persistence, secret redaction, checkpoint round trips, ledger inspection, checkpoint inspection, secret-pattern scanning, tracked no-em-dash scanning, and repository diff checks pass.
+Historical verification snapshot at this point in the implementation sequence: 19 tests passed. The current verification result is recorded in the latest review section and workflow context.
 
 ## Collaborator guidance
 
 Keep EIR, ESG, and URCP versioned independently. Do not add simulator-specific fields to EIR or core orchestration merely to support one backend. Add a new capability descriptor before adding an executor, and add a contract test before claiming backend support. Preserve secret redaction, provenance, deterministic validation, and explicit safety boundaries.
 
-## Recommended next slice
+## Historical recommended next slice, completed in later slices
 
 Add file locking or a transactional storage backend, request-level timeout and cancellation semantics, resource limits, ledger retention and integrity policy, and stronger policy provenance. Then verify one simulator adapter, starting with project inspection and state extraction before simulation control or experiment execution.
 
@@ -138,7 +155,7 @@ The inspection boundary is correctly conservative. It records endpoint configura
 
 Cancellation is cooperative within the current Python task model. A backend that blocks in non-cooperative native code, a subprocess, or a remote server still needs an external sandbox, process management, resource cgroup, deadline propagation, and cleanup contract. Current byte budgets are deterministic serialized-payload checks, not CPU, RAM, disk, GPU, network, or process limits.
 
-The next verified adapter slice should implement read-only simulator project metadata and state extraction using a documented transport with test fixtures. Only after transport, authorization, state semantics, timeout behavior, and cleanup have verification evidence should MIRAGE consider any simulator control capability.
+The documented fixture-backed read-only adapter slice was completed in a later section. A real transport still requires transport verification, authorization, state semantics, timeout behavior, cleanup evidence, independent fixtures, and safety review before MIRAGE can consider any simulator control capability.
 
 ## Updated verification
 
@@ -173,7 +190,7 @@ Checkpoint revalidation is correctly non-executing. It compares stored policy pr
 
 The implementation does not create an OS sandbox. The local backend has no cgroup, process supervisor, filesystem mount, network firewall, container runtime, CPU quota, memory limit, disk quota, GPU partition, subprocess interceptor, or forced cleanup. These restrictions are denied when requested instead of being represented as successful enforcement.
 
-The next safe implementation should add one verified read-only simulator metadata and state-extraction adapter with test fixtures and a documented transport. An enforced backend sandbox should follow only after the project has a suitable isolated runtime and an auditable OS-level policy enforcement design.
+The fixture-backed read-only simulator metadata and state-extraction adapter was completed in a later slice. An independently verified real transport and an enforced backend sandbox remain; the latter must use a suitable isolated runtime and auditable OS-level policy enforcement design.
 
 ## Updated verification
 
