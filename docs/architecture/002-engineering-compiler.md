@@ -1,4 +1,4 @@
-# 002 — Engineering Compiler
+# 002 : Engineering Compiler
 
 ## Goals
 

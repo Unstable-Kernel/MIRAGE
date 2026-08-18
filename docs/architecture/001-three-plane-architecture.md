@@ -1,4 +1,4 @@
-# 001 — Three-Plane Architecture
+# 001 : Three-Plane Architecture
 
 ## Goals
 

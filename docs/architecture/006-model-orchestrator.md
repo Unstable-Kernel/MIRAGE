@@ -1,4 +1,4 @@
-# 006 — Model orchestrator
+# 006 : Model orchestrator
 
 ## Goals
 

@@ -18,3 +18,30 @@ jobs:
       - run: python -m pytest -q
       - run: python scripts/export_eir_schema.py --check
       - run: git grep -nE '(BEGIN (RSA|OPENSSH|EC) PRIVATE KEY|sk-[A-Za-z0-9]{20,})' -- . && exit 1 || true
+
+  package-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install --upgrade pip build twine
+      - run: python -m build
+      - run: twine check dist/*
+      - run: python -m pip install --force-reinstall dist/*.whl
+      - run: mirage doctor
+
+  package-npm-launcher:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - working-directory: packages/npm-launcher
+        run: npm install --ignore-scripts
+      - working-directory: packages/npm-launcher
+        run: npm test
+      - working-directory: packages/npm-launcher
+        run: npm pack --dry-run

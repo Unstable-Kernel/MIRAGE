@@ -1,4 +1,4 @@
-# 003 — Cognitive Plane
+# 003 : Cognitive Plane
 
 ## Goals
 

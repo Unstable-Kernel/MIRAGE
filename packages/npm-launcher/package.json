@@ -1,0 +1,32 @@
+{
+  "name": "@unstable-kernel/mirage",
+  "version": "0.1.0-alpha.0",
+  "description": "Launcher for the MIRAGE engineering compiler and runtime CLI.",
+  "license": "MPL-2.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "mirage": "./bin/mirage.js"
+  },
+  "files": [
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test test/launcher.test.mjs",
+    "check": "node --check bin/mirage.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Unstable-Kernel/MIRAGE.git",
+    "directory": "packages/npm-launcher"
+  },
+  "bugs": {
+    "url": "https://github.com/Unstable-Kernel/MIRAGE/issues"
+  },
+  "homepage": "https://github.com/Unstable-Kernel/MIRAGE#readme"
+}

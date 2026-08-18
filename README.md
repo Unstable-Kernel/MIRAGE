@@ -45,6 +45,10 @@ uv run pytest
 
 The validation and inspection commands are deterministic and do not require an API key. Provider configuration is optional for the first CLI workflow. To configure a model provider, copy `examples/02-model-providers/provider-config.example.yaml`, replace environment-variable references with your own environment, and set `MIRAGE_PROVIDER_CONFIG` to the file path.
 
+## Distribution status
+
+MIRAGE is build-ready but not published to PyPI or npm. The intended Python distribution is `mirage-engineering`, while `@unstable-kernel/mirage` is a private npm launcher that delegates to the canonical Python CLI. The exact `mirage` name is occupied on both registries by unrelated packages. See [docs/guides/distribution.md](docs/guides/distribution.md) for package identity, local artifact verification, and the explicit publishing boundary.
+
 ## Current status
 
 | Capability | Status |
@@ -55,15 +59,17 @@ The validation and inspection commands are deterministic and do not require an A
 | OpenAI, Anthropic, generic OpenAI-compatible, Ollama, vLLM, llama.cpp adapters | Implemented with mocked contract tests |
 | Optional live provider smoke tests | Implemented; opt-in only |
 | Engineering State Graph persistence and event history | Implemented |
-| Declarative URCP capability registry | Implemented; execution is not included |
-| Simulator adapters and URCP execution | Planned |
+| Declarative URCP capability registry | Implemented |
+| Policy-gated URCP execution and deterministic local backend | Implemented |
+| Persistent execution ledger and workflow checkpoints | Implemented as local JSONL and validated snapshots |
+| Simulator adapters and verified URCP execution | Planned; CoppeliaSim boundary is documented but unavailable |
 | Research-paper and robotics-format ingestion | Planned |
 | Autonomous experiments and optimization | Planned |
 | Physical hardware execution | Planned; requires additional safety gates |
 
 ## Documentation
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, and [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations, and [docs/guides/distribution.md](docs/guides/distribution.md) for release readiness. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
 
 ## Authorship and contact
 
