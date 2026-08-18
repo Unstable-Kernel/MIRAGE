@@ -6,7 +6,7 @@ Complete the MIRAGE distribution-readiness phase after the execution ledger and 
 
 ## Current status
 
-Python and npm distribution artifacts are build-ready and locally verified. The working tree is ready for a focused local commit on `feat/iteration-1-foundation`. Do not push or publish without an explicit user request.
+Python and npm distribution artifacts are build-ready and locally verified. The distribution phase is committed locally as `122b8a8` (`feat: prepare MIRAGE distribution artifacts`) on `feat/iteration-1-foundation`. The user has approved pushing the branch and opening a pull request. Do not publish package artifacts without a separate explicit user approval.
 
 ## Completed work
 
@@ -46,4 +46,4 @@ The exact `mirage` registry name is occupied by unrelated packages on PyPI and n
 
 ## Next recommended action
 
-Inspect the final diff, run final release checks, and create a focused local commit. Push only on explicit user request. Do not publish to PyPI or npm unless the user explicitly approves that sensitive release operation.
+Push the current branch, create or update the pull request against `main`, and keep package publishing disabled. The next build slice should add request-level timeout, cancellation, resource limits, and a verified simulator inspection adapter before any simulator control path.
