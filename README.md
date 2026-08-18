@@ -57,6 +57,7 @@ The validation and inspection commands are deterministic and do not require an A
 | Engineering State Graph persistence and event history | Implemented |
 | Declarative URCP capability registry | Implemented |
 | Policy-gated URCP execution and deterministic local backend | Implemented |
+| Persistent execution ledger and workflow checkpoints | Implemented as local JSONL and validated snapshots |
 | Simulator adapters and verified URCP execution | Planned; CoppeliaSim boundary is documented but unavailable |
 | Research-paper and robotics-format ingestion | Planned |
 | Autonomous experiments and optimization | Planned |
@@ -64,7 +65,7 @@ The validation and inspection commands are deterministic and do not require an A
 
 ## Documentation
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, and [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, and [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
 
 ## Authorship and contact
 

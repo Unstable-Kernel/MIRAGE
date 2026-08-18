@@ -10,7 +10,7 @@ Each capability has a stable ID, version, description, input and output schemas,
 
 The Iteration 2 registry is deterministic and declarative. It registers descriptors, rejects duplicate IDs and versions, lists capabilities, filters by backend and security class, and resolves an exact capability version. The execution runtime now consumes these descriptors through policy gates. Read-only operations are allowed by default, simulation requires explicit permission, and external side effects and physical actuation remain denied by default. Execution returns a structured result and never accepts arbitrary host commands.
 
-Execution belongs to a backend adapter runtime with policy gates, sandboxing, resource limits, network policy, audit logging, and human approval where required. The local backend is deterministic test infrastructure. The CoppeliaSim boundary is not a verified simulator integration and reports unavailable until configured and tested.
+Execution belongs to a backend adapter runtime with policy gates, sandboxing, resource limits, network policy, audit logging, and human approval where required. Iteration 3 records every attempt in an append-only local execution ledger with redacted inputs and outputs. Workflow checkpoints are validated snapshots and never resume execution automatically. The local backend is deterministic test infrastructure. The CoppeliaSim boundary is not a verified simulator integration and reports unavailable until configured and tested.
 
 ## Initial examples
 

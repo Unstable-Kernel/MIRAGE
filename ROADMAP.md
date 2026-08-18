@@ -10,7 +10,7 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 
 | M2 | Model orchestrator and complete initial provider matrix | Complete with mocked provider contracts |
 
-| M3 | First simulator adapter and URCP execution slice | Execution contracts and deterministic local backend implemented; CoppeliaSim integration remains unverified |
+| M3 | First simulator adapter and URCP execution slice | Execution contracts, deterministic local backend, audit ledger, and checkpoints implemented; CoppeliaSim integration remains unverified |
 
 | M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Planned |
 | M5 | Cross-simulator translation | Planned |
@@ -22,4 +22,4 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 Each milestone must preserve provenance, reproducibility, model independence, simulator independence, human control, and deterministic validation. Future hardware work requires explicit safety gates and must not be inferred from simulation success.
 
 ## Next highest-value slice
-The URCP execution contract, policy gate, deterministic local backend, and explicit CoppeliaSim boundary are now implemented. The next increment is a verified simulator adapter, starting with project inspection and state extraction, before simulation control or experiment execution.
+The URCP execution contract, policy gate, deterministic local backend, execution ledger, and workflow checkpoints are now implemented. The next increment is a verified simulator adapter, starting with project inspection and state extraction, before simulation control or experiment execution.

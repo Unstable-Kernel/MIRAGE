@@ -75,23 +75,31 @@ class CoppeliaSimBackend:
 
 
 class CapabilityExecutor:
-    def __init__(self, registry: CapabilityRegistry, backends: dict[str, CapabilityBackend] | None = None) -> None:
+    def __init__(self, registry: CapabilityRegistry, backends: dict[str, CapabilityBackend] | None = None, ledger: Any = None) -> None:
         self.registry = registry
         self.backends = backends or {"local": LocalSimulationBackend(), "coppeliasim": CoppeliaSimBackend()}
+        self.ledger = ledger
+
+    def _record(self, request: ExecutionRequest, result: ExecutionResult) -> ExecutionResult:
+        if self.ledger is not None:
+            from .ledger import ExecutionAuditRecord
+
+            self.ledger.append(ExecutionAuditRecord.from_execution(request, result))
+        return result
 
     async def execute(self, request: ExecutionRequest) -> ExecutionResult:
         descriptor = self.registry.get(request.capability_id, request.version)
         if not request.policy.permits(descriptor):
-            return ExecutionResult(status=ExecutionStatus.DENIED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="execution denied by policy")
+            return self._record(request, ExecutionResult(status=ExecutionStatus.DENIED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="execution denied by policy"))
         if request.policy.allowed_backends and request.backend not in request.policy.allowed_backends:
-            return ExecutionResult(status=ExecutionStatus.DENIED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend denied by policy")
+            return self._record(request, ExecutionResult(status=ExecutionStatus.DENIED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend denied by policy"))
         if request.backend not in descriptor.compatible_backends and request.backend != "local":
-            return ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend is not compatible with capability")
+            return self._record(request, ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend is not compatible with capability"))
         backend = self.backends.get(request.backend)
         if backend is None:
-            return ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend is not registered")
+            return self._record(request, ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message="backend is not registered"))
         try:
             outputs = await backend.execute(descriptor, request.inputs)
         except RuntimeError as exc:
-            return ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message=str(exc))
-        return ExecutionResult(status=ExecutionStatus.SUCCEEDED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, outputs=outputs, message="execution completed")
+            return self._record(request, ExecutionResult(status=ExecutionStatus.UNAVAILABLE, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, message=str(exc)))
+        return self._record(request, ExecutionResult(status=ExecutionStatus.SUCCEEDED, capability_id=descriptor.capability_id, version=descriptor.version, backend=request.backend, outputs=outputs, message="execution completed"))

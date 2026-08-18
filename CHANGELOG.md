@@ -17,6 +17,9 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Policy-gated URCP execution requests and structured execution results.
 - Deterministic local simulation backend for tests and development.
 - Explicit CoppeliaSim adapter boundary that reports unavailable until verified and configured.
+- Append-only JSONL execution ledger with request IDs and secret redaction.
+- Validated workflow checkpoints with revisioning and explicit non-executing resume semantics.
+- `mirage ledger-inspect` and `mirage checkpoint-inspect` commands.
 
 ### Not yet included
 

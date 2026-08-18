@@ -11,7 +11,7 @@ import typer
 
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
-from .runtime import CapabilityExecutor, ExecutionPolicy, ExecutionRequest, default_registry
+from .runtime import CapabilityExecutor, ExecutionLedger, ExecutionPolicy, ExecutionRequest, WorkflowCheckpoint, default_registry
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 
@@ -71,17 +71,40 @@ def capabilities(backend: str | None = None) -> None:
 
 
 @app.command("execute")
-def execute(capability_id: str, backend: str = "local", allow_simulation: bool = False) -> None:
+def execute(
+    capability_id: str,
+    backend: str = "local",
+    allow_simulation: bool = False,
+    ledger: Path | None = None,
+) -> None:
     """Execute only through the policy-gated local runtime; no host commands are accepted."""
     request = ExecutionRequest(
         capability_id=capability_id,
         backend=backend,
         policy=ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend}),
     )
-    result = asyncio.run(CapabilityExecutor(default_registry()).execute(request))
+    audit_ledger = ExecutionLedger(ledger) if ledger else None
+    result = asyncio.run(CapabilityExecutor(default_registry(), ledger=audit_ledger).execute(request))
     typer.echo(result.model_dump_json())
     if result.status.value != "succeeded":
         raise typer.Exit(1)
+
+
+@app.command("ledger-inspect")
+def ledger_inspect(file: Path) -> None:
+    """Inspect persisted execution audit records without executing them."""
+    for record in ExecutionLedger(file).records():
+        typer.echo(f"{record.request_id} {record.status} {record.capability_id}@{record.version} backend={record.backend} actor={record.actor}")
+
+
+@app.command("checkpoint-inspect")
+def checkpoint_inspect(file: Path) -> None:
+    """Inspect a validated workflow checkpoint without resuming execution."""
+    checkpoint = WorkflowCheckpoint.load(file)
+    typer.echo(f"workflow_id: {checkpoint.workflow_id}")
+    typer.echo(f"revision: {checkpoint.revision}")
+    typer.echo(f"stage: {checkpoint.stage}")
+    typer.echo(f"execution_ids: {len(checkpoint.execution_ids)}")
 
 
 @app.command()
