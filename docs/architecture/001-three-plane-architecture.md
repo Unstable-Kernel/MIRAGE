@@ -18,7 +18,7 @@ No plane may bypass EIR or call an implementation-specific backend without a dec
 
 ## Architecture
 
-The Cognitive Plane consumes goals and evidence. The Knowledge Plane stores EIR and future ESG/EKG/TESG/EDR artifacts. The Execution Plane exposes URCP capabilities and adapters.
+The Cognitive Plane consumes goals and evidence. The Knowledge Plane stores EIR and implemented revisioned ESG snapshots with append-only events; EKG, TESG, evidence graphs, and EDRs remain future artifacts. The Execution Plane exposes implemented URCP descriptors, policy-gated execution, and bounded adapters.
 
 ## Interfaces
 

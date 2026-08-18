@@ -2,7 +2,7 @@
 
 ## Status
 
-This document describes the architecture for MIRAGE Iteration 1 and the boundaries that future iterations must preserve. It is authored for Unstable Kernel by [Erebuzzz](https://github.com/Erebuzzz).
+This document describes the implemented MIRAGE foundation and the boundaries that future iterations must preserve. It is authored for Unstable Kernel by [Erebuzzz](https://github.com/Erebuzzz).
 
 ## Goals
 
@@ -10,15 +10,15 @@ MIRAGE must represent engineering semantics independently of any model vendor, s
 
 ## Non-goals for Iteration 1
 
-Iteration 1 does not implement a persistent graph database, simulator control, hardware actuation, research-paper parsing, ROS/MATLAB/CAD ingestion, MCP, or autonomous optimization. It establishes EIR 0.1, provider contracts, configuration, validation, and a CLI.
+MIRAGE does not implement a persistent graph database, real simulator transport, simulator control, hardware actuation, research-paper parsing, ROS/MATLAB/CAD ingestion, MCP, or autonomous optimization. The implemented foundation includes EIR 0.1, provider contracts, configuration, validation, ESG snapshots, policy-gated execution, audit and checkpoint primitives, sandbox assessment, and deterministic fixture inspection.
 
 ## Three planes
 
 | Plane | Responsibility | Iteration 1 status |
 |---|---|---|
-| Cognitive Plane | Roles, planning, synthesis, explanation, and review requests | Provider role abstraction only |
-| Knowledge Plane | EIR, ESG, evidence, provenance, temporal state, and EDRs | EIR 0.1 and provenance primitives |
-| Execution Plane | URCP capabilities, scheduling, adapters, and result collection | Provider adapter contract only |
+| Cognitive Plane | Roles, planning, synthesis, explanation, and review requests | Provider role abstraction and typed six-provider orchestrator |
+| Knowledge Plane | EIR, ESG, evidence, provenance, temporal state, and EDRs | EIR 0.1, provenance primitives, revisioned ESG snapshots, and append-only project events |
+| Execution Plane | URCP capabilities, scheduling, adapters, and result collection | Registry, policy-gated runtime, ledger, checkpoint revalidation, declarative sandbox assessment, and fixture-backed read-only adapter |
 
 ## Engineering compiler
 
@@ -42,14 +42,14 @@ The current slice implements ESG as a revisioned EIR-linked state object with ap
 
 ## Execution plane evolution
 
-The current slice implements a declarative URCP capability descriptor and deterministic registry. URCP exposes capabilities such as `inspect_model`, `run_simulation`, `capture_sensor_data`, `evaluate_metric`, and `export_artifact`. Simulator and hardware adapters will implement URCP rather than being called directly by agents. Hardware capabilities require explicit authorization, safety classes, resource limits, network policy, emergency-stop integration, and audit logs.
+The current slice implements a declarative URCP capability descriptor, deterministic registry, policy-gated executor, execution ledger, checkpoint revalidation, and a fixture-backed read-only simulator adapter. The registry exposes `inspect_model`, `validate_eir`, `generate_urdf`, `run_simulation`, and `inspect_simulator_state`. The last capability is read-only and fixture-backed. Simulator and hardware adapters must implement URCP rather than being called directly by agents. Hardware capabilities require explicit authorization, safety classes, verifiable resource and network enforcement, emergency-stop integration, and audit logs.
 
 ## Data flow
 
 ```text
 Input artifacts -> parser/frontend -> EIR -> deterministic validation
      -> cognitive request -> provider adapter -> structured proposal
-     -> capability resolution -> future backend -> results -> evidence/EDR
+     -> capability resolution -> policy and sandbox assessment -> adapter result -> evidence/EDR
 ```
 
 Every meaningful extracted fact or decision should preserve source references, extraction method, confidence, and validation status. Every execution should record configuration, versions, seed, outputs, and failure information.
@@ -64,4 +64,4 @@ Provider credentials are injected at runtime and redacted in logs. External arti
 
 ## Validation strategy
 
-The architecture is validated through EIR unit tests, provider contract tests, mocked end-to-end tests across all six providers, CLI tests, schema-export checks, and optional live provider smoke tests. Simulator and hardware validation will be added only with deterministic fixtures and explicit safety gates.
+The architecture is validated through EIR unit tests, provider contract tests, mocked end-to-end tests across all six providers, CLI tests, schema-export checks, execution safety contracts, checkpoint and sandbox tests, and deterministic read-only adapter fixtures. Real simulator and hardware validation will be added only with adapter-specific fixtures, verified transports, and explicit safety gates.

@@ -2,7 +2,7 @@
 
 Iteration 3 adds two local persistence primitives. The **execution ledger** records every URCP attempt, including denied and unavailable requests. The record contains a generated request ID, actor, capability, version, backend, status, timestamps, policy summary, redacted inputs, redacted outputs, and a message. Records are appended as JSON Lines so they remain inspectable and easy to replay in tests.
 
-The **workflow checkpoint** stores a validated workflow ID, revision, stage, state payload, related execution IDs, optional ESG project ID, and update time. A checkpoint is a resumable data snapshot, not an executable command. Loading it never resumes work automatically. A future workflow runner may use a checkpoint after applying policy, validating current capabilities, and requesting human approval where required.
+The **workflow checkpoint** stores a validated workflow ID, revision, stage, state payload, related execution IDs, optional ESG project ID, and update time. A checkpoint is a workflow-state snapshot intended for future manual review, not an executable command. Loading it never resumes work automatically. `WorkflowCheckpoint.revalidate()` checks policy provenance, capability versions, policy permission, and backend allow-lists before a future workflow runner can consider human-approved resumption.
 
 API keys, tokens, passwords, secrets, and credentials are redacted from persisted inputs and policy data. This redaction is a safety measure, not a substitute for avoiding sensitive data in requests. The ledger currently has no file locking, retention policy, encryption, database transactions, or distributed coordination.
 

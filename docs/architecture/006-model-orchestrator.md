@@ -6,11 +6,11 @@ Define a replaceable boundary for this MIRAGE subsystem while preserving EIR, pr
 
 ## Non-goals
 
-This document does not claim that the subsystem is implemented in Iteration 1 unless the status is stated in the repository README.
+This document describes the implemented provider-neutral orchestration foundation and its planned extensions.
 
 ## Terminology
 
-The subsystem consumes validated EIR and emits typed artifacts, requests, results, or evidence. Provider and backend details remain behind adapters.
+The subsystem accepts typed completion requests and emits normalized completion responses. Provider transport details remain behind adapters.
 
 ## Requirements
 
@@ -18,15 +18,15 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The subsystem is a future modular service inside MIRAGE. Iteration 1 establishes documentation and adjacent contracts; implementation is scheduled by ROADMAP.md.
+The current implementation provides a provider-neutral completion contract, role-based provider selection, configuration validation, normalized errors, and explicit adapters for OpenAI, Anthropic, generic OpenAI-compatible endpoints, Ollama, vLLM, and llama.cpp. Planning, debate, uncertainty aggregation, and autonomous multi-agent runtime behavior remain planned.
 
 ## Interfaces
 
-Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics.
+Public interfaces use typed completion requests and responses, provider adapter protocols, provider configuration models, role mappings, and structured diagnostics.
 
 ## Data flow
 
-Context and EIR enter the subsystem; deterministic checks run before external effects; results are recorded with provenance and configuration.
+Role and request input select a configured provider adapter; the adapter normalizes the transport result; callers receive a provider-neutral response or structured failure.
 
 ## Failure modes
 
@@ -38,7 +38,7 @@ Treat external artifacts, model output, generated code, and execution results as
 
 ## Open questions
 
-Transport, persistence, scaling, and simulator/hardware-specific policy require future RFCs.
+Provider fallback policy, cache policy, streaming semantics, rate-limit coordination, budget enforcement, and long-running multi-agent orchestration require future RFCs.
 
 ## Validation strategy
 

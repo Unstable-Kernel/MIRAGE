@@ -6,7 +6,7 @@ Define a replaceable boundary for this MIRAGE subsystem while preserving EIR, pr
 
 ## Non-goals
 
-This document does not claim that the subsystem is implemented in Iteration 1 unless the status is stated in the repository README.
+This document records a planned subsystem. The current repository baseline does not implement an experiment engine.
 
 ## Terminology
 
@@ -18,7 +18,7 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The subsystem is a future modular service inside MIRAGE. Iteration 1 establishes documentation and adjacent contracts; implementation is scheduled by ROADMAP.md.
+The experiment engine is a planned modular service inside MIRAGE. The fixture-backed read-only adapter, policy runtime, and checkpoint review path are adjacent safety foundations, but they do not schedule, run, evaluate, or optimize experiments. Implementation is scheduled by ROADMAP.md.
 
 ## Interfaces
 

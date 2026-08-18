@@ -2,48 +2,49 @@
 
 ## Task
 
-Complete the MIRAGE distribution-readiness phase after the execution ledger and workflow checkpoint slice.
+Complete the MIRAGE documentation reconciliation, remaining-work assessment, and requested branch delivery.
 
 ## Current status
 
-Python and npm distribution artifacts are build-ready and locally verified. The distribution phase is committed locally as `122b8a8` (`feat: prepare MIRAGE distribution artifacts`) on `feat/iteration-1-foundation`. The user has approved pushing the branch and opening a pull request. Do not publish package artifacts without a separate explicit user approval.
+The documentation reconciliation pass is delivered. Commit `3e2f56e` was pushed to `feat/iteration-1-foundation`, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) is open against `main`. README, architecture notes, runtime guides, the URCP specification, security boundary, examples, changelog, roadmap, code review, workflow context, and delivery status now align with the current runtime.
 
 ## Completed work
 
-The runtime includes append-only JSONL `ExecutionLedger` with stable request IDs, execution status, actor, capability, version, backend, timestamps, policy summary, redacted inputs and outputs, and lookup by request ID. The URCP executor records denied, unavailable, and successful execution attempts when a ledger is provided.
+The repository baseline includes EIR validation, six provider adapters, revisioned ESG snapshots, URCP policy-gated execution, ledger and checkpoint primitives, declarative sandbox assessment, checkpoint revalidation, and fixture-backed read-only simulator metadata and state extraction. The documentation audit corrected stale references that described ESG, the model orchestrator, URCP definitions, and the execution foundation as future-only concepts.
 
-The runtime includes validated `WorkflowCheckpoint` snapshots with workflow ID, revision, stage, arbitrary state, related execution IDs, optional ESG project ID, and update time. Checkpoints can advance and round-trip through JSON. Loading a checkpoint never executes or resumes work.
+The new `docs/guides/delivery-status.md` records the accurate milestone accounting: M0 through M2 are complete, M3 is partially complete, and M4 through M7 are planned. It describes six primary remaining delivery streams and the cross-cutting hardening work needed to support them.
 
-The registry-safe Python distribution is named `mirage-engineering`, with PEP 440 alpha version `0.1.0a0` sourced from `mirage.__version__`. The `mirage` console command remains the canonical user-facing CLI. The scoped `@unstable-kernel/mirage` npm launcher is private and delegates to that Python command instead of reimplementing MIRAGE in JavaScript. CI validates Python and npm artifacts but contains no publishing automation.
+The fixture adapter remains deterministic test infrastructure. `CoppeliaSimReadOnlyAdapter` remains unavailable and non-connecting until a real transport, semantic contract, fixture corpus, and safety review are independently verified. No simulator control, external side effect, physical actuation, automatic checkpoint resume, OS-enforced sandbox, package publication, or release automation is implemented.
 
 ## Verification
 
 | Check | Result |
 |---|---|
-| Python tests | 21 passed |
+| Full Python tests | 35 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
-| Python build | Source archive and wheel passed `twine check` |
-| Installed Python artifact | Metadata and `mirage doctor` passed |
-| npm launcher | Forwarding tests, syntax check, and dry-run package check passed |
-| Secret and punctuation checks | Passed during the Iteration 3 verification |
+| Documentation verification | Every tracked Markdown file passed local-link checks; stale implementation-status scan passed |
+| CLI verification | Doctor, fixture capability discovery, and deterministic metadata/state inspection passed |
+| Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
+| Pull request state | PR #8 is merged; a new PR is required after this branch is pushed |
 
 ## Known limitations
 
-The ledger is local JSONL storage without file locking, encryption, retention policies, database transactions, or distributed coordination. Checkpoints are validated snapshots and do not resume work automatically. CoppeliaSim remains unavailable and unverified. No external side effects or physical actuation are exposed.
+The documentation pass is verified, committed, pushed, and submitted for review. The next recommended action is to review PR #9, then select the next vertical slice from `docs/guides/delivery-status.md` after merge.
 
-The exact `mirage` registry name is occupied by unrelated packages on PyPI and npm. `mirage-engineering` and `@unstable-kernel/mirage` returned no registry record during this build, but availability must be checked again immediately before release. Publishing remains a manual, explicitly authorized maintainer action that needs a signed tag, clean verification, artifact review, release note, and configured trusted publishing.
+The fixture adapter is not a real simulator transport. Its `transport_verified` result only means fixture parsing and result semantics are deterministic and covered by tests. Endpoint configuration for CoppeliaSim is recorded without a connection attempt. Sandbox controls remain declarative on the local backend and do not provide cgroups, containers, filesystem mounts, CPU/RAM/disk quotas, network enforcement, or subprocess isolation.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `pyproject.toml` | Python distribution identity, dynamic version source, console entry point, and wheel configuration |
-| `packages/npm-launcher/` | Private scoped npm launcher package and tests |
-| `docs/guides/distribution.md` | Release naming, artifact verification, and publishing boundary |
-| `.github/workflows/ci.yml` | Test, Python artifact, and npm package checks without release automation |
-| `code_review.md` | Final collaborator review covering runtime and distribution risks |
+| `README.md` | Public status, quickstart, and documentation entry points |
+| `ARCHITECTURE.md` and `docs/architecture/` | Current plane-level implementation and remaining boundaries |
+| `specs/URCP/README.md` | Current capability and runtime contract surface |
+| `docs/guides/delivery-status.md` | Quantified milestone accounting and remaining work |
+| `code_review.md` | Collaborator-facing current baseline and historical review record |
+| `todo.md` | Documentation reconciliation and delivery checklist |
 
 ## Next recommended action
 
-Push the current branch, create or update the pull request against `main`, and keep package publishing disabled. The next build slice should add request-level timeout, cancellation, resource limits, and a verified simulator inspection adapter before any simulator control path.
+Finish documentation verification, update this context with final results, commit the documentation reconciliation, push `feat/iteration-1-foundation`, and create a new pull request because PR #8 is already merged. The recommended next implementation slice is an independently verified real read-only simulator transport, followed by an enforced backend sandbox. Neither slice should introduce simulator control without a distinct safety design and approval path.

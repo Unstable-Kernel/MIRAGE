@@ -23,9 +23,20 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Build-ready `mirage-engineering` Python distribution metadata with dynamic in-package versioning.
 - Private `@unstable-kernel/mirage` npm launcher with local forwarding and package artifact checks.
 - Local Python wheel and source distribution verification, plus CI package safeguards that do not publish.
+- Policy provenance, request timeout, cooperative cancellation, and input/output resource-budget checks for URCP execution.
+- Inspection-only CoppeliaSim adapter contract that never connects or controls a simulator.
+- Declarative backend sandbox envelope assessment that denies unsupported OS-level resource restrictions.
+- Checkpoint revalidation for policy provenance, capability versions, and backend allow-lists without resume behavior.
+- Fixture-backed read-only simulator project metadata and state extraction with sandbox assessment, policy checks, timeout handling, and cancellation-token cooperation.
+- `mirage simulator-metadata` for deterministic fixture inspection, with an explicitly unavailable non-connecting CoppeliaSim read-only boundary.
+
+### Changed
+
+- Reconciled README, architecture records, runtime guides, URCP specification, security boundaries, examples, roadmap, collaborator review, and workflow continuation context with the current execution and read-only adapter baseline.
+- Added a delivery-status guide that distinguishes completed milestones, the partial M3 foundation, planned milestones, remaining delivery streams, and cross-cutting hardening work.
 
 ### Not yet included
 
-- Simulator or hardware execution.
+- Simulator control, real simulator transport integration, or hardware execution.
 - Persistent ESG/EKG/TESG knowledge stores.
 - MCP, research-paper ingestion, autonomous experiments, optimization, or physical actuation.

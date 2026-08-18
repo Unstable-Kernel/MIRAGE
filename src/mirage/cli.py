@@ -11,9 +11,23 @@ import typer
 
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
-from .runtime import CapabilityExecutor, ExecutionLedger, ExecutionPolicy, ExecutionRequest, WorkflowCheckpoint, default_registry
+from .runtime import (
+    BackendSandboxCapabilities,
+    CapabilityExecutor,
+    CoppeliaSimReadOnlyAdapter,
+    ExecutionLedger,
+    ExecutionPolicy,
+    ExecutionRequest,
+    FixtureSimulatorAdapter,
+    SandboxEnvelope,
+    WorkflowCheckpoint,
+    assess_sandbox,
+    default_inspection_backends,
+    default_registry,
+)
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
+FIXTURE_ARGUMENT = typer.Argument(default=None, help="Deterministic read-only fixture JSON path.")
 
 
 def _result(path: Path) -> Any:
@@ -76,17 +90,82 @@ def execute(
     backend: str = "local",
     allow_simulation: bool = False,
     ledger: Path | None = None,
+    timeout_seconds: float | None = None,
 ) -> None:
     """Execute only through the policy-gated local runtime; no host commands are accepted."""
     request = ExecutionRequest(
         capability_id=capability_id,
         backend=backend,
         policy=ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend}),
+        timeout_seconds=timeout_seconds,
     )
     audit_ledger = ExecutionLedger(ledger) if ledger else None
     result = asyncio.run(CapabilityExecutor(default_registry(), ledger=audit_ledger).execute(request))
     typer.echo(result.model_dump_json())
     if result.status.value != "succeeded":
+        raise typer.Exit(1)
+
+
+@app.command("simulator-inspect")
+def simulator_inspect(backend: str = "coppeliasim", endpoint: str | None = None) -> None:
+    """Inspect a simulator boundary without connecting, controlling, or actuating it."""
+    inspector = default_inspection_backends(endpoint).get(backend)
+    if inspector is None:
+        typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "inspection backend is not registered"}))
+        raise typer.Exit(1)
+    typer.echo(asyncio.run(inspector.inspect()).model_dump_json())
+
+
+@app.command("simulator-metadata")
+def simulator_metadata(
+    fixture: Path | None = FIXTURE_ARGUMENT,
+    backend: str = "fixture",
+    endpoint: str | None = None,
+    include_state: bool = False,
+    timeout_seconds: float | None = None,
+) -> None:
+    """Read project metadata and an optional state snapshot without simulator control."""
+    if fixture is not None:
+        adapter = FixtureSimulatorAdapter.from_file(fixture)
+    elif backend == "coppeliasim":
+        adapter = CoppeliaSimReadOnlyAdapter(endpoint=endpoint)
+    else:
+        typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "fixture path is required"}))
+        raise typer.Exit(1)
+    policy = ExecutionPolicy(allow_read_only=True, allowed_backends={adapter.name})
+    metadata = asyncio.run(adapter.read_project_metadata(policy=policy, timeout_seconds=timeout_seconds))
+    payload: dict[str, Any] = {"metadata": metadata.model_dump(mode="json")}
+    statuses = [metadata.status.value]
+    if include_state:
+        snapshot = asyncio.run(adapter.read_state_snapshot(policy=policy, timeout_seconds=timeout_seconds))
+        payload["snapshot"] = snapshot.model_dump(mode="json")
+        statuses.append(snapshot.status.value)
+    typer.echo(json.dumps(payload, sort_keys=True))
+    if any(status != "available" for status in statuses):
+        raise typer.Exit(1)
+
+
+@app.command("sandbox-assess")
+def sandbox_assess(
+    backend: str = "local",
+    max_memory_mb: int | None = None,
+    max_cpu_seconds: float | None = None,
+) -> None:
+    """Assess a declared sandbox envelope without attempting host-level isolation."""
+    envelope = SandboxEnvelope(max_memory_mb=max_memory_mb, max_cpu_seconds=max_cpu_seconds)
+    assessment = assess_sandbox(envelope, BackendSandboxCapabilities(backend=backend))
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value == "denied":
+        raise typer.Exit(1)
+
+
+@app.command("checkpoint-revalidate")
+def checkpoint_revalidate(file: Path, allow_simulation: bool = False, backend: str | None = None) -> None:
+    """Revalidate a checkpoint for manual review without resuming its workflow."""
+    policy = ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend} if backend else set())
+    result = WorkflowCheckpoint.load(file).revalidate(default_registry(), policy)
+    typer.echo(result.model_dump_json())
+    if not result.valid:
         raise typer.Exit(1)
 
 

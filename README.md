@@ -4,7 +4,7 @@
 
 MIRAGE is an AI-native engineering compiler and runtime for robotics and autonomous systems. It is designed to transform heterogeneous engineering knowledge into a versioned **Engineering Intermediate Representation (EIR)**, reason over that representation, and execute validated workflows through replaceable capabilities and adapters.
 
-The first implementation iteration establishes a real foundation rather than claiming the full long-term platform. It delivers EIR 0.1 validation, a provider-neutral model orchestrator, six model-provider adapters, and a small CLI. Simulator execution, graph persistence, autonomous experiment loops, and physical-hardware integration remain roadmap work.
+The current implementation establishes a real foundation rather than claiming the full long-term platform. It delivers EIR 0.1 validation, a provider-neutral model orchestrator, six model-provider adapters, revisioned ESG snapshots, a policy-gated URCP runtime, an audit ledger, checkpoint revalidation, sandbox assessment, and deterministic fixture-backed read-only simulator inspection. Real simulator transport, simulator control, autonomous experiment loops, and physical-hardware integration remain roadmap work.
 
 ## Core thesis
 
@@ -40,10 +40,11 @@ uv sync
 uv run mirage doctor
 uv run mirage validate examples/01-validate-eir/robot_model.yaml
 uv run mirage inspect examples/01-validate-eir/robot_model.yaml
+uv run mirage simulator-metadata examples/07-simulator-adapter/fixture-simulation.json --include-state
 uv run pytest
 ```
 
-The validation and inspection commands are deterministic and do not require an API key. Provider configuration is optional for the first CLI workflow. To configure a model provider, copy `examples/02-model-providers/provider-config.example.yaml`, replace environment-variable references with your own environment, and set `MIRAGE_PROVIDER_CONFIG` to the file path.
+The validation, inspection, and fixture-backed simulator metadata commands are deterministic and do not require an API key. The simulator command reads only the local fixture and cannot connect to, control, or step a simulator. Provider configuration is optional for the first CLI workflow. To configure a model provider, copy `examples/02-model-providers/provider-config.example.yaml`, replace environment-variable references with your own environment, and set `MIRAGE_PROVIDER_CONFIG` to the file path.
 
 ## Distribution status
 
@@ -62,14 +63,19 @@ MIRAGE is build-ready but not published to PyPI or npm. The intended Python dist
 | Declarative URCP capability registry | Implemented |
 | Policy-gated URCP execution and deterministic local backend | Implemented |
 | Persistent execution ledger and workflow checkpoints | Implemented as local JSONL and validated snapshots |
-| Simulator adapters and verified URCP execution | Planned; CoppeliaSim boundary is documented but unavailable |
+| Execution timeout, cancellation, input/output budget checks, and policy provenance | Implemented for the policy-gated runtime |
+| Declarative backend sandbox assessment and checkpoint revalidation | Implemented; no OS isolation or automatic resume is claimed |
+| Inspection-only CoppeliaSim adapter boundary | Implemented as unavailable and non-connecting; no simulator control is exposed |
+| Fixture-backed read-only simulator metadata and state extraction | Implemented with deterministic contract fixtures, policy checks, timeout handling, and sandbox assessment evidence |
+| CoppeliaSim read-only transport | Unavailable until transport and semantics are verified; no connection or control is attempted |
+| Simulator control and verified URCP execution | Planned; explicit safety review and verified adapter behavior are required |
 | Research-paper and robotics-format ingestion | Planned |
 | Autonomous experiments and optimization | Planned |
 | Physical hardware execution | Planned; requires additional safety gates |
 
 ## Documentation
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations, and [docs/guides/distribution.md](docs/guides/distribution.md) for release readiness. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, [docs/guides/urcp-execution.md](docs/guides/urcp-execution.md) for execution policy, [docs/guides/execution-hardening.md](docs/guides/execution-hardening.md) for timeout and cancellation behavior, [docs/guides/read-only-simulator-adapter.md](docs/guides/read-only-simulator-adapter.md) for metadata and state extraction boundaries, [docs/guides/sandbox-checkpoint-revalidation.md](docs/guides/sandbox-checkpoint-revalidation.md) for sandbox and checkpoint safety, [docs/guides/execution-ledger.md](docs/guides/execution-ledger.md) for audit and checkpoint behavior, [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations, [docs/guides/distribution.md](docs/guides/distribution.md) for release readiness, [docs/guides/delivery-status.md](docs/guides/delivery-status.md) for the quantified baseline and remaining delivery streams, and [docs/guides/core-features.md](docs/guides/core-features.md) for the upcoming core roadmap. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
 
 ## Authorship and contact
 

@@ -2,7 +2,28 @@
 
 ## Review scope
 
-This review covers the ESG and URCP vertical slice, policy-gated execution, the append-only execution ledger, workflow checkpoints, backend boundaries, CLI commands, specifications, examples, and tests added through Iteration 3.
+This review accumulates the ESG and URCP vertical slices, policy-gated execution, append-only execution ledger, workflow checkpoints, sandbox assessment, checkpoint revalidation, and read-only adapter work. Historical sections retain the implementation order; the current baseline is summarized below.
+
+## Current baseline audit
+
+The current baseline is commit `40f55b1` plus this documentation reconciliation pass. The repository has 35 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, and deterministic fixture-backed read-only simulator metadata and state extraction.
+
+| Surface | Current status | Boundary that remains explicit |
+|---|---|---|
+| EIR and ESG | Implemented and persisted as validated local JSON | No concurrent or transactional graph storage |
+| Providers | Six explicit adapters with mocked contracts | Live integrations remain opt-in and provider dependent |
+| URCP runtime | Policy-gated execution, ledger, timeout, cancellation, and resource budgets | No arbitrary host commands or unrestricted side effects |
+| Sandbox and checkpoint safety | Declarative preflight and non-executing revalidation | No OS isolation or automatic resume |
+| Simulator adapter | Deterministic fixture metadata and state extraction | No real transport, simulator connection, or control |
+| Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
+
+The remaining primary delivery streams are a real verified read-only simulator transport, an enforced backend sandbox, M4 goal-to-evaluate workflow, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
+
+The documentation reconciliation verified every tracked Markdown file for local link targets and scanned the corpus for superseded implementation-status statements. The current full suite passes with 35 tests; Ruff, EIR schema consistency, CLI capability discovery, deterministic fixture inspection, secret scanning, no-em-dash scanning, and diff integrity checks passed. PR #8 is already merged, so the post-push review surface must be a new pull request.
+
+## Documentation reconciliation handoff
+
+The documentation reconciliation was committed as `3e2f56e` with the message `docs: reconcile runtime status and delivery roadmap`, pushed to `feat/iteration-1-foundation`, and submitted for review in [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9). The pull request contains the four unmerged execution and documentation commits, with no co-author trailer or AI attribution.
 
 ## Architecture summary
 
@@ -61,13 +82,13 @@ The default registry includes simulator names for planning and filtering only. T
 
 ## Tests and verification
 
-The current verification suite passes with 19 tests. Ruff passes for source, tests, and scripts. The EIR schema consistency check passes. ESG CLI snapshot inspection, URCP backend filtering, policy denial, deterministic local execution, unavailable CoppeliaSim behavior, audit persistence, secret redaction, checkpoint round trips, ledger inspection, checkpoint inspection, secret-pattern scanning, tracked no-em-dash scanning, and repository diff checks pass.
+Historical verification snapshot at this point in the implementation sequence: 19 tests passed. The current verification result is recorded in the latest review section and workflow context.
 
 ## Collaborator guidance
 
 Keep EIR, ESG, and URCP versioned independently. Do not add simulator-specific fields to EIR or core orchestration merely to support one backend. Add a new capability descriptor before adding an executor, and add a contract test before claiming backend support. Preserve secret redaction, provenance, deterministic validation, and explicit safety boundaries.
 
-## Recommended next slice
+## Historical recommended next slice, completed in later slices
 
 Add file locking or a transactional storage backend, request-level timeout and cancellation semantics, resource limits, ledger retention and integrity policy, and stronger policy provenance. Then verify one simulator adapter, starting with project inspection and state extraction before simulation control or experiment execution.
 
@@ -108,3 +129,93 @@ The full suite now passes with 21 tests. Ruff, EIR schema consistency, Python so
 ## Commit and review handoff
 
 The distribution-readiness implementation is committed as `122b8a8` with the message `feat: prepare MIRAGE distribution artifacts`. The commit contains no co-author trailer or AI attribution. Its pull request should be reviewed as a release-preparation change only: it adds build metadata, package checks, documentation, and a private launcher, but it does not authorize or perform a PyPI or npm release.
+
+## Execution hardening iteration review
+
+The execution runtime now applies an explicit policy-provenance record and resource budget to every returned result. The runtime checks backend allow-lists, input size, and requested timeout before a backend receives work. It then uses a cooperative cancellation token, timeout wait, and output-size check to make policy outcomes observable rather than implicit.
+
+```mermaid
+flowchart LR
+    REQUEST[Execution request] --> PRECHECK[Policy, backend, and input checks]
+    PRECHECK -->|deny| RESULT[Structured result and ledger]
+    PRECHECK -->|allow| BACKEND[Cooperative backend task]
+    BACKEND --> HARDEN[Cancellation, timeout, and output checks]
+    HARDEN --> RESULT
+    INSPECT[Inspection-only simulator boundary] -->|unavailable| RESULT
+```
+
+| File | Hardening responsibility |
+|---|---|
+| `src/mirage/runtime/execution.py` | Timeout, cancellation token, input/output byte limits, policy provenance, and structured status results |
+| `src/mirage/runtime/simulator_inspection.py` | Non-connecting, inspection-only CoppeliaSim boundary with no control surface |
+| `src/mirage/cli.py` | `--timeout-seconds` execution option and `simulator-inspect` command |
+| `tests/test_execution_hardening.py` | Preflight denial, timeout, cancellation, provenance, and inspection-boundary coverage |
+| `docs/guides/execution-hardening.md` | User-facing enforcement sequence and safety limitations |
+| `docs/guides/core-features.md` | Prioritized upcoming MIRAGE core-feature roadmap |
+
+The inspection boundary is correctly conservative. It records endpoint configuration only and explicitly reports that no connection or control action occurred. It does not implement simulator state extraction, transport negotiation, project loading, scene traversal, simulation control, or actuator access.
+
+## Hardening risks and follow-up work
+
+Cancellation is cooperative within the current Python task model. A backend that blocks in non-cooperative native code, a subprocess, or a remote server still needs an external sandbox, process management, resource cgroup, deadline propagation, and cleanup contract. Current byte budgets are deterministic serialized-payload checks, not CPU, RAM, disk, GPU, network, or process limits.
+
+The documented fixture-backed read-only adapter slice was completed in a later section. A real transport still requires transport verification, authorization, state semantics, timeout behavior, cleanup evidence, independent fixtures, and safety review before MIRAGE can consider any simulator control capability.
+
+## Updated verification
+
+The suite now passes with 26 tests. Ruff, EIR schema consistency, safe CLI inspection, explicit local execution with a timeout budget, secret-pattern scanning, tracked no-em-dash scanning, and `git diff --check` passed. No simulator connection, control operation, external side effect, physical actuation, package publication, or release upload occurred.
+
+## Sandbox and checkpoint revalidation iteration review
+
+The sandbox envelope implementation is deliberately declarative. A `SandboxEnvelope` describes CPU, memory, disk, process, network, filesystem, and subprocess restrictions. `BackendSandboxCapabilities` makes a backend's claimed enforcement explicit. MIRAGE compares the two before dispatch and denies work that requests operating-system-level restrictions the backend cannot enforce.
+
+```mermaid
+flowchart LR
+    POLICY[Execution policy] --> ENVELOPE[Sandbox envelope]
+    ENVELOPE --> CAPS[Backend sandbox capabilities]
+    CAPS --> ASSESS[Assessment]
+    ASSESS -->|denied| RESULT[Structured execution result]
+    ASSESS -->|declarative only| LOCAL[Deterministic local backend]
+    CHECKPOINT[Workflow checkpoint] --> REVALIDATE[Policy and capability revalidation]
+    REVALIDATE --> REVIEW[Manual review only]
+```
+
+| File | Safety responsibility |
+|---|---|
+| `src/mirage/runtime/sandbox.py` | Declared envelope, backend enforcement claims, and conservative assessment |
+| `src/mirage/runtime/execution.py` | Sandbox preflight denial and execution-result assessment metadata |
+| `src/mirage/runtime/checkpoint.py` | Non-executing policy and capability revalidation for manual resume review |
+| `tests/test_sandbox_checkpoint.py` | Declarative local outcome, unsupported resource denial, and checkpoint drift coverage |
+| `docs/guides/sandbox-checkpoint-revalidation.md` | User-facing boundary and safe CLI behavior |
+
+Checkpoint revalidation is correctly non-executing. It compares stored policy provenance, exact capability versions, policy permission, and explicit backend allow-lists before a checkpoint can enter a future human review flow. It never changes the checkpoint or invokes a backend.
+
+## Sandbox-specific risks and next step
+
+The implementation does not create an OS sandbox. The local backend has no cgroup, process supervisor, filesystem mount, network firewall, container runtime, CPU quota, memory limit, disk quota, GPU partition, subprocess interceptor, or forced cleanup. These restrictions are denied when requested instead of being represented as successful enforcement.
+
+The fixture-backed read-only simulator metadata and state-extraction adapter was completed in a later slice. An independently verified real transport and an enforced backend sandbox remain; the latter must use a suitable isolated runtime and auditable OS-level policy enforcement design.
+
+## Updated verification
+
+The suite now passes with 30 tests. Ruff, EIR schema consistency, sandbox assessment CLI, denied sandbox budget CLI, checkpoint revalidation CLI for both denied and explicitly allowed cases, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No checkpoint was resumed, no process isolation was claimed, and no simulator connection or control operation occurred.
+
+## Read-only simulator adapter iteration review
+
+`src/mirage/runtime/simulator_adapter.py` introduces a deliberately narrow protocol. The only public adapter operations are `read_project_metadata()` and `read_state_snapshot()`. The models describe static project metadata and bounded object observations. They contain no instruction, command, write, start, stop, reset, or step field.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/simulator_adapter.py` | Fixture reads are deterministic and deep-copied; all results include a sandbox assessment and force `control_available` to false |
+| `src/mirage/runtime/urcp.py` | `inspect_simulator_state@0.1` is classified as read-only and declares its adapter requirement |
+| `src/mirage/cli.py` | `simulator-metadata` accepts a fixture path and optional state output, with no simulator control flags |
+| `tests/test_simulator_adapter.py` | Covers deterministic reads, policy and sandbox denial, timeout cancellation, unavailable CoppeliaSim behavior, and CLI output |
+| `examples/07-simulator-adapter/` | Provides a deterministic state-extraction fixture rather than a live or control-capable simulation |
+
+The adapter correctly treats CoppeliaSim as unavailable. Supplying an endpoint is evidence only that a configuration string exists. No socket, RPC call, simulator command, state mutation, or physical action is performed. The fixture backend is marked as transport verified only in the narrow sense that the local fixture read contract is deterministic and tested. It must not be interpreted as verification of a real simulator transport.
+
+Timeout handling follows the existing cooperative `CancellationToken` pattern. This protects the in-process task boundary but does not form an OS sandbox or guarantee interruption of a future non-cooperative external transport. The next real adapter must retain this typed result model while adding adapter-specific transport verification, snapshot consistency semantics, authentication boundaries, independent fixtures, and a separate safety review.
+
+## Updated verification
+
+The complete repository suite passes with 35 tests. Ruff, EIR schema consistency, fixture CLI inspection, unavailable CoppeliaSim CLI behavior, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, physical actuation, external side effect, package publication, or branch push occurred in this iteration.
