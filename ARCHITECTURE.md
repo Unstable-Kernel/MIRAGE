@@ -38,11 +38,11 @@ The initial matrix contains OpenAI, Anthropic, generic OpenAI-compatible, Ollama
 
 ## Knowledge plane evolution
 
-Future versions will add ESG for project state, EKG for reusable cross-project knowledge, TESG for temporal evolution, an Evidence Graph for claim support, and EDR for important engineering decisions. These concerns remain separate so that traceability is not collapsed into opaque model context.
+The current slice implements ESG as a revisioned EIR-linked state object with append-only structured events. Future versions will add EKG for reusable cross-project knowledge, TESG for temporal evolution, an Evidence Graph for claim support, and EDR for important engineering decisions. These concerns remain separate so that traceability is not collapsed into opaque model context.
 
 ## Execution plane evolution
 
-URCP will expose capabilities such as `inspect_model`, `run_simulation`, `capture_sensor_data`, `evaluate_metric`, and `export_artifact`. Simulator and hardware adapters will implement URCP rather than being called directly by agents. Hardware capabilities require explicit authorization, safety classes, resource limits, network policy, emergency-stop integration, and audit logs.
+The current slice implements a declarative URCP capability descriptor and deterministic registry. URCP exposes capabilities such as `inspect_model`, `run_simulation`, `capture_sensor_data`, `evaluate_metric`, and `export_artifact`. Simulator and hardware adapters will implement URCP rather than being called directly by agents. Hardware capabilities require explicit authorization, safety classes, resource limits, network policy, emergency-stop integration, and audit logs.
 
 ## Data flow
 

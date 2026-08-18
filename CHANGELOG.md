@@ -10,8 +10,10 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - EIR 0.1 schema, provenance primitives, deterministic validation, JSON/YAML serialization, and JSON Schema export.
 - Provider-neutral model protocol and role-based orchestrator.
 - OpenAI, Anthropic, generic OpenAI-compatible, Ollama, vLLM, and llama.cpp adapters.
-- `mirage validate`, `mirage inspect`, and `mirage doctor` CLI commands.
+- `mirage validate`, `mirage inspect`, `mirage doctor`, `mirage esg-inspect`, and `mirage capabilities` CLI commands.
 - Mocked provider contract tests and optional live smoke-test harness.
+- EIR-backed Engineering State Graph snapshots with revisioned event history.
+- Declarative URCP capability descriptors and deterministic registry filtering.
 
 ### Not yet included
 

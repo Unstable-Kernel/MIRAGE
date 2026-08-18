@@ -54,7 +54,8 @@ The validation and inspection commands are deterministic and do not require an A
 | Provider-neutral typed completion contract | Implemented |
 | OpenAI, Anthropic, generic OpenAI-compatible, Ollama, vLLM, llama.cpp adapters | Implemented with mocked contract tests |
 | Optional live provider smoke tests | Implemented; opt-in only |
-| Engineering State Graph persistence | Planned |
+| Engineering State Graph persistence and event history | Implemented |
+| Declarative URCP capability registry | Implemented; execution is not included |
 | Simulator adapters and URCP execution | Planned |
 | Research-paper and robotics-format ingestion | Planned |
 | Autonomous experiments and optimization | Planned |
@@ -62,7 +63,7 @@ The validation and inspection commands are deterministic and do not require an A
 
 ## Documentation
 
-Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, and [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
+Read [ARCHITECTURE.md](ARCHITECTURE.md) for the system boundaries, [specs/EIR/eir-0.1.md](specs/EIR/eir-0.1.md) for the canonical semantic contract, [specs/ESG/README.md](specs/ESG/README.md) for state history, [specs/URCP/README.md](specs/URCP/README.md) for capability declarations, and [docs/guides/model-providers.md](docs/guides/model-providers.md) for all six provider integrations. Development rules are in [CONTRIBUTING.md](CONTRIBUTING.md), the security model is in [SECURITY.md](SECURITY.md), and the delivery path is in [ROADMAP.md](ROADMAP.md).
 
 ## Authorship and contact
 
