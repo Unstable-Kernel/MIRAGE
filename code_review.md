@@ -108,3 +108,38 @@ The full suite now passes with 21 tests. Ruff, EIR schema consistency, Python so
 ## Commit and review handoff
 
 The distribution-readiness implementation is committed as `122b8a8` with the message `feat: prepare MIRAGE distribution artifacts`. The commit contains no co-author trailer or AI attribution. Its pull request should be reviewed as a release-preparation change only: it adds build metadata, package checks, documentation, and a private launcher, but it does not authorize or perform a PyPI or npm release.
+
+## Execution hardening iteration review
+
+The execution runtime now applies an explicit policy-provenance record and resource budget to every returned result. The runtime checks backend allow-lists, input size, and requested timeout before a backend receives work. It then uses a cooperative cancellation token, timeout wait, and output-size check to make policy outcomes observable rather than implicit.
+
+```mermaid
+flowchart LR
+    REQUEST[Execution request] --> PRECHECK[Policy, backend, and input checks]
+    PRECHECK -->|deny| RESULT[Structured result and ledger]
+    PRECHECK -->|allow| BACKEND[Cooperative backend task]
+    BACKEND --> HARDEN[Cancellation, timeout, and output checks]
+    HARDEN --> RESULT
+    INSPECT[Inspection-only simulator boundary] -->|unavailable| RESULT
+```
+
+| File | Hardening responsibility |
+|---|---|
+| `src/mirage/runtime/execution.py` | Timeout, cancellation token, input/output byte limits, policy provenance, and structured status results |
+| `src/mirage/runtime/simulator_inspection.py` | Non-connecting, inspection-only CoppeliaSim boundary with no control surface |
+| `src/mirage/cli.py` | `--timeout-seconds` execution option and `simulator-inspect` command |
+| `tests/test_execution_hardening.py` | Preflight denial, timeout, cancellation, provenance, and inspection-boundary coverage |
+| `docs/guides/execution-hardening.md` | User-facing enforcement sequence and safety limitations |
+| `docs/guides/core-features.md` | Prioritized upcoming MIRAGE core-feature roadmap |
+
+The inspection boundary is correctly conservative. It records endpoint configuration only and explicitly reports that no connection or control action occurred. It does not implement simulator state extraction, transport negotiation, project loading, scene traversal, simulation control, or actuator access.
+
+## Hardening risks and follow-up work
+
+Cancellation is cooperative within the current Python task model. A backend that blocks in non-cooperative native code, a subprocess, or a remote server still needs an external sandbox, process management, resource cgroup, deadline propagation, and cleanup contract. Current byte budgets are deterministic serialized-payload checks, not CPU, RAM, disk, GPU, network, or process limits.
+
+The next verified adapter slice should implement read-only simulator project metadata and state extraction using a documented transport with test fixtures. Only after transport, authorization, state semantics, timeout behavior, and cleanup have verification evidence should MIRAGE consider any simulator control capability.
+
+## Updated verification
+
+The suite now passes with 26 tests. Ruff, EIR schema consistency, safe CLI inspection, explicit local execution with a timeout budget, secret-pattern scanning, tracked no-em-dash scanning, and `git diff --check` passed. No simulator connection, control operation, external side effect, physical actuation, package publication, or release upload occurred.

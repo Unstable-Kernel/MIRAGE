@@ -7,4 +7,13 @@
 - [x] Document trusted publishing, versioning, release ownership, and non-publication safeguards.
 - [x] Add package checks to CI without introducing registry publishing automation.
 - [x] Update documentation website guidance and save repository workflow context.
-- [ ] Run full checks, update final code review, commit the release-readiness phase, and report the result.
+- [x] Run full checks, update final code review, commit the release-readiness phase, and report the result.
+
+## Execution Hardening Iteration
+
+- [x] Inspect the current execution runtime, public contracts, tests, roadmap, and branch state.
+- [x] Define timeout, cancellation, resource-limit, policy-provenance, and inspection-only adapter contracts.
+- [x] Implement deterministic preflight checks and structured hardening results.
+- [x] Add an inspection-only simulator adapter boundary with no control or actuation path.
+- [x] Add contract tests, CLI support, examples, and a core-feature roadmap.
+- [x] Run full verification, update workflow context and code review, commit, and report the iteration.

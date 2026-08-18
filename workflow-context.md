@@ -2,11 +2,11 @@
 
 ## Task
 
-Complete the MIRAGE distribution-readiness phase after the execution ledger and workflow checkpoint slice.
+Complete the MIRAGE execution-hardening iteration after the distribution-readiness phase.
 
 ## Current status
 
-Python and npm distribution artifacts are build-ready and locally verified. The distribution phase is committed locally as `122b8a8` (`feat: prepare MIRAGE distribution artifacts`) on `feat/iteration-1-foundation`. The user has approved pushing the branch and opening a pull request. Do not publish package artifacts without a separate explicit user approval.
+The execution-hardening implementation and verification are complete. The working tree is ready for a focused local commit on `feat/iteration-1-foundation`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
@@ -16,34 +16,38 @@ The runtime includes validated `WorkflowCheckpoint` snapshots with workflow ID, 
 
 The registry-safe Python distribution is named `mirage-engineering`, with PEP 440 alpha version `0.1.0a0` sourced from `mirage.__version__`. The `mirage` console command remains the canonical user-facing CLI. The scoped `@unstable-kernel/mirage` npm launcher is private and delegates to that Python command instead of reimplementing MIRAGE in JavaScript. CI validates Python and npm artifacts but contains no publishing automation.
 
+The execution runtime now supports policy provenance, requested timeout limits, cooperative cancellation tokens, input/output byte budgets, and structured `cancelled` and `timed_out` outcomes. The `simulator-inspect` CLI command reaches only a non-connecting CoppeliaSim inspection boundary and never controls a simulator. The current source documents the next core features in `docs/guides/core-features.md`.
+
 ## Verification
 
 | Check | Result |
 |---|---|
-| Python tests | 21 passed |
+| Python tests | 26 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
-| Python build | Source archive and wheel passed `twine check` |
-| Installed Python artifact | Metadata and `mirage doctor` passed |
-| npm launcher | Forwarding tests, syntax check, and dry-run package check passed |
-| Secret and punctuation checks | Passed during the Iteration 3 verification |
+| Python build | Source archive and wheel passed `twine check` during the distribution phase |
+| Installed Python artifact | Metadata and `mirage doctor` passed during the distribution phase |
+| npm launcher | Forwarding tests, syntax check, and dry-run package check passed during the distribution phase |
+| Execution hardening | Timeout, cancellation, resource-limit, policy-provenance, and inspection-boundary tests passed |
+| Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
 
 ## Known limitations
 
-The ledger is local JSONL storage without file locking, encryption, retention policies, database transactions, or distributed coordination. Checkpoints are validated snapshots and do not resume work automatically. CoppeliaSim remains unavailable and unverified. No external side effects or physical actuation are exposed.
+The ledger is local JSONL storage without file locking, encryption, retention policies, database transactions, or distributed coordination. Checkpoints are validated snapshots and do not resume work automatically. CoppeliaSim remains unavailable and unverified. No external side effects or physical actuation are exposed. Cancellation is cooperative and byte budgets are not operating-system resource isolation.
 
-The exact `mirage` registry name is occupied by unrelated packages on PyPI and npm. `mirage-engineering` and `@unstable-kernel/mirage` returned no registry record during this build, but availability must be checked again immediately before release. Publishing remains a manual, explicitly authorized maintainer action that needs a signed tag, clean verification, artifact review, release note, and configured trusted publishing.
+The exact `mirage` registry name is occupied by unrelated packages on PyPI and npm. `mirage-engineering` and `@unstable-kernel/mirage` returned no registry record during the distribution build, but availability must be checked again immediately before release. Publishing remains a manual, explicitly authorized maintainer action that needs a signed tag, clean verification, artifact review, release note, and configured trusted publishing.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `pyproject.toml` | Python distribution identity, dynamic version source, console entry point, and wheel configuration |
-| `packages/npm-launcher/` | Private scoped npm launcher package and tests |
-| `docs/guides/distribution.md` | Release naming, artifact verification, and publishing boundary |
-| `.github/workflows/ci.yml` | Test, Python artifact, and npm package checks without release automation |
-| `code_review.md` | Final collaborator review covering runtime and distribution risks |
+| `src/mirage/runtime/execution.py` | Execution policy, provenance, timeout, cancellation, budgets, and result statuses |
+| `src/mirage/runtime/simulator_inspection.py` | Non-connecting inspection-only simulator boundary |
+| `tests/test_execution_hardening.py` | Execution-hardening contract coverage |
+| `docs/guides/execution-hardening.md` | Hardening semantics and safety limitations |
+| `docs/guides/core-features.md` | Prioritized outline of upcoming MIRAGE core features |
+| `code_review.md` | Final collaborator review covering runtime, distribution, and execution-hardening risks |
 
 ## Next recommended action
 
-Push the current branch, create or update the pull request against `main`, and keep package publishing disabled. The next build slice should add request-level timeout, cancellation, resource limits, and a verified simulator inspection adapter before any simulator control path.
+Inspect the final diff, run final hardening checks, and create a focused local commit. Push only on explicit user request. Do not publish to PyPI or npm unless the user explicitly approves that sensitive release operation. The next build slice should implement verified read-only simulator project metadata and state extraction before any simulator control path.

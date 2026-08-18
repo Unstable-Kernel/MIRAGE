@@ -11,7 +11,7 @@ import typer
 
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
-from .runtime import CapabilityExecutor, ExecutionLedger, ExecutionPolicy, ExecutionRequest, WorkflowCheckpoint, default_registry
+from .runtime import CapabilityExecutor, ExecutionLedger, ExecutionPolicy, ExecutionRequest, WorkflowCheckpoint, default_inspection_backends, default_registry
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 
@@ -76,18 +76,30 @@ def execute(
     backend: str = "local",
     allow_simulation: bool = False,
     ledger: Path | None = None,
+    timeout_seconds: float | None = None,
 ) -> None:
     """Execute only through the policy-gated local runtime; no host commands are accepted."""
     request = ExecutionRequest(
         capability_id=capability_id,
         backend=backend,
         policy=ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend}),
+        timeout_seconds=timeout_seconds,
     )
     audit_ledger = ExecutionLedger(ledger) if ledger else None
     result = asyncio.run(CapabilityExecutor(default_registry(), ledger=audit_ledger).execute(request))
     typer.echo(result.model_dump_json())
     if result.status.value != "succeeded":
         raise typer.Exit(1)
+
+
+@app.command("simulator-inspect")
+def simulator_inspect(backend: str = "coppeliasim", endpoint: str | None = None) -> None:
+    """Inspect a simulator boundary without connecting, controlling, or actuating it."""
+    inspector = default_inspection_backends(endpoint).get(backend)
+    if inspector is None:
+        typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "inspection backend is not registered"}))
+        raise typer.Exit(1)
+    typer.echo(asyncio.run(inspector.inspect()).model_dump_json())
 
 
 @app.command("ledger-inspect")

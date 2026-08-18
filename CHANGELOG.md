@@ -23,6 +23,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Build-ready `mirage-engineering` Python distribution metadata with dynamic in-package versioning.
 - Private `@unstable-kernel/mirage` npm launcher with local forwarding and package artifact checks.
 - Local Python wheel and source distribution verification, plus CI package safeguards that do not publish.
+- Policy provenance, request timeout, cooperative cancellation, and input/output resource-budget checks for URCP execution.
+- Inspection-only CoppeliaSim adapter contract that never connects or controls a simulator.
 
 ### Not yet included
 
