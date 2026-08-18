@@ -9,6 +9,8 @@ from typing import Any
 import typer
 
 from .eir import load_data, validate_document
+from .knowledge import EngineeringStateGraph
+from .runtime import default_registry
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 
@@ -45,6 +47,26 @@ def inspect(file: Path) -> None:
     for kind, count in sorted(counts.items()):
         typer.echo(f"  {kind}: {count}")
     typer.echo(f"relationships: {len(result.document.relationships)}")
+
+
+@app.command("esg-inspect")
+def esg_inspect(file: Path) -> None:
+    """Inspect a persisted Engineering State Graph snapshot."""
+    graph = EngineeringStateGraph.load(file)
+    typer.echo(f"project_id: {graph.project_id}")
+    typer.echo(f"revision: {graph.revision}")
+    typer.echo(f"eir: {graph.eir.id}")
+    typer.echo(f"events: {len(graph.events)}")
+    for event in graph.events:
+        typer.echo(f"  {event.type.value}: {event.id} ({event.actor})")
+
+
+@app.command("capabilities")
+def capabilities(backend: str | None = None) -> None:
+    """List declared URCP capabilities without executing them."""
+    for descriptor in default_registry().list(backend=backend):
+        backends = ",".join(descriptor.compatible_backends) or "none"
+        typer.echo(f"{descriptor.capability_id}@{descriptor.version} [{descriptor.security_class.value}] backends={backends}")
 
 
 @app.command()

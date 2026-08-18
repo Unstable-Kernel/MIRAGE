@@ -1,0 +1,23 @@
+{
+  "project_id": "project.demo",
+  "revision": 1,
+  "updated_at": "2026-08-18T00:00:00Z",
+  "eir": {
+    "eir_version": "0.1",
+    "id": "quadrotor-inspection",
+    "created_at": "2026-08-18T00:00:00Z",
+    "provenance": {"source_type": "example", "source_path": "examples/01-validate-eir/robot_model.yaml"},
+    "nodes": [],
+    "relationships": []
+  },
+  "events": [
+    {
+      "id": "event.created",
+      "type": "created",
+      "timestamp": "2026-08-18T00:00:00Z",
+      "actor": "example",
+      "eir_refs": [],
+      "details": {"note": "Example state snapshot"}
+    }
+  ]
+}
