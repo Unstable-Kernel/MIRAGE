@@ -6,7 +6,7 @@ Complete the MIRAGE documentation reconciliation, remaining-work assessment, and
 
 ## Current status
 
-The documentation reconciliation pass is verified and ready for a focused commit, push, and new pull request on `feat/iteration-1-foundation`. README, architecture notes, runtime guides, the URCP specification, security boundary, examples, changelog, roadmap, code review, workflow context, and delivery status now align with the current runtime. The user explicitly requested this delivery sequence.
+The documentation reconciliation pass is delivered. Commit `3e2f56e` was pushed to `feat/iteration-1-foundation`, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) is open against `main`. README, architecture notes, runtime guides, the URCP specification, security boundary, examples, changelog, roadmap, code review, workflow context, and delivery status now align with the current runtime.
 
 ## Completed work
 
@@ -30,7 +30,7 @@ The fixture adapter remains deterministic test infrastructure. `CoppeliaSimReadO
 
 ## Known limitations
 
-The documentation pass is verified. The remaining delivery steps are the requested final commit, branch push, and new PR creation.
+The documentation pass is verified, committed, pushed, and submitted for review. The next recommended action is to review PR #9, then select the next vertical slice from `docs/guides/delivery-status.md` after merge.
 
 The fixture adapter is not a real simulator transport. Its `transport_verified` result only means fixture parsing and result semantics are deterministic and covered by tests. Endpoint configuration for CoppeliaSim is recorded without a connection attempt. Sandbox controls remain declarative on the local backend and do not provide cgroups, containers, filesystem mounts, CPU/RAM/disk quotas, network enforcement, or subprocess isolation.
 

@@ -42,4 +42,4 @@
 - [x] Reconcile README, guides, specifications, architecture records, examples, and roadmap language.
 - [x] Refresh `code_review.md`, `workflow-context.md`, and a quantified remaining-work assessment for collaborators.
 - [x] Run documentation and repository integrity verification.
-- [ ] Commit documentation updates, push the branch, update pull request #8, and report the remaining work.
+- [x] Commit documentation updates, push the branch, create pull request #9 because PR #8 is merged, and report the remaining work.

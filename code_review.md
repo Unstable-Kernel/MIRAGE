@@ -21,6 +21,10 @@ The remaining primary delivery streams are a real verified read-only simulator t
 
 The documentation reconciliation verified every tracked Markdown file for local link targets and scanned the corpus for superseded implementation-status statements. The current full suite passes with 35 tests; Ruff, EIR schema consistency, CLI capability discovery, deterministic fixture inspection, secret scanning, no-em-dash scanning, and diff integrity checks passed. PR #8 is already merged, so the post-push review surface must be a new pull request.
 
+## Documentation reconciliation handoff
+
+The documentation reconciliation was committed as `3e2f56e` with the message `docs: reconcile runtime status and delivery roadmap`, pushed to `feat/iteration-1-foundation`, and submitted for review in [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9). The pull request contains the four unmerged execution and documentation commits, with no co-author trailer or AI attribution.
+
 ## Architecture summary
 
 ```mermaid
