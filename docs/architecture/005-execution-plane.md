@@ -18,11 +18,11 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The execution plane now contains URCP descriptors, a deterministic registry, an execution policy, structured execution requests/results, and replaceable backend adapters. Read-only operations are allowed by default, simulation requires explicit permission, and external or physical side effects are denied by default. Request timeout, cooperative cancellation, input/output budget checks, and policy provenance produce structured results. The local backend is deterministic test infrastructure. The CoppeliaSim inspection boundary reports unavailable without connecting or controlling a simulator until a verified transport is configured.
+The execution plane now contains URCP descriptors, a deterministic registry, an execution policy, structured execution requests/results, and replaceable backend adapters. Read-only operations are allowed by default, simulation requires explicit permission, and external or physical side effects are denied by default. Request timeout, cooperative cancellation, input/output budget checks, policy provenance, a declarative sandbox assessment, and checkpoint revalidation produce structured results. The local backend is deterministic test infrastructure. The CoppeliaSim inspection boundary reports unavailable without connecting or controlling a simulator until a verified transport is configured.
 
 ## Interfaces
 
-Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics. `CapabilityExecutor` resolves a descriptor, evaluates policy, resource budget, cancellation, and backend compatibility, invokes a backend, and returns an `ExecutionResult` with policy provenance. It never accepts arbitrary host commands.
+Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics. `CapabilityExecutor` resolves a descriptor, evaluates policy, resource budget, sandbox enforceability, cancellation, and backend compatibility, invokes a backend, and returns an `ExecutionResult` with policy provenance. `WorkflowCheckpoint.revalidate()` checks active policy and capability availability without resuming work. MIRAGE never accepts arbitrary host commands.
 
 ## Data flow
 

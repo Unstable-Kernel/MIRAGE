@@ -10,7 +10,7 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 
 | M2 | Model orchestrator and complete initial provider matrix | Complete with mocked provider contracts |
 
-| M3 | First simulator adapter and URCP execution slice | Execution contracts, deterministic local backend, audit ledger, checkpoints, timeout/cancellation budgets, and inspection-only boundary implemented; CoppeliaSim integration remains unverified |
+| M3 | First simulator adapter and URCP execution slice | Execution contracts, deterministic local backend, audit ledger, checkpoints, timeout/cancellation budgets, sandbox assessment, checkpoint revalidation, and inspection-only boundary implemented; CoppeliaSim integration remains unverified |
 
 | M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Planned |
 | M5 | Cross-simulator translation | Planned |
@@ -22,4 +22,4 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 Each milestone must preserve provenance, reproducibility, model independence, simulator independence, human control, and deterministic validation. Future hardware work requires explicit safety gates and must not be inferred from simulation success.
 
 ## Next highest-value slice
-The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, and hardening controls are now implemented. The next increment is a verified simulator inspection adapter with project metadata and state extraction, then a backend sandbox envelope. Simulation control and experiment execution remain out of scope until both are verified.
+The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, hardening controls, sandbox assessment, and checkpoint revalidation are now implemented. The next increment is a verified simulator inspection adapter with project metadata and state extraction, then an OS-enforced backend sandbox. Simulation control and experiment execution remain out of scope until both are verified.

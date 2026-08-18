@@ -17,3 +17,12 @@
 - [x] Add an inspection-only simulator adapter boundary with no control or actuation path.
 - [x] Add contract tests, CLI support, examples, and a core-feature roadmap.
 - [x] Run full verification, update workflow context and code review, commit, and report the iteration.
+
+## Sandbox and Checkpoint Revalidation Iteration
+
+- [x] Inspect execution, checkpoint, and policy models alongside supported isolation boundaries.
+- [x] Define the declarative sandbox envelope and checkpoint revalidation result contract.
+- [x] Implement sandbox preflight validation and checkpoint capability and policy revalidation.
+- [x] Add CLI inspection, contract tests, and safe fixture examples.
+- [x] Document current sandbox limitations, upcoming hardening work, and workflow continuation state.
+- [x] Run final verification, update code review, commit, and report the iteration.

@@ -1,4 +1,4 @@
-from .checkpoint import WorkflowCheckpoint
+from .checkpoint import CheckpointCapabilityRequirement, CheckpointRevalidationIssue, CheckpointRevalidationResult, WorkflowCheckpoint
 from .execution import (
     CancellationToken,
     CapabilityExecutor,
@@ -12,6 +12,7 @@ from .execution import (
     ResourceLimits,
 )
 from .ledger import ExecutionAuditRecord, ExecutionLedger
+from .sandbox import BackendSandboxCapabilities, SandboxAssessment, SandboxAssessmentStatus, SandboxEnvelope, assess_sandbox
 from .simulator_inspection import CoppeliaSimInspectionBackend, InspectionStatus, SimulatorInspection, default_inspection_backends
 from .urcp import CapabilityDescriptor, CapabilityRegistry, SecurityClass, default_registry
 
@@ -37,4 +38,12 @@ __all__ = [
     "ExecutionAuditRecord",
     "ExecutionLedger",
     "WorkflowCheckpoint",
+    "CheckpointCapabilityRequirement",
+    "CheckpointRevalidationIssue",
+    "CheckpointRevalidationResult",
+    "BackendSandboxCapabilities",
+    "SandboxAssessment",
+    "SandboxAssessmentStatus",
+    "SandboxEnvelope",
+    "assess_sandbox",
 ]

@@ -9,9 +9,10 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 | Priority | Feature | Intended outcome | Explicit boundary |
 |---|---|---|---|
 | Next | Verified simulator inspection adapter | Read simulator project metadata and state through a tested transport | No simulation control, experiment execution, or actuator path |
-| Next | Backend sandbox envelope | Enforce CPU, memory, disk, process, and network limits around non-cooperative work | No host command execution by default |
+| Current | Declarative sandbox envelope | Deny backend work when requested OS-level limits cannot be enforced and preserve the assessment as evidence | No claim of process isolation, cgroups, or container enforcement |
 | Next | Ledger integrity and retention | Add locking, retention, tamper-evident records, and storage migration | No claim of distributed coordination yet |
-| Near-term | Checkpoint revalidation | Revalidate policy, capability versions, and backend availability before manual resume | Never automatically execute on load |
+| Current | Checkpoint revalidation | Revalidate policy provenance, capability versions, and backend availability before manual resume review | Never automatically execute on load |
+| Next | Enforced backend sandbox | Add verified process, CPU, memory, disk, network, filesystem, and cleanup controls around non-cooperative work | No host command execution by default |
 | Near-term | EIR ingestion adapters | Translate controlled source formats into EIR with provenance | Do not weaken the canonical EIR contract for one source format |
 | Later | Goal to evaluate workflow | Connect goals, context, EIR, planning, simulation, evaluation, and report evidence | Keep model reasoning separate from deterministic validation |
 | Later | Cross-simulator translation | Map validated semantics across verified simulator adapters | No compatibility claim without adapter-specific tests |

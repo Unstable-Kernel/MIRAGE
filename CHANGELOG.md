@@ -25,6 +25,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Local Python wheel and source distribution verification, plus CI package safeguards that do not publish.
 - Policy provenance, request timeout, cooperative cancellation, and input/output resource-budget checks for URCP execution.
 - Inspection-only CoppeliaSim adapter contract that never connects or controls a simulator.
+- Declarative backend sandbox envelope assessment that denies unsupported OS-level resource restrictions.
+- Checkpoint revalidation for policy provenance, capability versions, and backend allow-lists without resume behavior.
 
 ### Not yet included
 

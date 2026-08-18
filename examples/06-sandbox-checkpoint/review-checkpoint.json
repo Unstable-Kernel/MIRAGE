@@ -1,0 +1,22 @@
+{
+  "workflow_id": "review-simulation-plan",
+  "revision": 2,
+  "stage": "awaiting-human-review",
+  "state": {
+    "goal": "Review a simulated model before any future execution"
+  },
+  "execution_ids": [],
+  "required_capabilities": [
+    {
+      "capability_id": "run_simulation",
+      "version": "0.1",
+      "backend": "local"
+    }
+  ],
+  "policy_provenance": {
+    "policy_id": "local-default",
+    "revision": "1",
+    "source": "local",
+    "approved_by": null
+  }
+}

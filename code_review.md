@@ -143,3 +143,38 @@ The next verified adapter slice should implement read-only simulator project met
 ## Updated verification
 
 The suite now passes with 26 tests. Ruff, EIR schema consistency, safe CLI inspection, explicit local execution with a timeout budget, secret-pattern scanning, tracked no-em-dash scanning, and `git diff --check` passed. No simulator connection, control operation, external side effect, physical actuation, package publication, or release upload occurred.
+
+## Sandbox and checkpoint revalidation iteration review
+
+The sandbox envelope implementation is deliberately declarative. A `SandboxEnvelope` describes CPU, memory, disk, process, network, filesystem, and subprocess restrictions. `BackendSandboxCapabilities` makes a backend's claimed enforcement explicit. MIRAGE compares the two before dispatch and denies work that requests operating-system-level restrictions the backend cannot enforce.
+
+```mermaid
+flowchart LR
+    POLICY[Execution policy] --> ENVELOPE[Sandbox envelope]
+    ENVELOPE --> CAPS[Backend sandbox capabilities]
+    CAPS --> ASSESS[Assessment]
+    ASSESS -->|denied| RESULT[Structured execution result]
+    ASSESS -->|declarative only| LOCAL[Deterministic local backend]
+    CHECKPOINT[Workflow checkpoint] --> REVALIDATE[Policy and capability revalidation]
+    REVALIDATE --> REVIEW[Manual review only]
+```
+
+| File | Safety responsibility |
+|---|---|
+| `src/mirage/runtime/sandbox.py` | Declared envelope, backend enforcement claims, and conservative assessment |
+| `src/mirage/runtime/execution.py` | Sandbox preflight denial and execution-result assessment metadata |
+| `src/mirage/runtime/checkpoint.py` | Non-executing policy and capability revalidation for manual resume review |
+| `tests/test_sandbox_checkpoint.py` | Declarative local outcome, unsupported resource denial, and checkpoint drift coverage |
+| `docs/guides/sandbox-checkpoint-revalidation.md` | User-facing boundary and safe CLI behavior |
+
+Checkpoint revalidation is correctly non-executing. It compares stored policy provenance, exact capability versions, policy permission, and explicit backend allow-lists before a checkpoint can enter a future human review flow. It never changes the checkpoint or invokes a backend.
+
+## Sandbox-specific risks and next step
+
+The implementation does not create an OS sandbox. The local backend has no cgroup, process supervisor, filesystem mount, network firewall, container runtime, CPU quota, memory limit, disk quota, GPU partition, subprocess interceptor, or forced cleanup. These restrictions are denied when requested instead of being represented as successful enforcement.
+
+The next safe implementation should add one verified read-only simulator metadata and state-extraction adapter with test fixtures and a documented transport. An enforced backend sandbox should follow only after the project has a suitable isolated runtime and an auditable OS-level policy enforcement design.
+
+## Updated verification
+
+The suite now passes with 30 tests. Ruff, EIR schema consistency, sandbox assessment CLI, denied sandbox budget CLI, checkpoint revalidation CLI for both denied and explicitly allowed cases, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No checkpoint was resumed, no process isolation was claimed, and no simulator connection or control operation occurred.

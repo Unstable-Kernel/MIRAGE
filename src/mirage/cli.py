@@ -11,7 +11,18 @@ import typer
 
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
-from .runtime import CapabilityExecutor, ExecutionLedger, ExecutionPolicy, ExecutionRequest, WorkflowCheckpoint, default_inspection_backends, default_registry
+from .runtime import (
+    BackendSandboxCapabilities,
+    CapabilityExecutor,
+    ExecutionLedger,
+    ExecutionPolicy,
+    ExecutionRequest,
+    SandboxEnvelope,
+    WorkflowCheckpoint,
+    assess_sandbox,
+    default_inspection_backends,
+    default_registry,
+)
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 
@@ -100,6 +111,30 @@ def simulator_inspect(backend: str = "coppeliasim", endpoint: str | None = None)
         typer.echo(json.dumps({"backend": backend, "status": "unavailable", "message": "inspection backend is not registered"}))
         raise typer.Exit(1)
     typer.echo(asyncio.run(inspector.inspect()).model_dump_json())
+
+
+@app.command("sandbox-assess")
+def sandbox_assess(
+    backend: str = "local",
+    max_memory_mb: int | None = None,
+    max_cpu_seconds: float | None = None,
+) -> None:
+    """Assess a declared sandbox envelope without attempting host-level isolation."""
+    envelope = SandboxEnvelope(max_memory_mb=max_memory_mb, max_cpu_seconds=max_cpu_seconds)
+    assessment = assess_sandbox(envelope, BackendSandboxCapabilities(backend=backend))
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value == "denied":
+        raise typer.Exit(1)
+
+
+@app.command("checkpoint-revalidate")
+def checkpoint_revalidate(file: Path, allow_simulation: bool = False, backend: str | None = None) -> None:
+    """Revalidate a checkpoint for manual review without resuming its workflow."""
+    policy = ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend} if backend else set())
+    result = WorkflowCheckpoint.load(file).revalidate(default_registry(), policy)
+    typer.echo(result.model_dump_json())
+    if not result.valid:
+        raise typer.Exit(1)
 
 
 @app.command("ledger-inspect")

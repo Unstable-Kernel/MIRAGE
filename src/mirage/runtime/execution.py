@@ -11,6 +11,7 @@ from typing import Any, Protocol
 
 from pydantic import BaseModel, Field
 
+from .sandbox import BackendSandboxCapabilities, SandboxAssessmentStatus, SandboxEnvelope, assess_sandbox
 from .urcp import CapabilityDescriptor, CapabilityRegistry, SecurityClass
 
 
@@ -48,6 +49,7 @@ class ExecutionPolicy(BaseModel):
     allowed_backends: set[str] = Field(default_factory=set)
     resource_limits: ResourceLimits = Field(default_factory=ResourceLimits)
     provenance: PolicyProvenance = Field(default_factory=PolicyProvenance)
+    sandbox: SandboxEnvelope = Field(default_factory=SandboxEnvelope)
 
     def permits(self, descriptor: CapabilityDescriptor) -> bool:
         if descriptor.security_class == SecurityClass.READ_ONLY:
@@ -102,6 +104,7 @@ class ExecutionResult(BaseModel):
 
 class CapabilityBackend(Protocol):
     name: str
+    sandbox_capabilities: BackendSandboxCapabilities
 
     async def execute(
         self,
@@ -113,6 +116,7 @@ class CapabilityBackend(Protocol):
 
 class LocalSimulationBackend:
     name = "local"
+    sandbox_capabilities = BackendSandboxCapabilities(backend=name)
 
     async def execute(
         self,
@@ -129,6 +133,7 @@ class CoppeliaSimBackend:
     """Explicit unavailable execution boundary, never a simulator control adapter."""
 
     name = "coppeliasim"
+    sandbox_capabilities = BackendSandboxCapabilities(backend=name)
 
     async def execute(
         self,
@@ -150,7 +155,12 @@ class CapabilityExecutor:
         self.ledger = ledger
 
     def _metadata(self, request: ExecutionRequest, **extra: Any) -> dict[str, Any]:
-        return {"policy_provenance": request.policy.provenance.model_dump(mode="json"), "resource_limits": request.policy.resource_limits.model_dump(mode="json"), **extra}
+        return {
+            "policy_provenance": request.policy.provenance.model_dump(mode="json"),
+            "resource_limits": request.policy.resource_limits.model_dump(mode="json"),
+            "sandbox_envelope": request.policy.sandbox.model_dump(mode="json"),
+            **extra,
+        }
 
     def _result(
         self,
@@ -203,6 +213,13 @@ class CapabilityExecutor:
         backend = self.backends.get(request.backend)
         if backend is None:
             return self._record(request, self._result(request, descriptor, ExecutionStatus.UNAVAILABLE, "backend is not registered"))
+        capabilities = getattr(backend, "sandbox_capabilities", BackendSandboxCapabilities(backend=request.backend))
+        assessment = assess_sandbox(request.policy.sandbox, capabilities)
+        if assessment.status == SandboxAssessmentStatus.DENIED:
+            return self._record(
+                request,
+                self._result(request, descriptor, ExecutionStatus.DENIED, assessment.message, sandbox_assessment=assessment.model_dump(mode="json")),
+            )
 
         execution_task = asyncio.create_task(backend.execute(descriptor, request.inputs, cancellation))
         cancellation_task = asyncio.create_task(cancellation.wait())
@@ -224,7 +241,17 @@ class CapabilityExecutor:
                 return self._record(request, self._result(request, descriptor, ExecutionStatus.FAILED, str(exc)))
             if limits.max_output_bytes is not None and _payload_size(outputs) > limits.max_output_bytes:
                 return self._record(request, self._result(request, descriptor, ExecutionStatus.FAILED, "output exceeds policy resource limit"))
-            return self._record(request, self._result(request, descriptor, ExecutionStatus.SUCCEEDED, "execution completed", outputs=outputs))
+            return self._record(
+                request,
+                self._result(
+                    request,
+                    descriptor,
+                    ExecutionStatus.SUCCEEDED,
+                    "execution completed",
+                    outputs=outputs,
+                    sandbox_assessment=assessment.model_dump(mode="json"),
+                ),
+            )
 
         if cancellation_task in done:
             execution_task.cancel()
