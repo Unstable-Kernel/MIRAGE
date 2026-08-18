@@ -42,7 +42,7 @@ markers = [
 ]
 
 [tool.ruff]
-line-length = 180
+line-length = 260
 target-version = "py311"
 
 [tool.ruff.lint]

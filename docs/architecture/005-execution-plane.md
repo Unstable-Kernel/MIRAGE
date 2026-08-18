@@ -1,4 +1,4 @@
-# 005 — Execution plane
+# 005 : Execution plane
 
 ## Goals
 
@@ -18,11 +18,11 @@ Inputs, outputs, failure modes, versions, and security assumptions must be expli
 
 ## Architecture
 
-The subsystem is a future modular service inside MIRAGE. Iteration 1 establishes documentation and adjacent contracts; implementation is scheduled by ROADMAP.md.
+The execution plane now contains URCP descriptors, a deterministic registry, an execution policy, structured execution requests/results, and replaceable backend adapters. Read-only operations are allowed by default, simulation requires explicit permission, and external or physical side effects are denied by default. The local backend is deterministic test infrastructure. The CoppeliaSim boundary reports unavailable until a verified transport is configured.
 
 ## Interfaces
 
-Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics.
+Public interfaces use versioned schemas, typed Python protocols, serialized artifacts, and structured diagnostics. `CapabilityExecutor` resolves a descriptor, evaluates policy and backend compatibility, invokes a backend, and returns an `ExecutionResult`. It never accepts arbitrary host commands.
 
 ## Data flow
 

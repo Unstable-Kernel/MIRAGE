@@ -1,4 +1,4 @@
-# 007 — Agent runtime
+# 007 : Agent runtime
 
 ## Goals
 

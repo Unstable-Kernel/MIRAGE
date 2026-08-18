@@ -2,52 +2,51 @@
 
 ## Task
 
-Continue MIRAGE after Iteration 1 by implementing EIR-backed Engineering State Graph primitives and a deterministic Universal Robotics Capability Protocol registry.
+Continue MIRAGE Iteration 2 with a safe execution-plane slice: policy-gated URCP execution contracts, a deterministic local simulation backend for tests, and a documented CoppeliaSim adapter boundary.
 
 ## Current status
 
-Implementation is complete and verified locally. The change is ready to commit on `feat/iteration-1-foundation`.
+Implementation and final verification are complete. The working tree is ready for a focused local commit on `feat/iteration-1-foundation`.
 
 ## Completed work
 
-- Added ESG models with project ID, revision, EIR payload, structured event history, duplicate-event protection, JSON persistence, and snapshot loading.
-- Added URCP capability descriptors with version, schemas, preconditions, postconditions, resources, side effects, failure modes, backend compatibility, determinism, streaming, cancellation, and security class.
-- Added deterministic capability registration, exact lookup, duplicate detection, backend filtering, security filtering, stable ordering, and a default declarative capability set.
-- Added CLI commands `esg-inspect` and `capabilities`.
-- Added ESG and URCP specifications, examples, tests, README updates, roadmap updates, changelog updates, and `code_review.md` at the end of the build as requested.
+The runtime now defines `ExecutionPolicy`, `ExecutionRequest`, `ExecutionResult`, `ExecutionStatus`, `CapabilityBackend`, and `CapabilityExecutor`. Read-only capabilities are allowed by default, simulation requires explicit permission, external side effects and physical actuation remain denied by default, and backend allow-lists are supported.
+
+`LocalSimulationBackend` provides deterministic contract-test behavior. `CoppeliaSimBackend` is an explicit adapter boundary that reports unavailable until a verified transport is configured. No simulator or hardware support is claimed by the boundary alone.
+
+The CLI includes `mirage execute`, with safe defaults and explicit `--allow-simulation` for local simulation. Documentation covers execution policy, adapter boundaries, safety limitations, examples, architecture, roadmap, and changelog. `code_review.md` was updated at the end of the build as requested.
 
 ## Changed files
 
-- `src/mirage/knowledge/esg.py`
-- `src/mirage/knowledge/__init__.py`
-- `src/mirage/runtime/urcp.py`
+- `src/mirage/runtime/execution.py`
 - `src/mirage/runtime/__init__.py`
 - `src/mirage/cli.py`
-- `tests/test_esg_urcp.py`
-- `specs/ESG/README.md`
+- `tests/test_execution.py`
+- `docs/guides/urcp-execution.md`
+- `docs/architecture/005-execution-plane.md`
 - `specs/URCP/README.md`
-- `examples/03-esg-urcp/state.json`
-- `examples/03-esg-urcp/README.md`
-- `ARCHITECTURE.md`
+- `examples/04-urcp-execution/README.md`
 - `README.md`
 - `ROADMAP.md`
 - `CHANGELOG.md`
 - `code_review.md`
+- `workflow-context.md`
+- Existing architecture docs were normalized to comply with the no-em-dash global rule.
 
 ## Verification
 
-- `13 passed` with pytest.
+- 16 tests passed.
 - Ruff passed for `src`, `tests`, and `scripts`.
 - EIR schema consistency check passed.
-- ESG CLI inspection passed.
-- URCP backend filtering passed.
+- Local execution CLI success path passed.
+- Secret-pattern scan passed.
+- Tracked no-em-dash documentation scan passed.
 - `git diff --check` passed.
-- Repository-wide em dash scan was performed.
 
 ## Known limitations
 
-ESG is currently an in-process JSON snapshot model. URCP is declarative and has no execution engine, policy enforcement, adapter lifecycle, or simulator support. The default registry's simulator names are declarations for future filtering only.
+The local backend is not a physics simulator. CoppeliaSim integration is unavailable and unverified. No external side effects or physical actuation are exposed. Future work should add a persistent execution ledger, request IDs, audit events, timeout and cancellation semantics, resource limits, and a verified simulator adapter.
 
 ## Commit state
 
-The working tree contains the next iteration changes and is not yet committed. The next action is to inspect the diff, create a focused commit, and report the commit and verification results. Push only if the user explicitly requests synchronization.
+The next action is to inspect the final diff and create a focused commit. Push only on explicit user request.

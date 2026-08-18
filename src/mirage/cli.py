@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from collections import Counter
@@ -10,7 +11,7 @@ import typer
 
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
-from .runtime import default_registry
+from .runtime import CapabilityExecutor, ExecutionPolicy, ExecutionRequest, default_registry
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 
@@ -67,6 +68,20 @@ def capabilities(backend: str | None = None) -> None:
     for descriptor in default_registry().list(backend=backend):
         backends = ",".join(descriptor.compatible_backends) or "none"
         typer.echo(f"{descriptor.capability_id}@{descriptor.version} [{descriptor.security_class.value}] backends={backends}")
+
+
+@app.command("execute")
+def execute(capability_id: str, backend: str = "local", allow_simulation: bool = False) -> None:
+    """Execute only through the policy-gated local runtime; no host commands are accepted."""
+    request = ExecutionRequest(
+        capability_id=capability_id,
+        backend=backend,
+        policy=ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend}),
+    )
+    result = asyncio.run(CapabilityExecutor(default_registry()).execute(request))
+    typer.echo(result.model_dump_json())
+    if result.status.value != "succeeded":
+        raise typer.Exit(1)
 
 
 @app.command()

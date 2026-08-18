@@ -2,7 +2,7 @@
 
 All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows independent versioning for EIR, runtime, and adapters.
 
-## [Unreleased] — Iteration 1
+## [Unreleased] : Iteration 1
 
 ### Added
 
@@ -14,6 +14,9 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Mocked provider contract tests and optional live smoke-test harness.
 - EIR-backed Engineering State Graph snapshots with revisioned event history.
 - Declarative URCP capability descriptors and deterministic registry filtering.
+- Policy-gated URCP execution requests and structured execution results.
+- Deterministic local simulation backend for tests and development.
+- Explicit CoppeliaSim adapter boundary that reports unavailable until verified and configured.
 
 ### Not yet included
 

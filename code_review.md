@@ -2,7 +2,7 @@
 
 ## Review scope
 
-This review covers the ESG and URCP vertical slice added after Iteration 1. The reviewed areas are the EIR-backed Engineering State Graph, the declarative URCP capability registry, CLI inspection commands, specifications, examples, and tests.
+This review covers the ESG and URCP vertical slice added after Iteration 1. The reviewed areas are the EIR-backed Engineering State Graph, the declarative URCP capability registry, policy-gated execution, backend boundaries, CLI commands, specifications, examples, and tests.
 
 ## Architecture summary
 
@@ -13,7 +13,9 @@ flowchart TD
     URCP[URCP capability descriptors] --> REG[Deterministic registry]
     REG --> CLI[CLI discovery commands]
     ESG --> CLI
-    REG -. future adapter runtime .-> SIM[Simulators and hardware]
+    REG --> EXEC[Policy-gated executor]
+    EXEC --> LOCAL[Deterministic local backend]
+    EXEC -. explicit boundary .-> SIM[CoppeliaSim, unavailable until verified]
 ```
 
 The implementation keeps the correct separation between semantic state and execution declarations. ESG stores current project state around an EIR document, while URCP describes capabilities without executing them. This is appropriate for the current milestone because it creates testable boundaries before simulator integration.
@@ -24,6 +26,10 @@ The implementation keeps the correct separation between semantic state and execu
 |---|---|
 | `src/mirage/knowledge/esg.py` | ESG event model, revision tracking, duplicate-event protection, JSON persistence |
 | `src/mirage/runtime/urcp.py` | Capability descriptor, security classification, registry, default declarations |
+| `src/mirage/runtime/execution.py` | Execution policy, request/result types, executor, local backend, CoppeliaSim boundary |
+| `docs/guides/urcp-execution.md` | Execution policy and backend behavior |
+| `tests/test_execution.py` | Policy denial, deterministic local execution, and unavailable backend coverage |
+| `examples/04-urcp-execution/` | Safe CLI execution examples |
 | `src/mirage/cli.py` | `esg-inspect` and `capabilities` commands |
 | `specs/ESG/README.md` | ESG invariants and state-history boundary |
 | `specs/URCP/README.md` | URCP descriptor and registry contract |
@@ -42,13 +48,13 @@ The CLI does not imply unsupported execution. Listing `run_simulation` declares 
 
 The ESG is currently an in-process snapshot model. A future persistence layer must define concurrency, transactional updates, event replay, corruption recovery, and migration. The current event model does not yet enforce that an event's EIR references exist, so future versions should add reference validation against the active document.
 
-URCP currently registers descriptors but has no executor, policy engine, adapter lifecycle, capability negotiation, or structured execution result. Those pieces must be implemented before `run_simulation`, external side effects, or physical actuation are exposed. Security classes are descriptive at this stage and are not yet enforcement mechanisms.
+The execution runtime now provides policy enforcement, structured results, and backend dispatch. It still has no persistent execution ledger, adapter lifecycle management, capability negotiation, resource isolation, timeout cancellation, or external policy service. Security classes are enforced by the local executor but still require a stronger policy system before external side effects or physical actuation are exposed.
 
-The default registry includes simulator names for planning and filtering only. It must not be treated as simulator support. A simulator adapter should be added only with a concrete contract test, environment detection, deterministic fixtures where possible, and explicit limitations.
+The default registry includes simulator names for planning and filtering only. The CoppeliaSim boundary intentionally reports unavailable and must not be treated as simulator support. A verified adapter should be added only with a concrete transport, environment detection, capability coverage, deterministic fixtures where possible, resource and timeout policy, and explicit limitations.
 
 ## Tests and verification
 
-The current verification suite passes with 13 tests. Ruff passes for source, tests, and scripts. The EIR schema consistency check passes. The ESG CLI snapshot inspection and URCP backend filtering examples pass. Repository diff checks pass.
+The current verification suite passes with 16 tests. Ruff passes for source, tests, and scripts. The EIR schema consistency check passes. ESG CLI snapshot inspection, URCP backend filtering, policy denial, deterministic local execution, and unavailable CoppeliaSim behavior pass. Repository diff checks pass.
 
 ## Collaborator guidance
 
@@ -56,4 +62,4 @@ Keep EIR, ESG, and URCP versioned independently. Do not add simulator-specific f
 
 ## Recommended next slice
 
-Implement a capability execution interface that accepts a validated descriptor and a policy context, returns a structured result, and refuses all non-read-only execution by default. Then add one simulator adapter behind that interface, starting in a controlled simulation-only environment.
+Implement a persistent execution ledger with request IDs, audit events, timeout/cancellation semantics, resource limits, and policy provenance. Then verify one simulator adapter, starting with project inspection and state extraction before simulation control or experiment execution.

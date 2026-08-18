@@ -1,4 +1,4 @@
-# 000 — Architecture Overview
+# 000 : Architecture Overview
 
 ## Goals
 

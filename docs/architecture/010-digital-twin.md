@@ -1,4 +1,4 @@
-# 010 — Digital twin
+# 010 : Digital twin
 
 ## Goals
 

@@ -1,4 +1,4 @@
-# 004 — Knowledge plane
+# 004 : Knowledge plane
 
 ## Goals
 
