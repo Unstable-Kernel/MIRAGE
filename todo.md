@@ -76,3 +76,8 @@
 - [x] Implement dispatch eligibility assessment that always requires verified transport and enforced sandbox prerequisites.
 - [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates for the guarded approval slice.
 - [x] Run complete verification, update code review and workflow context, commit, and report the iteration.
+
+## Remote Delivery and Pull Request Update
+
+- [ ] Push the eight verified local commits to `origin/feat/iteration-1-foundation`.
+- [ ] Confirm PR #9 reflects the updated branch and report the remote handoff.
