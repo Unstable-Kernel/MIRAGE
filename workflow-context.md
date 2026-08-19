@@ -6,7 +6,7 @@ Complete the parallel foundation iteration for transport verification, sandbox e
 
 ## Current status
 
-The combined implementation is verified and ready for a focused local commit on `feat/iteration-1-foundation`. The branch already has [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) open against `main`. Do not push the new commit or publish any package without an explicit user request.
+The combined implementation is committed locally as `44b6a3b` on `feat/iteration-1-foundation`. The branch is one commit ahead of its remote and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) is still open against `main`. Do not push the new commit or publish any package without an explicit user request.
 
 ## Completed work
 
@@ -54,4 +54,4 @@ The M4 foundation does not plan through a model, execute capabilities, resume ch
 
 ## Next recommended action
 
-Inspect the final diff and create a focused local commit. Push only on explicit user request. The next implementation priority is an authorized, independently verified real read-only simulator transport, followed by a real OS-enforced backend sandbox. The M4 workflow should add deterministic EIR-to-plan validation and evidence contracts only after those safety prerequisites are established.
+Await an explicit request before pushing `44b6a3b` to update PR #9. The next implementation priority is an authorized, independently verified real read-only simulator transport, followed by a real OS-enforced backend sandbox. The M4 workflow should add deterministic EIR-to-plan validation and evidence contracts only after those safety prerequisites are established.
