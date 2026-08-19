@@ -267,3 +267,5 @@ The integrity fields are admission requirements for a future verified claim, not
 ## Deterministic workflow verification
 
 The full suite passes with 53 tests. Ruff, EIR schema consistency, Markdown local-link checks, EIR-bound planning and evidence CLI inspection, capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The deterministic workflow and verification-integrity implementation is committed locally as `3a3a819` with the message `feat: add deterministic workflow evidence review`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.

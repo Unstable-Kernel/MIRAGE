@@ -6,7 +6,7 @@ Complete the deterministic workflow and verification-integrity iteration for MIR
 
 ## Current status
 
-The iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. The branch already has two unpushed commits from the prior parallel foundation iteration and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
+The iteration is committed locally as `3a3a819` on `feat/iteration-1-foundation`. The branch is three commits ahead of its remote and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
@@ -49,4 +49,4 @@ The CoppeliaSim transport remains unverified and non-connecting. The local sandb
 
 ## Next recommended action
 
-Inspect the final diff, create a focused local commit, and wait for an explicit push request. The next build phase should add controlled context inputs and real evidence adapters only after an authorized live read-only transport and real OS-enforced sandbox are independently verified.
+Await an explicit request before pushing the three local commits to update PR #9. The next build phase should add controlled context inputs and real evidence adapters only after an authorized live read-only transport and real OS-enforced sandbox are independently verified.
