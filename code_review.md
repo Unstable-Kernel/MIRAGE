@@ -309,3 +309,5 @@ No identity provider, signature verifier, durable audit store, notification syst
 ## Guarded approval verification
 
 The full suite passes with 64 tests. Ruff, EIR schema consistency, Markdown local-link checks, approval-chain inspection, expected ineligible dispatch eligibility output, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The guarded approval and advisory eligibility implementation is committed locally as `fc796df` with the message `feat: add guarded approval eligibility`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.

@@ -6,7 +6,7 @@ Complete the guarded approval and advisory dispatch eligibility iteration for MI
 
 ## Current status
 
-The iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. The branch already has six unpushed commits from the preceding safety and workflow iterations, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
+The iteration is committed locally as `fc796df` on `feat/iteration-1-foundation`. The branch is seven commits ahead of its remote and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
@@ -45,4 +45,4 @@ The live transport and OS-enforced sandbox prerequisites remain unavailable. The
 
 ## Next recommended action
 
-Inspect the final diff, create a focused local commit, and wait for an explicit push request. The next locally safe M4 slice is an authenticated approval-persistence interface definition with no credential handling or execution path. It must remain advisory until verified live transport and an enforced sandbox exist.
+Await an explicit request before pushing the seven local commits to update PR #9. The next locally safe M4 slice is an authenticated approval-persistence interface definition with no credential handling or execution path. It must remain advisory until verified live transport and an enforced sandbox exist.
