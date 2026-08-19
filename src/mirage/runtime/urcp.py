@@ -127,4 +127,20 @@ def default_registry() -> CapabilityRegistry:
             security_class=SecurityClass.READ_ONLY,
             postconditions=["evidence remains review-only", "human approval remains required"],
         ),
+        CapabilityDescriptor(
+            capability_id="inspect_workflow_context",
+            version="0.1",
+            description="Validate a redacted workflow context bundle against a deterministic plan without retrieval or execution.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["context remains reference-only", "human approval remains required"],
+        ),
+        CapabilityDescriptor(
+            capability_id="assess_review_trace",
+            version="0.1",
+            description="Assess provenance review trace completeness without changing workflow state or executing work.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["trace remains review-only", "human approval remains required"],
+        ),
     ])

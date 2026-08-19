@@ -25,9 +25,13 @@ from .runtime import (
     SandboxEnvelope,
     TransportVerificationEvidence,
     WorkflowCheckpoint,
+    WorkflowContextBundle,
+    WorkflowReviewTrace,
     assess_evaluation_evidence,
+    assess_review_trace,
     assess_sandbox,
     assess_transport,
+    assess_workflow_context,
     build_deterministic_plan,
     default_inspection_backends,
     default_registry,
@@ -207,6 +211,36 @@ def goal_workflow_evidence(workflow_file: Path, eir_file: Path, evidence_file: P
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
     evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
     assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("workflow-context-inspect")
+def workflow_context_inspect(workflow_file: Path, eir_file: Path, context_file: Path) -> None:
+    """Validate a local redacted context bundle against a deterministic workflow plan."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    assessment = assess_workflow_context(context, workflow, plan, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("review-trace-assess")
+def review_trace_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path) -> None:
+    """Assess a complete local provenance trace without changing workflow state."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(context, workflow, plan, policy)
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
         raise typer.Exit(1)

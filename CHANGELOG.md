@@ -36,6 +36,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Deterministic EIR-to-plan validation and evaluation-evidence assessment contracts that remain review-only and never invoke a model or backend.
 - `assess_workflow_evidence@0.1`, `mirage goal-workflow-plan`, and `mirage goal-workflow-evidence` for local workflow inspection.
 - Stronger integrity requirements for live transport and verified sandbox evidence claims.
+- Deterministic redacted context bundles and policy-bound provenance review traces for the M4 human-review foundation.
+- `inspect_workflow_context@0.1`, `assess_review_trace@0.1`, `mirage workflow-context-inspect`, and `mirage review-trace-assess` for local review-only inspection.
 
 ### Changed
 

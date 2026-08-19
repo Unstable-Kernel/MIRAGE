@@ -1,4 +1,12 @@
 from .checkpoint import CheckpointCapabilityRequirement, CheckpointRevalidationIssue, CheckpointRevalidationResult, WorkflowCheckpoint
+from .context_review import (
+    ContextBundleStatus,
+    ContextItemKind,
+    WorkflowContextAssessment,
+    WorkflowContextBundle,
+    WorkflowContextItem,
+    assess_workflow_context,
+)
 from .execution import (
     CancellationToken,
     CapabilityExecutor,
@@ -13,6 +21,13 @@ from .execution import (
 )
 from .goal_workflow import GoalEvaluationCriterion, GoalToEvaluateWorkflow, GoalWorkflowReview, GoalWorkflowStatus, GoalWorkflowStep
 from .ledger import ExecutionAuditRecord, ExecutionLedger
+from .review_trace import (
+    ReviewTraceAssessment,
+    ReviewTraceEvent,
+    ReviewTraceEventType,
+    WorkflowReviewTrace,
+    assess_review_trace,
+)
 from .sandbox import (
     BackendSandboxCapabilities,
     SandboxAssessment,
@@ -63,12 +78,17 @@ __all__ = [
     "default_registry",
     "CapabilityExecutor",
     "CancellationToken",
+    "ContextBundleStatus",
+    "ContextItemKind",
     "ExecutionPolicy",
     "ExecutionRequest",
     "ExecutionResult",
     "ExecutionStatus",
     "PolicyProvenance",
     "ResourceLimits",
+    "ReviewTraceAssessment",
+    "ReviewTraceEvent",
+    "ReviewTraceEventType",
     "CoppeliaSimBackend",
     "CoppeliaSimReadOnlyAdapter",
     "LocalSimulationBackend",
@@ -91,6 +111,9 @@ __all__ = [
     "GoalWorkflowStatus",
     "GoalWorkflowStep",
     "WorkflowCheckpoint",
+    "WorkflowContextAssessment",
+    "WorkflowContextBundle",
+    "WorkflowContextItem",
     "CheckpointCapabilityRequirement",
     "CheckpointRevalidationIssue",
     "CheckpointRevalidationResult",
@@ -115,7 +138,10 @@ __all__ = [
     "WorkflowEvidenceAssessment",
     "WorkflowEvidenceStatus",
     "WorkflowPlanStatus",
+    "WorkflowReviewTrace",
     "WorkflowValidationIssue",
     "assess_evaluation_evidence",
+    "assess_review_trace",
     "build_deterministic_plan",
+    "assess_workflow_context",
 ]

@@ -60,3 +60,11 @@
 - [x] Implement deterministic planning and evidence assessment primitives with no model or backend invocation.
 - [x] Integrate policy review, contract tests, CLI inspection, fixtures, examples, and documentation.
 - [x] Run full verification, update code review and workflow context, commit, and report the iteration.
+
+## Parallel Context and Review Trace Iteration
+
+- [x] Define deterministic context contracts, provenance review records, and review-trace safety boundaries.
+- [x] Implement context bundles and provenance review records without model, backend, or external invocation.
+- [x] Integrate trace completeness checks with workflow policy and evidence review.
+- [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and report the iteration.

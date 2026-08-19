@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is PR #9 plus the unpushed deterministic workflow and verification-integrity work. The repository has 53 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow and evidence review primitives.
+The current baseline is PR #9 plus the unpushed deterministic workflow, context, and review-trace work. The repository has 59 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, and provenance review primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -19,6 +19,7 @@ The current baseline is PR #9 plus the unpushed deterministic workflow and verif
 | Sandbox evidence | OS envelope claims require matching verified evidence | No real local cgroup, container, mount, firewall, or process isolation |
 | M4 workflow foundation | Goal, bounded steps, criteria, checkpoint, and manual revalidation | No model planning, execution, evaluation, or report pipeline |
 | Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
+| Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -269,3 +270,21 @@ The integrity fields are admission requirements for a future verified claim, not
 The full suite passes with 53 tests. Ruff, EIR schema consistency, Markdown local-link checks, EIR-bound planning and evidence CLI inspection, capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
 
 The deterministic workflow and verification-integrity implementation is committed locally as `3a3a819` with the message `feat: add deterministic workflow evidence review`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Context and review-trace iteration review
+
+The context and trace contracts complete another locally verifiable M4 foundation. A context bundle is restricted to identifiers, redacted references, digests, source-node bindings, and observations. A review trace is restricted to reference and digest records for four required stages. Both are validated against the workflow, plan, evidence status, and active policy provenance.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/context_review.py` | Context bundle validation rejects workflow, EIR, policy, and source-node drift without retrieving data |
+| `src/mirage/runtime/review_trace.py` | Trace assessment requires context, plan, evidence, and human-review stages while preserving `execution_permitted: false` |
+| `src/mirage/cli.py` | Context and trace commands parse local artifacts only and do not mutate workflow state |
+| `examples/10-context-review/` | Provides a redacted fixture context and complete provenance trace for deterministic inspection |
+| `tests/test_context_review.py` and `tests/test_review_trace.py` | Cover ready and invalid outcomes for source binding and policy-provenance drift |
+
+No arbitrary content ingestion, URI retrieval, prompt construction, model invocation, capability execution, checkpoint resume, human approval mutation, simulator transport, sandbox enforcement, external side effect, or physical actuation was introduced. The context model is deliberately an integrity boundary, not a general retrieval or autonomous-agent subsystem.
+
+## Context iteration verification
+
+The full suite passes with 59 tests. Ruff, EIR schema consistency, Markdown local-link checks, local context and trace CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.

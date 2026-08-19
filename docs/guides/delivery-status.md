@@ -23,7 +23,7 @@ flowchart LR
 | M1, EIR 0.1 | Complete | Pydantic schema, JSON Schema export, JSON/YAML validation, deterministic CLI |
 | M2, provider matrix | Complete with mocked contracts | Typed adapter protocol and six explicit provider adapters, optional live smoke harness |
 | M3, bounded execution foundation | Partially complete | URCP, policy runtime, ledger, checkpoint revalidation, sandbox assessment, fixture-backed read-only adapter, transport evidence, and sandbox-evidence contracts |
-| M4, goal-to-evaluate workflow | Foundation implemented | Bounded review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, and evidence assessment; no planning model or execution pipeline |
+| M4, goal-to-evaluate workflow | Foundation implemented | Bounded review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context bundle, and review trace; no planning model or execution pipeline |
 | M5 through M7 | Planned | No implementation claim |
 
 ## What remains
@@ -34,7 +34,7 @@ The roadmap contains **eight milestone rows**. **Three are complete**, **two hav
 |---|---|---|
 | 1 | Verified real read-only simulator transport | The manifest and fixture evidence exist, but CoppeliaSim remains non-connecting and unavailable | Authorized endpoint, restricted client, authentication boundary, observed versions, timeout cleanup, independent fixture corpus, and adversarial tests |
 | 2 | Enforced backend sandbox | Evidence contracts exist, but the local assessment is declarative and does not enforce OS-level limits | Auditable process, filesystem, network, CPU, memory, disk, and cleanup controls with adversarial tests |
-| 3 | M4 goal-to-evaluate workflow | Review-only goal, EIR-bound steps, criteria, checkpoint, deterministic plan, and evidence assessment exist, but no integrated engineering workflow exists | Context inputs, real evidence collection, policy-bound evaluation, report artifacts, approval transitions, and integration tests |
+| 3 | M4 goal-to-evaluate workflow | Review-only goal, EIR-bound steps, criteria, checkpoint, deterministic plan, evidence assessment, redacted context bundle, and review trace exist, but no integrated engineering workflow exists | Controlled context inputs, real evidence collection, policy-bound evaluation, report artifacts, approval transitions, and integration tests |
 | 4 | M5 cross-simulator translation | No verified semantic mapping exists between simulator backends | Adapter-specific mapping contracts, compatibility matrix, fixture and regression coverage |
 | 5 | M6 research reproduction | No controlled research artifact ingestion or reproducibility workflow exists | Provenance model, isolated environments, artifact validation, retention, and review gates |
 | 6 | M7 hypothesis and optimization | No autonomous hypothesis, experiment selection, diagnosis, or optimization runtime exists | Bounded objective model, safety policy, evidence provenance, evaluation, and human review controls |
