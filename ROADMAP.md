@@ -12,7 +12,7 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 
 | M3 | First simulator adapter and URCP execution slice | Execution contracts, deterministic local backend, audit ledger, checkpoints, timeout/cancellation budgets, sandbox assessment, checkpoint revalidation, fixture-backed read-only metadata/state extraction, transport evidence, and sandbox enforcement-evidence contracts implemented; CoppeliaSim transport, real OS isolation, and simulator control remain unverified |
 
-| M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Review-only goal, bounded steps, criteria, policy-bound checkpoint, and manual revalidation foundation implemented; context, planning, execution, evaluation, and report pipeline remain planned |
+| M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, and evidence assessment foundation implemented; context, planning model, execution, policy-bound evaluation, and report pipeline remain planned |
 | M5 | Cross-simulator translation | Planned |
 | M6 | Research reproduction pipeline | Planned |
 | M7 | Hypothesis generation, experiment selection, diagnosis, optimization | Planned |

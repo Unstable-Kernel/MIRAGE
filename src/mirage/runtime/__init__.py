@@ -44,6 +44,17 @@ from .transport_verification import (
     coppeliasim_zmq_read_only_manifest,
 )
 from .urcp import CapabilityDescriptor, CapabilityRegistry, SecurityClass, default_registry
+from .workflow_evidence import (
+    DeterministicWorkflowPlan,
+    EvaluationEvidence,
+    EvaluationEvidenceClass,
+    WorkflowEvidenceAssessment,
+    WorkflowEvidenceStatus,
+    WorkflowPlanStatus,
+    WorkflowValidationIssue,
+    assess_evaluation_evidence,
+    build_deterministic_plan,
+)
 
 __all__ = [
     "CapabilityDescriptor",
@@ -98,4 +109,13 @@ __all__ = [
     "TransportVerificationStatus",
     "assess_transport",
     "coppeliasim_zmq_read_only_manifest",
+    "DeterministicWorkflowPlan",
+    "EvaluationEvidence",
+    "EvaluationEvidenceClass",
+    "WorkflowEvidenceAssessment",
+    "WorkflowEvidenceStatus",
+    "WorkflowPlanStatus",
+    "WorkflowValidationIssue",
+    "assess_evaluation_evidence",
+    "build_deterministic_plan",
 ]

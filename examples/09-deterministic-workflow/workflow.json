@@ -1,0 +1,52 @@
+{
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "goal": "Prepare a reviewable plan for safe quadrotor inspection analysis.",
+  "eir_document_id": "quadrotor-inspection",
+  "version": "0.1",
+  "steps": [
+    {
+      "step_id": "inspect-robot",
+      "summary": "Inspect the declared quadrotor robot semantics.",
+      "capability": {
+        "capability_id": "inspect_model",
+        "version": "0.1",
+        "backend": "generic"
+      },
+      "source_node_ids": [
+        "robot.quadrotor"
+      ],
+      "expected_evidence": [
+        "validated robot node"
+      ],
+      "requires_human_approval": true
+    },
+    {
+      "step_id": "inspect-objective",
+      "summary": "Inspect the declared inspection objective semantics.",
+      "capability": {
+        "capability_id": "inspect_model",
+        "version": "0.1",
+        "backend": "generic"
+      },
+      "source_node_ids": [
+        "objective.inspect"
+      ],
+      "expected_evidence": [
+        "validated objective node"
+      ],
+      "requires_human_approval": true
+    }
+  ],
+  "evaluation_criteria": [
+    {
+      "criterion_id": "robot-identified",
+      "description": "The proposed workflow cites the validated quadrotor robot node.",
+      "evidence_required": true
+    },
+    {
+      "criterion_id": "objective-identified",
+      "description": "The proposed workflow cites the validated inspection objective node.",
+      "evidence_required": true
+    }
+  ]
+}

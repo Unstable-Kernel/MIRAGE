@@ -27,6 +27,7 @@ class GoalWorkflowStep(BaseModel):
     step_id: str = Field(min_length=1)
     summary: str = Field(min_length=1)
     capability: CheckpointCapabilityRequirement
+    source_node_ids: set[str] = Field(min_length=1)
     expected_evidence: list[str] = Field(min_length=1)
     requires_human_approval: bool = True
 

@@ -2,7 +2,7 @@
 
 ## Current core surface
 
-MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, review-only M4 workflow primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
+MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, EIR-bound M4 workflow and evidence review primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
 
 ## Upcoming core features
 
@@ -17,6 +17,7 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 | Next | Enforced backend sandbox | Add verified process, CPU, memory, disk, network, filesystem, and cleanup controls around non-cooperative work | No host command execution by default |
 | Near-term | EIR ingestion adapters | Translate controlled source formats into EIR with provenance | Do not weaken the canonical EIR contract for one source format |
 | Current | Goal-to-evaluate workflow review foundation | Preserve a bounded goal, proposed steps, criteria, policy-bound checkpoint, and manual revalidation result | No provider planning, automatic resume, execution, evaluation, or report generation |
+| Current | Deterministic EIR-to-plan and evidence assessment | Validate planned source nodes and criterion evidence against EIR without a model or backend | No engineering correctness judgment, metric execution, or automatic approval |
 | Later | Goal-to-evaluate workflow | Connect goals, context, EIR, planning, simulation, evaluation, and report evidence | Keep model reasoning separate from deterministic validation |
 | Later | Cross-simulator translation | Map validated semantics across verified simulator adapters | No compatibility claim without adapter-specific tests |
 | Later | Research reproduction pipeline | Capture papers, artifacts, environments, and evidence for reproducible studies | No autonomous paper execution without sandboxing and review |

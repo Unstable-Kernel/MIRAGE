@@ -33,6 +33,9 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Sandbox enforcement-evidence contracts that reject OS-enforced envelope claims without matching declared controls and verified evidence.
 - Bounded goal-to-evaluate workflow review contracts, `review_goal_workflow@0.1`, and a human-review checkpoint that never executes or resumes work.
 - `mirage transport-assess` and `mirage goal-workflow-review` for deterministic local contract inspection.
+- Deterministic EIR-to-plan validation and evaluation-evidence assessment contracts that remain review-only and never invoke a model or backend.
+- `assess_workflow_evidence@0.1`, `mirage goal-workflow-plan`, and `mirage goal-workflow-evidence` for local workflow inspection.
+- Stronger integrity requirements for live transport and verified sandbox evidence claims.
 
 ### Changed
 

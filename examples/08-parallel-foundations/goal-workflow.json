@@ -12,6 +12,9 @@
         "version": "0.1",
         "backend": "fixture"
       },
+      "source_node_ids": [
+        "fixture.object"
+      ],
       "expected_evidence": [
         "bounded state snapshot",
         "read-only transport assessment"

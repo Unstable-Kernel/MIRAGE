@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is PR #9 plus the verified parallel foundation work. The repository has 45 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and review-only M4 workflow primitives.
+The current baseline is PR #9 plus the unpushed deterministic workflow and verification-integrity work. The repository has 53 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow and evidence review primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -18,6 +18,7 @@ The current baseline is PR #9 plus the verified parallel foundation work. The re
 | Transport verification | Versioned manifest and fixture evidence assessment | No live CoppeliaSim verification or connection |
 | Sandbox evidence | OS envelope claims require matching verified evidence | No real local cgroup, container, mount, firewall, or process isolation |
 | M4 workflow foundation | Goal, bounded steps, criteria, checkpoint, and manual revalidation | No model planning, execution, evaluation, or report pipeline |
+| Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -247,3 +248,22 @@ The M4 review model remains human-gated. It can reject unavailable or policy-den
 The full suite passes with 45 tests. Ruff, EIR schema consistency, Markdown local-link checks, capability discovery, deterministic transport assessment, goal-workflow review, unavailable CoppeliaSim CLI behavior, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, external side effect, physical actuation, checkpoint resume, OS-level isolation, package publication, or branch push occurred during this iteration.
 
 The parallel foundation implementation is committed locally as `44b6a3b` with the message `feat: add parallel safety foundations`. It contains no co-author trailer or AI attribution. The commit is intentionally not pushed because the user has not requested a branch update for this iteration.
+
+## Deterministic workflow and verification-integrity review
+
+`workflow_evidence.py` separates deterministic reference validation from engineering judgment. It first confirms that a workflow identifies the supplied EIR document and that every step cites known EIR nodes. It then assesses whether declared evidence covers each required criterion from a source node included in the plan. Both artifacts retain `execution_permitted: false`.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/workflow_evidence.py` | EIR-to-plan and evidence assessment are deterministic, typed, and non-executing |
+| `src/mirage/runtime/goal_workflow.py` | Each review step now requires declared source-node identifiers |
+| `src/mirage/runtime/transport_verification.py` | Live verification cannot be represented without authorization, version, verifier, transcript digest, and cleanup evidence |
+| `src/mirage/runtime/sandbox.py` | Verified evidence cannot be represented without digest, environment fingerprint, verifier, and controls |
+| `src/mirage/cli.py` | Planning and evidence commands parse local files only and never call a provider or backend |
+| `examples/09-deterministic-workflow/` | Canonical EIR-bound plan and evidence fixture for manual review |
+
+The integrity fields are admission requirements for a future verified claim, not fabricated evidence. No live simulator transport, actual sandbox enforcement, model call, capability execution, report generation, external side effect, physical actuation, or automatic approval has been added.
+
+## Deterministic workflow verification
+
+The full suite passes with 53 tests. Ruff, EIR schema consistency, Markdown local-link checks, EIR-bound planning and evidence CLI inspection, capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.

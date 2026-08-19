@@ -24,6 +24,7 @@ def make_workflow() -> GoalToEvaluateWorkflow:
                     version="0.1",
                     backend="fixture",
                 ),
+                source_node_ids={"fixture.object"},
                 expected_evidence=["state snapshot"],
             )
         ],

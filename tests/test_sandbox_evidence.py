@@ -30,6 +30,7 @@ def test_verified_evidence_is_required_for_an_os_enforced_budget():
             verified_controls={SandboxControl.MEMORY_LIMIT, SandboxControl.READ_ONLY_FILESYSTEM},
             verifier="contract-test",
             environment_fingerprint="sha256:isolated-fixture",
+            evidence_digest="sha256:isolated-evidence",
         ),
     )
 
@@ -65,6 +66,7 @@ def test_executor_accepts_a_budget_only_when_backend_evidence_covers_it():
                 verified_controls={SandboxControl.MEMORY_LIMIT, SandboxControl.READ_ONLY_FILESYSTEM},
                 verifier="contract-test",
                 environment_fingerprint="sha256:local-contract",
+                evidence_digest="sha256:local-contract-evidence",
             ),
         )
 

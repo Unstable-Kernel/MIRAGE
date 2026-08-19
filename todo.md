@@ -52,3 +52,11 @@
 - [x] Integrate cross-slice policy provenance, cancellation, timeout, and no-control evidence.
 - [x] Add contract tests, CLI inspection surfaces, examples, documentation, and roadmap updates for the combined vertical slice.
 - [x] Run complete verification, refresh code review and workflow context, commit, and report the parallel iteration.
+
+## Deterministic Workflow and Evidence Iteration
+
+- [x] Inspect EIR validation, workflow review, evidence, transport, and sandbox extension points.
+- [x] Define deterministic EIR-to-plan, evaluation-evidence, transport-verification, and sandbox-integrity contracts.
+- [x] Implement deterministic planning and evidence assessment primitives with no model or backend invocation.
+- [x] Integrate policy review, contract tests, CLI inspection, fixtures, examples, and documentation.
+- [x] Run full verification, update code review and workflow context, commit, and report the iteration.

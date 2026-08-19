@@ -1,0 +1,26 @@
+[
+  {
+    "evidence_id": "eir-robot-validation",
+    "criterion_id": "robot-identified",
+    "evidence_class": "deterministic_validation",
+    "source_node_ids": [
+      "robot.quadrotor"
+    ],
+    "source_reference": "EIR:robot.quadrotor",
+    "observations": {
+      "validation": "EIR node is present in the validated document"
+    }
+  },
+  {
+    "evidence_id": "eir-objective-validation",
+    "criterion_id": "objective-identified",
+    "evidence_class": "deterministic_validation",
+    "source_node_ids": [
+      "objective.inspect"
+    ],
+    "source_reference": "EIR:objective.inspect",
+    "observations": {
+      "validation": "EIR node is present in the validated document"
+    }
+  }
+]

@@ -119,4 +119,12 @@ def default_registry() -> CapabilityRegistry:
             security_class=SecurityClass.READ_ONLY,
             postconditions=["workflow remains non-executing", "human approval remains required"],
         ),
+        CapabilityDescriptor(
+            capability_id="assess_workflow_evidence",
+            version="0.1",
+            description="Assess declared workflow evidence for human review without evaluating or executing engineering work.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["evidence remains review-only", "human approval remains required"],
+        ),
     ])

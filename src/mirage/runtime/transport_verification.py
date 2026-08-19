@@ -70,14 +70,26 @@ class TransportVerificationEvidence(BaseModel):
     fixture_digest: str | None = None
     verifier: str | None = None
     observed_simulator_version: str | None = None
+    authorization_reference: str | None = None
+    operation_transcript_digest: str | None = None
+    cleanup_verified: bool = False
     observations: dict[str, str] = Field(default_factory=dict)
 
     @model_validator(mode="after")
     def require_fixture_evidence(self) -> TransportVerificationEvidence:
         if self.status == TransportVerificationStatus.FIXTURE_VERIFIED and not self.fixture_digest:
             raise ValueError("fixture-verified transport evidence requires a fixture digest")
-        if self.status == TransportVerificationStatus.LIVE_VERIFIED and not self.observed_simulator_version:
-            raise ValueError("live-verified transport evidence requires an observed simulator version")
+        if self.status == TransportVerificationStatus.LIVE_VERIFIED:
+            required = {
+                "authorization reference": self.authorization_reference,
+                "cleanup verification": self.cleanup_verified,
+                "observed simulator version": self.observed_simulator_version,
+                "operation transcript digest": self.operation_transcript_digest,
+                "verifier": self.verifier,
+            }
+            missing = [name for name, value in required.items() if not value]
+            if missing:
+                raise ValueError(f"live-verified transport evidence requires: {', '.join(missing)}")
         return self
 
 

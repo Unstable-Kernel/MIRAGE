@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class SandboxAssessmentStatus(StrEnum):
@@ -59,7 +59,22 @@ class SandboxEnforcementEvidence(BaseModel):
     verified_controls: set[SandboxControl] = Field(default_factory=set)
     verifier: str | None = None
     environment_fingerprint: str | None = None
+    evidence_digest: str | None = None
     observations: dict[str, str] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def require_integrity_for_verified_evidence(self) -> SandboxEnforcementEvidence:
+        if self.status == SandboxEvidenceStatus.VERIFIED:
+            required = {
+                "evidence digest": self.evidence_digest,
+                "environment fingerprint": self.environment_fingerprint,
+                "verifier": self.verifier,
+                "verified controls": self.verified_controls,
+            }
+            missing = [name for name, value in required.items() if not value]
+            if missing:
+                raise ValueError(f"verified sandbox evidence requires: {', '.join(missing)}")
+        return self
 
     def covers(self, envelope: SandboxEnvelope) -> bool:
         required: set[SandboxControl] = set()

@@ -15,6 +15,7 @@ from .runtime import (
     BackendSandboxCapabilities,
     CapabilityExecutor,
     CoppeliaSimReadOnlyAdapter,
+    EvaluationEvidence,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
@@ -24,8 +25,10 @@ from .runtime import (
     SandboxEnvelope,
     TransportVerificationEvidence,
     WorkflowCheckpoint,
+    assess_evaluation_evidence,
     assess_sandbox,
     assess_transport,
+    build_deterministic_plan,
     default_inspection_backends,
     default_registry,
 )
@@ -175,6 +178,37 @@ def goal_workflow_review(file: Path, backend: str | None = None, allow_simulatio
     review = workflow.review(default_registry(), policy)
     typer.echo(review.model_dump_json())
     if review.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+def _workflow_document(eir_file: Path):
+    validation = validate_document(load_data(eir_file))
+    if not validation.ok:
+        typer.echo(json.dumps(validation.as_dict(), sort_keys=True))
+        raise typer.Exit(1)
+    assert validation.document is not None
+    return validation.document
+
+
+@app.command("goal-workflow-plan")
+def goal_workflow_plan(workflow_file: Path, eir_file: Path) -> None:
+    """Validate an EIR-bound goal workflow plan without model or backend invocation."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    typer.echo(plan.model_dump_json())
+    if plan.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("goal-workflow-evidence")
+def goal_workflow_evidence(workflow_file: Path, eir_file: Path, evidence_file: Path) -> None:
+    """Assess cited workflow evidence without evaluating or executing engineering work."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
         raise typer.Exit(1)
 
 
