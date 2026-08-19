@@ -6,7 +6,7 @@ Complete the parallel context and review-trace iteration for MIRAGE.
 
 ## Current status
 
-The iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. The branch already has four unpushed commits from the preceding safety and workflow iterations, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
+The iteration is committed locally as `f9f0ab0` on `feat/iteration-1-foundation`. The branch is five commits ahead of its remote and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
@@ -46,4 +46,4 @@ Live simulator transport and host-level sandbox enforcement remain unavailable. 
 
 ## Next recommended action
 
-Inspect the final diff, create a focused local commit, and wait for an explicit push request. The next locally safe build slice is an audited human approval transition contract. It must remain non-executing until verified live transport and an enforced sandbox exist.
+Await an explicit request before pushing the five local commits to update PR #9. The next locally safe build slice is an audited human approval transition contract. It must remain non-executing until verified live transport and an enforced sandbox exist.

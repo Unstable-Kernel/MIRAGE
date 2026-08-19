@@ -288,3 +288,5 @@ No arbitrary content ingestion, URI retrieval, prompt construction, model invoca
 ## Context iteration verification
 
 The full suite passes with 59 tests. Ruff, EIR schema consistency, Markdown local-link checks, local context and trace CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The context and review-trace implementation is committed locally as `f9f0ab0` with the message `feat: add workflow context review traces`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
