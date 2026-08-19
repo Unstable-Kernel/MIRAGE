@@ -1,0 +1,32 @@
+{
+  "chain_id": "quadrotor-approval-chain-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "trace_id": "quadrotor-review-trace-v1",
+  "policy_provenance": {
+    "policy_id": "local-default",
+    "revision": "1",
+    "source": "local",
+    "approved_by": null
+  },
+  "approvals": [
+    {
+      "approval_id": "quadrotor-approval-v1",
+      "workflow_id": "quadrotor-inspection-review-v1",
+      "trace_id": "quadrotor-review-trace-v1",
+      "approver_id": "reviewer@example.invalid",
+      "decision": "approved",
+      "policy_provenance": {
+        "policy_id": "local-default",
+        "revision": "1",
+        "source": "local",
+        "approved_by": null
+      },
+      "approval_digest": "sha256:quadrotor-approval-v1",
+      "previous_approval_digest": null,
+      "recorded_at": "2026-08-19T00:00:00Z",
+      "observations": {
+        "scope": "local deterministic approval fixture"
+      }
+    }
+  ]
+}

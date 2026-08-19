@@ -38,6 +38,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Stronger integrity requirements for live transport and verified sandbox evidence claims.
 - Deterministic redacted context bundles and policy-bound provenance review traces for the M4 human-review foundation.
 - `inspect_workflow_context@0.1`, `assess_review_trace@0.1`, `mirage workflow-context-inspect`, and `mirage review-trace-assess` for local review-only inspection.
+- Audited human approval-chain and advisory dispatch-eligibility contracts that return prerequisite denial rather than authorize work.
+- `assess_human_approval@0.1`, `assess_dispatch_eligibility@0.1`, `mirage approval-chain-assess`, and `mirage dispatch-eligibility-assess` for local guarded review.
 
 ### Changed
 

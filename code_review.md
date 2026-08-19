@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is PR #9 plus the unpushed deterministic workflow, context, and review-trace work. The repository has 59 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, and provenance review primitives.
+The current baseline is PR #9 plus the unpushed deterministic workflow, context, review-trace, approval, and eligibility work. The repository has 64 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, and advisory eligibility primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -20,6 +20,7 @@ The current baseline is PR #9 plus the unpushed deterministic workflow, context,
 | M4 workflow foundation | Goal, bounded steps, criteria, checkpoint, and manual revalidation | No model planning, execution, evaluation, or report pipeline |
 | Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
 | Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
+| Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -290,3 +291,21 @@ No arbitrary content ingestion, URI retrieval, prompt construction, model invoca
 The full suite passes with 59 tests. Ruff, EIR schema consistency, Markdown local-link checks, local context and trace CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
 
 The context and review-trace implementation is committed locally as `f9f0ab0` with the message `feat: add workflow context review traces`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Guarded approval and eligibility iteration review
+
+Approval and dispatch eligibility are now separated. An approval chain can be structurally `review_ready`, but eligibility remains ineligible unless the active policy permits simulation, transport evidence is independently live-verified, and sandbox assessment is allowed in an enforced verified environment. This separation prevents a locally stored approval fixture from becoming an execution authority.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/approval_review.py` | Digest-linked, policy-bound human approval records with approved, rejected, and invalid review outcomes |
+| `src/mirage/runtime/dispatch_eligibility.py` | Advisory prerequisite assessment that never dispatches and always sets `execution_permitted` to false |
+| `src/mirage/cli.py` | Local approval and eligibility inspection commands that emit structured results before a deliberate ineligible exit |
+| `examples/11-guarded-approval/` | Approved local fixture paired with fixture-only transport and declarative sandbox inputs that must remain ineligible |
+| `tests/test_approval_review.py` and `tests/test_dispatch_eligibility.py` | Cover approval, rejection, and blocked eligibility paths |
+
+No identity provider, signature verifier, durable audit store, notification system, approval mutation, transport client, sandbox runtime, dispatcher, simulator connection, external side effect, physical actuation, or automatic workflow resume was introduced. The ineligible example proves the intended refusal behavior.
+
+## Guarded approval verification
+
+The full suite passes with 64 tests. Ruff, EIR schema consistency, Markdown local-link checks, approval-chain inspection, expected ineligible dispatch eligibility output, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.

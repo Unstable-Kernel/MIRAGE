@@ -2,7 +2,7 @@
 
 ## Current core surface
 
-MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, EIR-bound M4 workflow, evidence, context, and review-trace primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
+MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, EIR-bound M4 workflow, evidence, context, review-trace, approval, and advisory dispatch primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
 
 ## Upcoming core features
 
@@ -19,6 +19,7 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 | Current | Goal-to-evaluate workflow review foundation | Preserve a bounded goal, proposed steps, criteria, policy-bound checkpoint, and manual revalidation result | No provider planning, automatic resume, execution, evaluation, or report generation |
 | Current | Deterministic EIR-to-plan and evidence assessment | Validate planned source nodes and criterion evidence against EIR without a model or backend | No engineering correctness judgment, metric execution, or automatic approval |
 | Current | Context bundle and review trace assessment | Validate redacted references, policy provenance, and required review stages | No retrieval, raw artifact access, approval, execution, or checkpoint resume |
+| Current | Audited approval and dispatch eligibility | Validate approval-chain linkage and return prerequisite denial when transport or sandbox controls are absent | No identity verification, signature, authority, dispatch, or execution |
 | Later | Goal-to-evaluate workflow | Connect goals, context, EIR, planning, simulation, evaluation, and report evidence | Keep model reasoning separate from deterministic validation |
 | Later | Cross-simulator translation | Map validated semantics across verified simulator adapters | No compatibility claim without adapter-specific tests |
 | Later | Research reproduction pipeline | Capture papers, artifacts, environments, and evidence for reproducible studies | No autonomous paper execution without sandboxing and review |

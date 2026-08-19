@@ -143,4 +143,20 @@ def default_registry() -> CapabilityRegistry:
             security_class=SecurityClass.READ_ONLY,
             postconditions=["trace remains review-only", "human approval remains required"],
         ),
+        CapabilityDescriptor(
+            capability_id="assess_human_approval",
+            version="0.1",
+            description="Validate an audited human approval chain without granting authority or executing work.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["approval remains non-mutating", "execution remains disabled"],
+        ),
+        CapabilityDescriptor(
+            capability_id="assess_dispatch_eligibility",
+            version="0.1",
+            description="Assess future dispatch prerequisites without invoking a backend or authorizing execution.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["eligibility remains advisory", "execution remains disabled"],
+        ),
     ])

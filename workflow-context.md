@@ -2,48 +2,47 @@
 
 ## Task
 
-Complete the parallel context and review-trace iteration for MIRAGE.
+Complete the guarded approval and advisory dispatch eligibility iteration for MIRAGE.
 
 ## Current status
 
-The iteration is committed locally as `f9f0ab0` on `feat/iteration-1-foundation`. The branch is five commits ahead of its remote and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
+The iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. The branch already has six unpushed commits from the preceding safety and workflow iterations, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) remains open against `main`. Do not push or publish without an explicit user request.
 
 ## Completed work
 
-`context_review.py` introduces `WorkflowContextBundle` and redacted `WorkflowContextItem` contracts. Each item stores references and digests rather than raw artifacts. The bundle binds to a workflow ID, EIR document ID, policy provenance, and deterministic plan source nodes. Assessment rejects identifier, provenance, redaction, and source-node drift.
+`approval_review.py` introduces `HumanApprovalRecord` and `ApprovalChain`. Each record binds an approver identifier, decision, workflow, review trace, policy provenance, digest linkage, and timestamp. Assessment checks trace, workflow, policy provenance, and latest decision. It returns a review result only and never sets execution permission.
 
-`review_trace.py` introduces typed review events and `WorkflowReviewTrace`. A complete trace requires context binding, plan validation, evidence assessment, and human-review request records. Trace assessment checks workflow ID, context ID, policy provenance, context readiness, and evidence readiness. Every result is review-only and has `execution_permitted: false`.
+`dispatch_eligibility.py` introduces an advisory preflight that combines approval readiness, simulation policy, transport report, and sandbox assessment. Its eligibility result is always non-executing. The fixture demonstrates why an approved local review still cannot dispatch when transport is only fixture-verified and the sandbox is declarative.
 
-The runtime registry includes `inspect_workflow_context@0.1` and `assess_review_trace@0.1` as generic read-only declarations. The `workflow-context-inspect` and `review-trace-assess` commands parse local files only. `examples/10-context-review/` is the canonical deterministic fixture set.
+The URCP registry exposes `assess_human_approval@0.1` and `assess_dispatch_eligibility@0.1` as generic read-only declarations. The `approval-chain-assess` and `dispatch-eligibility-assess` CLI commands consume local JSON only. `examples/11-guarded-approval/` provides the canonical approval and blocked eligibility fixtures.
 
 ## Verification
 
 | Check | Result |
 |---|---|
-| Full Python tests | 59 passed |
+| Full Python tests | 64 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
 | Documentation verification | Every tracked Markdown file passed local-link checks |
-| CLI verification | Context inspection, review-trace assessment, and generic capability discovery passed |
+| CLI verification | Approval chain returns review-ready; dispatch eligibility returns expected ineligible result; generic capability discovery passed |
 | Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
 
 ## Known limitations
 
-Context bundles are redacted reference containers, not a retrieval system. They do not read local or remote artifacts, resolve URLs, reveal raw source content, construct provider prompts, or manage credentials. Review traces validate declared stage completeness but do not represent human approval, authorization, execution, or report issuance.
+Approval records are local data contracts, not authenticated human identity or signatures. They are not stored durably, revocable, notified, or independently audited. Dispatch eligibility is advisory and does not dispatch a backend even if all supplied conditions appear ready.
 
-Live simulator transport and host-level sandbox enforcement remain unavailable. The M4 workflow still lacks controlled real context inputs, evidence adapters, policy-bound evaluation, audited approval transitions, report artifacts, and all execution paths. Simulator control, external side effects, physical actuation, automatic checkpoint resume, package publication, and autonomous experimentation remain absent.
+The live transport and OS-enforced sandbox prerequisites remain unavailable. The M4 workflow still lacks real controlled context, external evidence adapters, policy-bound evaluation, authenticated approval persistence, report artifacts, and an execution integration. Simulator control, external side effects, physical actuation, automatic checkpoint resume, package publication, and autonomous experimentation remain absent.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `src/mirage/runtime/context_review.py` | Redacted context bundle contracts and plan-bound assessment |
-| `src/mirage/runtime/review_trace.py` | Policy-bound review-event trace and completeness assessment |
-| `src/mirage/runtime/workflow_evidence.py` | EIR-bound deterministic plan and evaluation-evidence review |
-| `src/mirage/cli.py` | Context and trace local inspection commands |
-| `examples/10-context-review/` | Canonical context and trace fixtures |
-| `docs/guides/context-review-trace.md` | User-facing contracts and safety boundaries |
+| `src/mirage/runtime/approval_review.py` | Approval chain models, digest linkage, and review-only assessment |
+| `src/mirage/runtime/dispatch_eligibility.py` | Advisory technical prerequisite assessment with structured denial reasons |
+| `src/mirage/cli.py` | Approval and eligibility local inspection commands |
+| `examples/11-guarded-approval/` | Canonical approved-yet-ineligible fixture set |
+| `docs/guides/guarded-approval-eligibility.md` | User-facing contract, refusal behavior, and safety limits |
 
 ## Next recommended action
 
-Await an explicit request before pushing the five local commits to update PR #9. The next locally safe build slice is an audited human approval transition contract. It must remain non-executing until verified live transport and an enforced sandbox exist.
+Inspect the final diff, create a focused local commit, and wait for an explicit push request. The next locally safe M4 slice is an authenticated approval-persistence interface definition with no credential handling or execution path. It must remain advisory until verified live transport and an enforced sandbox exist.

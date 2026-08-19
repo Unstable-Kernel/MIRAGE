@@ -68,3 +68,11 @@
 - [x] Integrate trace completeness checks with workflow policy and evidence review.
 - [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates.
 - [x] Run complete verification, update code review and workflow context, commit, and report the iteration.
+
+## Guarded Approval and Eligibility Iteration
+
+- [x] Define audited human approval, lifecycle, chain-integrity, and dispatch-eligibility contracts.
+- [x] Implement approval records, lifecycle validation, and chain integrity checks without authorization side effects.
+- [x] Implement dispatch eligibility assessment that always requires verified transport and enforced sandbox prerequisites.
+- [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates for the guarded approval slice.
+- [x] Run complete verification, update code review and workflow context, commit, and report the iteration.

@@ -12,6 +12,7 @@ import typer
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
 from .runtime import (
+    ApprovalChain,
     BackendSandboxCapabilities,
     CapabilityExecutor,
     CoppeliaSimReadOnlyAdapter,
@@ -22,11 +23,14 @@ from .runtime import (
     FixtureSimulatorAdapter,
     GoalToEvaluateWorkflow,
     ReadOnlyTransportManifest,
+    SandboxAssessment,
     SandboxEnvelope,
     TransportVerificationEvidence,
     WorkflowCheckpoint,
     WorkflowContextBundle,
     WorkflowReviewTrace,
+    assess_approval_chain,
+    assess_dispatch_eligibility,
     assess_evaluation_evidence,
     assess_review_trace,
     assess_sandbox,
@@ -243,6 +247,58 @@ def review_trace_assess(workflow_file: Path, eir_file: Path, context_file: Path,
     assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+def _review_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(context, workflow, plan, policy)
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
+    return workflow, policy, trace_assessment
+
+
+@app.command("approval-chain-assess")
+def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
+    """Assess a local human approval chain without granting authority or changing workflow state."""
+    _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_chain(chain, trace_assessment, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "review_ready":
+        raise typer.Exit(1)
+
+
+@app.command("dispatch-eligibility-assess")
+def dispatch_eligibility_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    transport_manifest_file: Path,
+    transport_evidence_file: Path,
+    sandbox_assessment_file: Path,
+    allow_simulation: bool = False,
+) -> None:
+    """Assess prerequisites for future dispatch without invoking a backend or authorizing execution."""
+    _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    policy = policy.model_copy(update={"allow_simulation": allow_simulation})
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    approval = assess_approval_chain(chain, trace_assessment, policy)
+    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
+    evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    transport = assess_transport(manifest, evidence)
+    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    assessment = assess_dispatch_eligibility(approval, transport, sandbox, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "eligible_for_verified_dispatch":
         raise typer.Exit(1)
 
 

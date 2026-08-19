@@ -1,3 +1,11 @@
+from .approval_review import (
+    ApprovalChain,
+    ApprovalChainAssessment,
+    ApprovalChainStatus,
+    ApprovalDecision,
+    HumanApprovalRecord,
+    assess_approval_chain,
+)
 from .checkpoint import CheckpointCapabilityRequirement, CheckpointRevalidationIssue, CheckpointRevalidationResult, WorkflowCheckpoint
 from .context_review import (
     ContextBundleStatus,
@@ -7,6 +15,7 @@ from .context_review import (
     WorkflowContextItem,
     assess_workflow_context,
 )
+from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
 from .execution import (
     CancellationToken,
     CapabilityExecutor,
@@ -77,6 +86,10 @@ __all__ = [
     "SecurityClass",
     "default_registry",
     "CapabilityExecutor",
+    "ApprovalChain",
+    "ApprovalChainAssessment",
+    "ApprovalChainStatus",
+    "ApprovalDecision",
     "CancellationToken",
     "ContextBundleStatus",
     "ContextItemKind",
@@ -86,6 +99,8 @@ __all__ = [
     "ExecutionStatus",
     "PolicyProvenance",
     "ResourceLimits",
+    "DispatchEligibilityAssessment",
+    "DispatchEligibilityStatus",
     "ReviewTraceAssessment",
     "ReviewTraceEvent",
     "ReviewTraceEventType",
@@ -110,6 +125,7 @@ __all__ = [
     "GoalWorkflowReview",
     "GoalWorkflowStatus",
     "GoalWorkflowStep",
+    "HumanApprovalRecord",
     "WorkflowCheckpoint",
     "WorkflowContextAssessment",
     "WorkflowContextBundle",
@@ -141,6 +157,8 @@ __all__ = [
     "WorkflowReviewTrace",
     "WorkflowValidationIssue",
     "assess_evaluation_evidence",
+    "assess_approval_chain",
+    "assess_dispatch_eligibility",
     "assess_review_trace",
     "build_deterministic_plan",
     "assess_workflow_context",
