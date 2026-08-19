@@ -1,0 +1,28 @@
+{
+  "manifest_id": "fixture-read-only-v1",
+  "adapter": "fixture",
+  "protocol": "json",
+  "endpoint_scheme": "file",
+  "simulator_version": "fixture",
+  "state_semantics_revision": "1",
+  "allowed_operations": [
+    "project_metadata",
+    "state_snapshot"
+  ],
+  "prohibited_operations": [
+    "load_scene",
+    "start_simulation",
+    "pause_simulation",
+    "stop_simulation",
+    "step_simulation",
+    "reset_simulation",
+    "set_object_state",
+    "write_scene",
+    "physical_actuation"
+  ],
+  "verification_status": "fixture_verified",
+  "notes": {
+    "connection": "not applicable",
+    "control_surface": "prohibited by manifest"
+  }
+}

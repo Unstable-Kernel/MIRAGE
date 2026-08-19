@@ -43,3 +43,12 @@
 - [x] Refresh `code_review.md`, `workflow-context.md`, and a quantified remaining-work assessment for collaborators.
 - [x] Run documentation and repository integrity verification.
 - [x] Commit documentation updates, push the branch, create pull request #9 because PR #8 is merged, and report the remaining work.
+
+## Parallel Next-Slice Foundation
+
+- [x] Define shared safety boundaries and versioned contracts for a real read-only simulator transport, enforced sandbox evidence, and M4 workflow primitives.
+- [x] Implement a transport-verification fixture protocol and a non-connecting reference adapter in parallel with M4 goal-to-evaluate domain models.
+- [x] Implement sandbox enforcement evidence contracts and deterministic test fixtures without claiming host-level isolation.
+- [x] Integrate cross-slice policy provenance, cancellation, timeout, and no-control evidence.
+- [x] Add contract tests, CLI inspection surfaces, examples, documentation, and roadmap updates for the combined vertical slice.
+- [x] Run complete verification, refresh code review and workflow context, commit, and report the parallel iteration.

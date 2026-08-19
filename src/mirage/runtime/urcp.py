@@ -111,4 +111,12 @@ def default_registry() -> CapabilityRegistry:
             resource_requirements={"requires": "verified_read_only_simulator_transport"},
             postconditions=["no simulator control operation is attempted"],
         ),
+        CapabilityDescriptor(
+            capability_id="review_goal_workflow",
+            version="0.1",
+            description="Revalidate a bounded goal-to-evaluate workflow for human review without execution.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["workflow remains non-executing", "human approval remains required"],
+        ),
     ])

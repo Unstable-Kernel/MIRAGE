@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is commit `40f55b1` plus this documentation reconciliation pass. The repository has 35 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, and deterministic fixture-backed read-only simulator metadata and state extraction.
+The current baseline is PR #9 plus the verified parallel foundation work. The repository has 45 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and review-only M4 workflow primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -15,9 +15,12 @@ The current baseline is commit `40f55b1` plus this documentation reconciliation 
 | URCP runtime | Policy-gated execution, ledger, timeout, cancellation, and resource budgets | No arbitrary host commands or unrestricted side effects |
 | Sandbox and checkpoint safety | Declarative preflight and non-executing revalidation | No OS isolation or automatic resume |
 | Simulator adapter | Deterministic fixture metadata and state extraction | No real transport, simulator connection, or control |
+| Transport verification | Versioned manifest and fixture evidence assessment | No live CoppeliaSim verification or connection |
+| Sandbox evidence | OS envelope claims require matching verified evidence | No real local cgroup, container, mount, firewall, or process isolation |
+| M4 workflow foundation | Goal, bounded steps, criteria, checkpoint, and manual revalidation | No model planning, execution, evaluation, or report pipeline |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
-The remaining primary delivery streams are a real verified read-only simulator transport, an enforced backend sandbox, M4 goal-to-evaluate workflow, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
+The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
 
 The documentation reconciliation verified every tracked Markdown file for local link targets and scanned the corpus for superseded implementation-status statements. The current full suite passes with 35 tests; Ruff, EIR schema consistency, CLI capability discovery, deterministic fixture inspection, secret scanning, no-em-dash scanning, and diff integrity checks passed. PR #8 is already merged, so the post-push review surface must be a new pull request.
 
@@ -219,3 +222,26 @@ Timeout handling follows the existing cooperative `CancellationToken` pattern. T
 ## Updated verification
 
 The complete repository suite passes with 35 tests. Ruff, EIR schema consistency, fixture CLI inspection, unavailable CoppeliaSim CLI behavior, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, physical actuation, external side effect, package publication, or branch push occurred in this iteration.
+
+## Parallel foundation iteration review
+
+The transport, sandbox, and workflow work packages were implemented independently and joined only at typed policy and review boundaries. This avoids treating a fixture contract as live transport, a static capability claim as host isolation, or a proposed workflow as permission to execute it.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/transport_verification.py` | Transport manifests require a complete prohibited-control set; evidence must cover every declared read operation before an assessment becomes valid |
+| `src/mirage/runtime/sandbox.py` | Requested OS-level envelopes now require matching capabilities and verified enforcement evidence; missing or partial evidence is denied |
+| `src/mirage/runtime/goal_workflow.py` | M4 foundation is bounded to review-only goal, steps, criteria, checkpoint, and revalidation contracts with `execution_permitted` fixed to false |
+| `src/mirage/runtime/simulator_adapter.py` | Unavailable CoppeliaSim results now identify the unverified ZeroMQ reference manifest without connecting |
+| `src/mirage/cli.py` | `transport-assess` and `goal-workflow-review` parse local JSON and return structured non-executing evidence |
+| `examples/08-parallel-foundations/` | Provides deterministic manifest, evidence, and workflow fixtures that do not rely on a simulator service |
+
+The CoppeliaSim ZeroMQ API is intentionally not treated as intrinsically read-only because the official API surface includes simulator control. The reference manifest therefore captures protocol vocabulary and prohibited control operations only. It does not import a CoppeliaSim client, open a socket, or report live verification.
+
+Sandbox enforcement evidence is deliberately a claim-validation contract. The evidence-backed local test backend proves the executor acceptance condition, not operating-system isolation. No cgroup, container, mount namespace, network firewall, process supervisor, resource quota, or cleanup daemon was installed or invoked.
+
+The M4 review model remains human-gated. It can reject unavailable or policy-denied capabilities through existing checkpoint revalidation, but it cannot invoke a provider, execute a capability, resume a checkpoint, collect evidence, or generate an engineering report. This is the correct safety boundary while real transport and enforced sandbox work remain incomplete.
+
+## Parallel iteration verification
+
+The full suite passes with 45 tests. Ruff, EIR schema consistency, Markdown local-link checks, capability discovery, deterministic transport assessment, goal-workflow review, unavailable CoppeliaSim CLI behavior, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, external side effect, physical actuation, checkpoint resume, OS-level isolation, package publication, or branch push occurred during this iteration.

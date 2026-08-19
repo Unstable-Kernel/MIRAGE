@@ -19,15 +19,20 @@ from .runtime import (
     ExecutionPolicy,
     ExecutionRequest,
     FixtureSimulatorAdapter,
+    GoalToEvaluateWorkflow,
+    ReadOnlyTransportManifest,
     SandboxEnvelope,
+    TransportVerificationEvidence,
     WorkflowCheckpoint,
     assess_sandbox,
+    assess_transport,
     default_inspection_backends,
     default_registry,
 )
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 FIXTURE_ARGUMENT = typer.Argument(default=None, help="Deterministic read-only fixture JSON path.")
+EVIDENCE_ARGUMENT = typer.Argument(default=None, help="Optional deterministic transport evidence JSON path.")
 
 
 def _result(path: Path) -> Any:
@@ -142,6 +147,34 @@ def simulator_metadata(
         statuses.append(snapshot.status.value)
     typer.echo(json.dumps(payload, sort_keys=True))
     if any(status != "available" for status in statuses):
+        raise typer.Exit(1)
+
+
+@app.command("transport-assess")
+def transport_assess(manifest_file: Path, evidence_file: Path | None = EVIDENCE_ARGUMENT) -> None:
+    """Assess read-only transport evidence without opening a simulator connection."""
+    manifest = ReadOnlyTransportManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    evidence = None
+    if evidence_file is not None:
+        evidence = TransportVerificationEvidence.model_validate_json(evidence_file.read_text(encoding="utf-8"))
+    report = assess_transport(manifest, evidence)
+    typer.echo(report.model_dump_json())
+    if not report.valid:
+        raise typer.Exit(1)
+
+
+@app.command("goal-workflow-review")
+def goal_workflow_review(file: Path, backend: str | None = None, allow_simulation: bool = False) -> None:
+    """Revalidate a goal-to-evaluate workflow for manual review without executing a step."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy(
+        allow_read_only=True,
+        allow_simulation=allow_simulation,
+        allowed_backends={backend} if backend else set(),
+    )
+    review = workflow.review(default_registry(), policy)
+    typer.echo(review.model_dump_json())
+    if review.status.value != "ready_for_review":
         raise typer.Exit(1)
 
 

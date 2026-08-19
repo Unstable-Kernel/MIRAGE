@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field
 
 from .execution import CancellationToken, ExecutionPolicy
 from .sandbox import BackendSandboxCapabilities, SandboxAssessment, assess_sandbox
+from .transport_verification import ReadOnlyTransportManifest, coppeliasim_zmq_read_only_manifest
 
 
 class ReadOnlySimulatorStatus(StrEnum):
@@ -264,8 +265,9 @@ class CoppeliaSimReadOnlyAdapter(_ReadOnlyAdapterBase):
     name = "coppeliasim"
     sandbox_capabilities = BackendSandboxCapabilities(backend=name)
 
-    def __init__(self, endpoint: str | None = None) -> None:
+    def __init__(self, endpoint: str | None = None, manifest: ReadOnlyTransportManifest | None = None) -> None:
         self.endpoint = endpoint
+        self.manifest = manifest or coppeliasim_zmq_read_only_manifest()
 
     async def _unverified_transport(self) -> SimulatorProjectMetadata:
         raise SimulatorTransportUnavailable(
@@ -286,6 +288,8 @@ class CoppeliaSimReadOnlyAdapter(_ReadOnlyAdapterBase):
         result = await self._read("project_metadata", self._unverified_transport, policy, timeout_seconds, cancellation)
         result.observations["endpoint_configured"] = str(bool(self.endpoint)).lower()
         result.observations["transport"] = "unverified"
+        result.observations["transport_manifest_id"] = self.manifest.manifest_id
+        result.observations["transport_protocol"] = self.manifest.protocol
         return result
 
     async def read_state_snapshot(
@@ -297,4 +301,6 @@ class CoppeliaSimReadOnlyAdapter(_ReadOnlyAdapterBase):
         result = await self._read("state_snapshot", self._unverified_snapshot_transport, policy, timeout_seconds, cancellation)
         result.observations["endpoint_configured"] = str(bool(self.endpoint)).lower()
         result.observations["transport"] = "unverified"
+        result.observations["transport_manifest_id"] = self.manifest.manifest_id
+        result.observations["transport_protocol"] = self.manifest.protocol
         return result

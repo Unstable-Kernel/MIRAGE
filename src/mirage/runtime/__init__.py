@@ -11,8 +11,18 @@ from .execution import (
     PolicyProvenance,
     ResourceLimits,
 )
+from .goal_workflow import GoalEvaluationCriterion, GoalToEvaluateWorkflow, GoalWorkflowReview, GoalWorkflowStatus, GoalWorkflowStep
 from .ledger import ExecutionAuditRecord, ExecutionLedger
-from .sandbox import BackendSandboxCapabilities, SandboxAssessment, SandboxAssessmentStatus, SandboxEnvelope, assess_sandbox
+from .sandbox import (
+    BackendSandboxCapabilities,
+    SandboxAssessment,
+    SandboxAssessmentStatus,
+    SandboxControl,
+    SandboxEnforcementEvidence,
+    SandboxEnvelope,
+    SandboxEvidenceStatus,
+    assess_sandbox,
+)
 from .simulator_adapter import (
     CoppeliaSimReadOnlyAdapter,
     FixtureSimulatorAdapter,
@@ -24,6 +34,15 @@ from .simulator_adapter import (
     SimulatorStateSnapshot,
 )
 from .simulator_inspection import CoppeliaSimInspectionBackend, InspectionStatus, SimulatorInspection, default_inspection_backends
+from .transport_verification import (
+    ReadOnlyTransportManifest,
+    ReadOnlyTransportOperation,
+    TransportVerificationEvidence,
+    TransportVerificationReport,
+    TransportVerificationStatus,
+    assess_transport,
+    coppeliasim_zmq_read_only_manifest,
+)
 from .urcp import CapabilityDescriptor, CapabilityRegistry, SecurityClass, default_registry
 
 __all__ = [
@@ -55,6 +74,11 @@ __all__ = [
     "SimulatorStateSnapshot",
     "ExecutionAuditRecord",
     "ExecutionLedger",
+    "GoalEvaluationCriterion",
+    "GoalToEvaluateWorkflow",
+    "GoalWorkflowReview",
+    "GoalWorkflowStatus",
+    "GoalWorkflowStep",
     "WorkflowCheckpoint",
     "CheckpointCapabilityRequirement",
     "CheckpointRevalidationIssue",
@@ -62,6 +86,16 @@ __all__ = [
     "BackendSandboxCapabilities",
     "SandboxAssessment",
     "SandboxAssessmentStatus",
+    "SandboxControl",
+    "SandboxEnforcementEvidence",
     "SandboxEnvelope",
+    "SandboxEvidenceStatus",
     "assess_sandbox",
+    "ReadOnlyTransportManifest",
+    "ReadOnlyTransportOperation",
+    "TransportVerificationEvidence",
+    "TransportVerificationReport",
+    "TransportVerificationStatus",
+    "assess_transport",
+    "coppeliasim_zmq_read_only_manifest",
 ]
