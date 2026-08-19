@@ -1,0 +1,15 @@
+{
+  "evidence_id": "fixture-read-only-evidence-v1",
+  "manifest_id": "fixture-read-only-v1",
+  "status": "fixture_verified",
+  "verified_operations": [
+    "project_metadata",
+    "state_snapshot"
+  ],
+  "fixture_digest": "sha256:fixture-contract-v1",
+  "verifier": "mirage-contract-test",
+  "observations": {
+    "connection": "not attempted",
+    "control_operations": "prohibited"
+  }
+}

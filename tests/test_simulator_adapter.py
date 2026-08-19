@@ -85,6 +85,8 @@ def test_coppeliasim_adapter_reports_unavailable_without_transport_connection():
     assert result.control_available is False
     assert result.observations["endpoint_configured"] == "true"
     assert result.observations["transport"] == "unverified"
+    assert result.observations["transport_manifest_id"] == "coppeliasim-zmq-read-only-reference-v1"
+    assert result.observations["transport_protocol"] == "zeromq-remote-api"
     assert "no connection or control operation" in result.message
 
 

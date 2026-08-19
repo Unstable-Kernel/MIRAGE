@@ -4,13 +4,29 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class SandboxAssessmentStatus(StrEnum):
     ALLOWED = "allowed"
     DENIED = "denied"
     DECLARATIVE_ONLY = "declarative_only"
+
+
+class SandboxEvidenceStatus(StrEnum):
+    UNVERIFIED = "unverified"
+    VERIFIED = "verified"
+
+
+class SandboxControl(StrEnum):
+    CPU_LIMIT = "cpu_limit"
+    MEMORY_LIMIT = "memory_limit"
+    DISK_LIMIT = "disk_limit"
+    PROCESS_LIMIT = "process_limit"
+    NETWORK_LIMIT = "network_limit"
+    NETWORK_ALLOWLIST = "network_allowlist"
+    READ_ONLY_FILESYSTEM = "read_only_filesystem"
+    SUBPROCESS_POLICY = "subprocess_policy"
 
 
 class SandboxEnvelope(BaseModel):
@@ -34,6 +50,53 @@ class SandboxEnvelope(BaseModel):
         ) or bool(self.allowed_network_hosts) or self.allow_subprocesses or not self.read_only_filesystem
 
 
+class SandboxEnforcementEvidence(BaseModel):
+    """Auditable evidence required before an OS-enforced sandbox is accepted."""
+
+    evidence_id: str = Field(min_length=1)
+    backend: str = Field(min_length=1)
+    status: SandboxEvidenceStatus = SandboxEvidenceStatus.UNVERIFIED
+    verified_controls: set[SandboxControl] = Field(default_factory=set)
+    verifier: str | None = None
+    environment_fingerprint: str | None = None
+    evidence_digest: str | None = None
+    observations: dict[str, str] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def require_integrity_for_verified_evidence(self) -> SandboxEnforcementEvidence:
+        if self.status == SandboxEvidenceStatus.VERIFIED:
+            required = {
+                "evidence digest": self.evidence_digest,
+                "environment fingerprint": self.environment_fingerprint,
+                "verifier": self.verifier,
+                "verified controls": self.verified_controls,
+            }
+            missing = [name for name, value in required.items() if not value]
+            if missing:
+                raise ValueError(f"verified sandbox evidence requires: {', '.join(missing)}")
+        return self
+
+    def covers(self, envelope: SandboxEnvelope) -> bool:
+        required: set[SandboxControl] = set()
+        if envelope.max_cpu_seconds is not None:
+            required.add(SandboxControl.CPU_LIMIT)
+        if envelope.max_memory_mb is not None:
+            required.add(SandboxControl.MEMORY_LIMIT)
+        if envelope.max_disk_mb is not None:
+            required.add(SandboxControl.DISK_LIMIT)
+        if envelope.max_processes is not None:
+            required.add(SandboxControl.PROCESS_LIMIT)
+        if envelope.max_network_bytes is not None:
+            required.add(SandboxControl.NETWORK_LIMIT)
+        if envelope.allowed_network_hosts:
+            required.add(SandboxControl.NETWORK_ALLOWLIST)
+        if envelope.read_only_filesystem:
+            required.add(SandboxControl.READ_ONLY_FILESYSTEM)
+        if envelope.allow_subprocesses:
+            required.add(SandboxControl.SUBPROCESS_POLICY)
+        return self.status == SandboxEvidenceStatus.VERIFIED and required <= self.verified_controls
+
+
 class BackendSandboxCapabilities(BaseModel):
     backend: str
     enforces_cpu_limit: bool = False
@@ -44,6 +107,7 @@ class BackendSandboxCapabilities(BaseModel):
     enforces_network_allowlist: bool = False
     enforces_read_only_filesystem: bool = False
     enforces_subprocess_policy: bool = False
+    enforcement_evidence: SandboxEnforcementEvidence | None = None
 
     def supports(self, envelope: SandboxEnvelope) -> bool:
         return (
@@ -77,6 +141,34 @@ def assess_sandbox(envelope: SandboxEnvelope, capabilities: BackendSandboxCapabi
             envelope_id=envelope.envelope_id,
             envelope_revision=envelope.revision,
             message="backend cannot enforce the requested sandbox envelope",
+            capabilities=capabilities,
+        )
+    if envelope.requires_os_enforcement():
+        evidence = capabilities.enforcement_evidence
+        if evidence is None or evidence.backend != capabilities.backend:
+            return SandboxAssessment(
+                status=SandboxAssessmentStatus.DENIED,
+                backend=capabilities.backend,
+                envelope_id=envelope.envelope_id,
+                envelope_revision=envelope.revision,
+                message="backend lacks matching verified sandbox enforcement evidence",
+                capabilities=capabilities,
+            )
+        if not evidence.covers(envelope):
+            return SandboxAssessment(
+                status=SandboxAssessmentStatus.DENIED,
+                backend=capabilities.backend,
+                envelope_id=envelope.envelope_id,
+                envelope_revision=envelope.revision,
+                message="sandbox enforcement evidence does not cover the requested envelope",
+                capabilities=capabilities,
+            )
+        return SandboxAssessment(
+            status=SandboxAssessmentStatus.ALLOWED,
+            backend=capabilities.backend,
+            envelope_id=envelope.envelope_id,
+            envelope_revision=envelope.revision,
+            message="backend has matching verified sandbox enforcement evidence",
             capabilities=capabilities,
         )
     if not envelope.requires_os_enforcement() and not capabilities.supports(envelope):

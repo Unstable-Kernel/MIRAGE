@@ -43,3 +43,41 @@
 - [x] Refresh `code_review.md`, `workflow-context.md`, and a quantified remaining-work assessment for collaborators.
 - [x] Run documentation and repository integrity verification.
 - [x] Commit documentation updates, push the branch, create pull request #9 because PR #8 is merged, and report the remaining work.
+
+## Parallel Next-Slice Foundation
+
+- [x] Define shared safety boundaries and versioned contracts for a real read-only simulator transport, enforced sandbox evidence, and M4 workflow primitives.
+- [x] Implement a transport-verification fixture protocol and a non-connecting reference adapter in parallel with M4 goal-to-evaluate domain models.
+- [x] Implement sandbox enforcement evidence contracts and deterministic test fixtures without claiming host-level isolation.
+- [x] Integrate cross-slice policy provenance, cancellation, timeout, and no-control evidence.
+- [x] Add contract tests, CLI inspection surfaces, examples, documentation, and roadmap updates for the combined vertical slice.
+- [x] Run complete verification, refresh code review and workflow context, commit, and report the parallel iteration.
+
+## Deterministic Workflow and Evidence Iteration
+
+- [x] Inspect EIR validation, workflow review, evidence, transport, and sandbox extension points.
+- [x] Define deterministic EIR-to-plan, evaluation-evidence, transport-verification, and sandbox-integrity contracts.
+- [x] Implement deterministic planning and evidence assessment primitives with no model or backend invocation.
+- [x] Integrate policy review, contract tests, CLI inspection, fixtures, examples, and documentation.
+- [x] Run full verification, update code review and workflow context, commit, and report the iteration.
+
+## Parallel Context and Review Trace Iteration
+
+- [x] Define deterministic context contracts, provenance review records, and review-trace safety boundaries.
+- [x] Implement context bundles and provenance review records without model, backend, or external invocation.
+- [x] Integrate trace completeness checks with workflow policy and evidence review.
+- [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and report the iteration.
+
+## Guarded Approval and Eligibility Iteration
+
+- [x] Define audited human approval, lifecycle, chain-integrity, and dispatch-eligibility contracts.
+- [x] Implement approval records, lifecycle validation, and chain integrity checks without authorization side effects.
+- [x] Implement dispatch eligibility assessment that always requires verified transport and enforced sandbox prerequisites.
+- [x] Add contract tests, CLI inspection, fixtures, examples, documentation, and roadmap updates for the guarded approval slice.
+- [x] Run complete verification, update code review and workflow context, commit, and report the iteration.
+
+## Remote Delivery and Pull Request Update
+
+- [x] Push the accumulated verified local commits to `origin/feat/iteration-1-foundation`.
+- [x] Create PR #10 because PR #9 is merged, then confirm the updated remote handoff.

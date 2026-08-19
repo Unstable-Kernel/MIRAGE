@@ -2,7 +2,7 @@
 
 ## Current baseline
 
-MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The current repository baseline contains 35 passing tests and supports deterministic EIR processing, typed provider contracts, revisioned ESG snapshots, policy-gated execution, append-only audit records, checkpoint revalidation, declarative sandbox assessment, and fixture-backed read-only simulator metadata and state extraction.
+MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The current parallel-foundation slice adds deterministic transport manifests and evidence, sandbox enforcement-evidence contracts, and a non-executing M4 goal-to-evaluate workflow review model. Full-suite test count is refreshed during final verification.
 
 ```mermaid
 flowchart LR
@@ -22,18 +22,19 @@ flowchart LR
 | M0, organization and CI | Complete | Governance, contribution, security, CI, package boundaries, and CLI baseline |
 | M1, EIR 0.1 | Complete | Pydantic schema, JSON Schema export, JSON/YAML validation, deterministic CLI |
 | M2, provider matrix | Complete with mocked contracts | Typed adapter protocol and six explicit provider adapters, optional live smoke harness |
-| M3, bounded execution foundation | Partially complete | URCP, policy runtime, ledger, checkpoint revalidation, sandbox assessment, and fixture-backed read-only adapter |
-| M4 through M7 | Planned | No implementation claim |
+| M3, bounded execution foundation | Partially complete | URCP, policy runtime, ledger, checkpoint revalidation, sandbox assessment, fixture-backed read-only adapter, transport evidence, and sandbox-evidence contracts |
+| M4, goal-to-evaluate workflow | Foundation implemented | Bounded review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context bundle, review trace, approval chain, and advisory eligibility; no planning model or execution pipeline |
+| M5 through M7 | Planned | No implementation claim |
 
 ## What remains
 
-The roadmap contains **eight milestone rows**. **Three are complete**, **one is an active partial foundation milestone**, and **four are planned major milestones**. A single percentage would be misleading because the remaining milestones have materially different scope and risk. The immediately actionable backlog has **six primary delivery streams**, followed by cross-cutting hardening work.
+The roadmap contains **eight milestone rows**. **Three are complete**, **two have active partial foundations**, and **three are planned major milestones**. A single percentage would be misleading because the remaining milestones have materially different scope and risk. The immediately actionable backlog has **six primary delivery streams**, followed by cross-cutting hardening work.
 
 | Priority | Remaining delivery stream | Why it remains | Required evidence before completion |
 |---|---|---|
-| 1 | Verified real read-only simulator transport | The current adapter reads fixtures only; CoppeliaSim remains non-connecting and unavailable | Adapter-specific transport contract, authentication boundary, versioned state semantics, fixture corpus, timeout and cleanup tests |
-| 2 | Enforced backend sandbox | Local assessment is declarative and does not enforce OS-level limits | Auditable process, filesystem, network, CPU, memory, disk, and cleanup controls with adversarial tests |
-| 3 | M4 goal-to-evaluate workflow | No integrated goal, context, EIR, planning, simulation, evaluation, and report pipeline exists | Versioned workflow contract, human approvals, evidence flow, integration tests, and deterministic validation gates |
+| 1 | Verified real read-only simulator transport | The manifest and fixture evidence exist, but CoppeliaSim remains non-connecting and unavailable | Authorized endpoint, restricted client, authentication boundary, observed versions, timeout cleanup, independent fixture corpus, and adversarial tests |
+| 2 | Enforced backend sandbox | Evidence contracts exist, but the local assessment is declarative and does not enforce OS-level limits | Auditable process, filesystem, network, CPU, memory, disk, and cleanup controls with adversarial tests |
+| 3 | M4 goal-to-evaluate workflow | Review-only goal, EIR-bound steps, criteria, checkpoint, deterministic plan, evidence assessment, redacted context bundle, review trace, approval chain, and advisory eligibility exist, but no integrated engineering workflow exists | Controlled context inputs, real evidence collection, policy-bound evaluation, authenticated approval transitions, report artifacts, and integration tests |
 | 4 | M5 cross-simulator translation | No verified semantic mapping exists between simulator backends | Adapter-specific mapping contracts, compatibility matrix, fixture and regression coverage |
 | 5 | M6 research reproduction | No controlled research artifact ingestion or reproducibility workflow exists | Provenance model, isolated environments, artifact validation, retention, and review gates |
 | 6 | M7 hypothesis and optimization | No autonomous hypothesis, experiment selection, diagnosis, or optimization runtime exists | Bounded objective model, safety policy, evidence provenance, evaluation, and human review controls |

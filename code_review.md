@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is commit `40f55b1` plus this documentation reconciliation pass. The repository has 35 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, and deterministic fixture-backed read-only simulator metadata and state extraction.
+The current baseline is PR #9 plus the unpushed deterministic workflow, context, review-trace, approval, and eligibility work. The repository has 64 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, and advisory eligibility primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -15,9 +15,15 @@ The current baseline is commit `40f55b1` plus this documentation reconciliation 
 | URCP runtime | Policy-gated execution, ledger, timeout, cancellation, and resource budgets | No arbitrary host commands or unrestricted side effects |
 | Sandbox and checkpoint safety | Declarative preflight and non-executing revalidation | No OS isolation or automatic resume |
 | Simulator adapter | Deterministic fixture metadata and state extraction | No real transport, simulator connection, or control |
+| Transport verification | Versioned manifest and fixture evidence assessment | No live CoppeliaSim verification or connection |
+| Sandbox evidence | OS envelope claims require matching verified evidence | No real local cgroup, container, mount, firewall, or process isolation |
+| M4 workflow foundation | Goal, bounded steps, criteria, checkpoint, and manual revalidation | No model planning, execution, evaluation, or report pipeline |
+| Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
+| Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
+| Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
-The remaining primary delivery streams are a real verified read-only simulator transport, an enforced backend sandbox, M4 goal-to-evaluate workflow, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
+The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
 
 The documentation reconciliation verified every tracked Markdown file for local link targets and scanned the corpus for superseded implementation-status statements. The current full suite passes with 35 tests; Ruff, EIR schema consistency, CLI capability discovery, deterministic fixture inspection, secret scanning, no-em-dash scanning, and diff integrity checks passed. PR #8 is already merged, so the post-push review surface must be a new pull request.
 
@@ -219,3 +225,91 @@ Timeout handling follows the existing cooperative `CancellationToken` pattern. T
 ## Updated verification
 
 The complete repository suite passes with 35 tests. Ruff, EIR schema consistency, fixture CLI inspection, unavailable CoppeliaSim CLI behavior, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, physical actuation, external side effect, package publication, or branch push occurred in this iteration.
+
+## Parallel foundation iteration review
+
+The transport, sandbox, and workflow work packages were implemented independently and joined only at typed policy and review boundaries. This avoids treating a fixture contract as live transport, a static capability claim as host isolation, or a proposed workflow as permission to execute it.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/transport_verification.py` | Transport manifests require a complete prohibited-control set; evidence must cover every declared read operation before an assessment becomes valid |
+| `src/mirage/runtime/sandbox.py` | Requested OS-level envelopes now require matching capabilities and verified enforcement evidence; missing or partial evidence is denied |
+| `src/mirage/runtime/goal_workflow.py` | M4 foundation is bounded to review-only goal, steps, criteria, checkpoint, and revalidation contracts with `execution_permitted` fixed to false |
+| `src/mirage/runtime/simulator_adapter.py` | Unavailable CoppeliaSim results now identify the unverified ZeroMQ reference manifest without connecting |
+| `src/mirage/cli.py` | `transport-assess` and `goal-workflow-review` parse local JSON and return structured non-executing evidence |
+| `examples/08-parallel-foundations/` | Provides deterministic manifest, evidence, and workflow fixtures that do not rely on a simulator service |
+
+The CoppeliaSim ZeroMQ API is intentionally not treated as intrinsically read-only because the official API surface includes simulator control. The reference manifest therefore captures protocol vocabulary and prohibited control operations only. It does not import a CoppeliaSim client, open a socket, or report live verification.
+
+Sandbox enforcement evidence is deliberately a claim-validation contract. The evidence-backed local test backend proves the executor acceptance condition, not operating-system isolation. No cgroup, container, mount namespace, network firewall, process supervisor, resource quota, or cleanup daemon was installed or invoked.
+
+The M4 review model remains human-gated. It can reject unavailable or policy-denied capabilities through existing checkpoint revalidation, but it cannot invoke a provider, execute a capability, resume a checkpoint, collect evidence, or generate an engineering report. This is the correct safety boundary while real transport and enforced sandbox work remain incomplete.
+
+## Parallel iteration verification
+
+The full suite passes with 45 tests. Ruff, EIR schema consistency, Markdown local-link checks, capability discovery, deterministic transport assessment, goal-workflow review, unavailable CoppeliaSim CLI behavior, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. No simulator connection, control command, external side effect, physical actuation, checkpoint resume, OS-level isolation, package publication, or branch push occurred during this iteration.
+
+The parallel foundation implementation is committed locally as `44b6a3b` with the message `feat: add parallel safety foundations`. It contains no co-author trailer or AI attribution. The commit is intentionally not pushed because the user has not requested a branch update for this iteration.
+
+## Deterministic workflow and verification-integrity review
+
+`workflow_evidence.py` separates deterministic reference validation from engineering judgment. It first confirms that a workflow identifies the supplied EIR document and that every step cites known EIR nodes. It then assesses whether declared evidence covers each required criterion from a source node included in the plan. Both artifacts retain `execution_permitted: false`.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/workflow_evidence.py` | EIR-to-plan and evidence assessment are deterministic, typed, and non-executing |
+| `src/mirage/runtime/goal_workflow.py` | Each review step now requires declared source-node identifiers |
+| `src/mirage/runtime/transport_verification.py` | Live verification cannot be represented without authorization, version, verifier, transcript digest, and cleanup evidence |
+| `src/mirage/runtime/sandbox.py` | Verified evidence cannot be represented without digest, environment fingerprint, verifier, and controls |
+| `src/mirage/cli.py` | Planning and evidence commands parse local files only and never call a provider or backend |
+| `examples/09-deterministic-workflow/` | Canonical EIR-bound plan and evidence fixture for manual review |
+
+The integrity fields are admission requirements for a future verified claim, not fabricated evidence. No live simulator transport, actual sandbox enforcement, model call, capability execution, report generation, external side effect, physical actuation, or automatic approval has been added.
+
+## Deterministic workflow verification
+
+The full suite passes with 53 tests. Ruff, EIR schema consistency, Markdown local-link checks, EIR-bound planning and evidence CLI inspection, capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The deterministic workflow and verification-integrity implementation is committed locally as `3a3a819` with the message `feat: add deterministic workflow evidence review`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Context and review-trace iteration review
+
+The context and trace contracts complete another locally verifiable M4 foundation. A context bundle is restricted to identifiers, redacted references, digests, source-node bindings, and observations. A review trace is restricted to reference and digest records for four required stages. Both are validated against the workflow, plan, evidence status, and active policy provenance.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/context_review.py` | Context bundle validation rejects workflow, EIR, policy, and source-node drift without retrieving data |
+| `src/mirage/runtime/review_trace.py` | Trace assessment requires context, plan, evidence, and human-review stages while preserving `execution_permitted: false` |
+| `src/mirage/cli.py` | Context and trace commands parse local artifacts only and do not mutate workflow state |
+| `examples/10-context-review/` | Provides a redacted fixture context and complete provenance trace for deterministic inspection |
+| `tests/test_context_review.py` and `tests/test_review_trace.py` | Cover ready and invalid outcomes for source binding and policy-provenance drift |
+
+No arbitrary content ingestion, URI retrieval, prompt construction, model invocation, capability execution, checkpoint resume, human approval mutation, simulator transport, sandbox enforcement, external side effect, or physical actuation was introduced. The context model is deliberately an integrity boundary, not a general retrieval or autonomous-agent subsystem.
+
+## Context iteration verification
+
+The full suite passes with 59 tests. Ruff, EIR schema consistency, Markdown local-link checks, local context and trace CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The context and review-trace implementation is committed locally as `f9f0ab0` with the message `feat: add workflow context review traces`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Guarded approval and eligibility iteration review
+
+Approval and dispatch eligibility are now separated. An approval chain can be structurally `review_ready`, but eligibility remains ineligible unless the active policy permits simulation, transport evidence is independently live-verified, and sandbox assessment is allowed in an enforced verified environment. This separation prevents a locally stored approval fixture from becoming an execution authority.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/approval_review.py` | Digest-linked, policy-bound human approval records with approved, rejected, and invalid review outcomes |
+| `src/mirage/runtime/dispatch_eligibility.py` | Advisory prerequisite assessment that never dispatches and always sets `execution_permitted` to false |
+| `src/mirage/cli.py` | Local approval and eligibility inspection commands that emit structured results before a deliberate ineligible exit |
+| `examples/11-guarded-approval/` | Approved local fixture paired with fixture-only transport and declarative sandbox inputs that must remain ineligible |
+| `tests/test_approval_review.py` and `tests/test_dispatch_eligibility.py` | Cover approval, rejection, and blocked eligibility paths |
+
+No identity provider, signature verifier, durable audit store, notification system, approval mutation, transport client, sandbox runtime, dispatcher, simulator connection, external side effect, physical actuation, or automatic workflow resume was introduced. The ineligible example proves the intended refusal behavior.
+
+## Guarded approval verification
+
+The full suite passes with 64 tests. Ruff, EIR schema consistency, Markdown local-link checks, approval-chain inspection, expected ineligible dispatch eligibility output, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The guarded approval and advisory eligibility implementation is committed locally as `fc796df` with the message `feat: add guarded approval eligibility`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+The accumulated delivery is now pushed through `b024f18`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; it replaces PR #9, which was already merged before these later guarded workflow iterations were delivered.

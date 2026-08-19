@@ -1,0 +1,38 @@
+{
+  "context_bundle_id": "quadrotor-context-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "eir_document_id": "quadrotor-inspection",
+  "policy_provenance": {
+    "policy_id": "local-default",
+    "revision": "1",
+    "source": "local",
+    "approved_by": null
+  },
+  "items": [
+    {
+      "context_item_id": "robot-node",
+      "kind": "eir_node",
+      "reference": "EIR:robot.quadrotor",
+      "content_digest": "sha256:quadrotor-robot-node-v1",
+      "source_node_ids": [
+        "robot.quadrotor"
+      ],
+      "observations": {
+        "scope": "validated robot semantic reference"
+      }
+    },
+    {
+      "context_item_id": "objective-node",
+      "kind": "eir_node",
+      "reference": "EIR:objective.inspect",
+      "content_digest": "sha256:inspection-objective-node-v1",
+      "source_node_ids": [
+        "objective.inspect"
+      ],
+      "observations": {
+        "scope": "validated objective semantic reference"
+      }
+    }
+  ],
+  "redaction_verified": true
+}

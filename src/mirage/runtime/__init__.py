@@ -1,4 +1,21 @@
+from .approval_review import (
+    ApprovalChain,
+    ApprovalChainAssessment,
+    ApprovalChainStatus,
+    ApprovalDecision,
+    HumanApprovalRecord,
+    assess_approval_chain,
+)
 from .checkpoint import CheckpointCapabilityRequirement, CheckpointRevalidationIssue, CheckpointRevalidationResult, WorkflowCheckpoint
+from .context_review import (
+    ContextBundleStatus,
+    ContextItemKind,
+    WorkflowContextAssessment,
+    WorkflowContextBundle,
+    WorkflowContextItem,
+    assess_workflow_context,
+)
+from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
 from .execution import (
     CancellationToken,
     CapabilityExecutor,
@@ -11,8 +28,25 @@ from .execution import (
     PolicyProvenance,
     ResourceLimits,
 )
+from .goal_workflow import GoalEvaluationCriterion, GoalToEvaluateWorkflow, GoalWorkflowReview, GoalWorkflowStatus, GoalWorkflowStep
 from .ledger import ExecutionAuditRecord, ExecutionLedger
-from .sandbox import BackendSandboxCapabilities, SandboxAssessment, SandboxAssessmentStatus, SandboxEnvelope, assess_sandbox
+from .review_trace import (
+    ReviewTraceAssessment,
+    ReviewTraceEvent,
+    ReviewTraceEventType,
+    WorkflowReviewTrace,
+    assess_review_trace,
+)
+from .sandbox import (
+    BackendSandboxCapabilities,
+    SandboxAssessment,
+    SandboxAssessmentStatus,
+    SandboxControl,
+    SandboxEnforcementEvidence,
+    SandboxEnvelope,
+    SandboxEvidenceStatus,
+    assess_sandbox,
+)
 from .simulator_adapter import (
     CoppeliaSimReadOnlyAdapter,
     FixtureSimulatorAdapter,
@@ -24,7 +58,27 @@ from .simulator_adapter import (
     SimulatorStateSnapshot,
 )
 from .simulator_inspection import CoppeliaSimInspectionBackend, InspectionStatus, SimulatorInspection, default_inspection_backends
+from .transport_verification import (
+    ReadOnlyTransportManifest,
+    ReadOnlyTransportOperation,
+    TransportVerificationEvidence,
+    TransportVerificationReport,
+    TransportVerificationStatus,
+    assess_transport,
+    coppeliasim_zmq_read_only_manifest,
+)
 from .urcp import CapabilityDescriptor, CapabilityRegistry, SecurityClass, default_registry
+from .workflow_evidence import (
+    DeterministicWorkflowPlan,
+    EvaluationEvidence,
+    EvaluationEvidenceClass,
+    WorkflowEvidenceAssessment,
+    WorkflowEvidenceStatus,
+    WorkflowPlanStatus,
+    WorkflowValidationIssue,
+    assess_evaluation_evidence,
+    build_deterministic_plan,
+)
 
 __all__ = [
     "CapabilityDescriptor",
@@ -32,13 +86,24 @@ __all__ = [
     "SecurityClass",
     "default_registry",
     "CapabilityExecutor",
+    "ApprovalChain",
+    "ApprovalChainAssessment",
+    "ApprovalChainStatus",
+    "ApprovalDecision",
     "CancellationToken",
+    "ContextBundleStatus",
+    "ContextItemKind",
     "ExecutionPolicy",
     "ExecutionRequest",
     "ExecutionResult",
     "ExecutionStatus",
     "PolicyProvenance",
     "ResourceLimits",
+    "DispatchEligibilityAssessment",
+    "DispatchEligibilityStatus",
+    "ReviewTraceAssessment",
+    "ReviewTraceEvent",
+    "ReviewTraceEventType",
     "CoppeliaSimBackend",
     "CoppeliaSimReadOnlyAdapter",
     "LocalSimulationBackend",
@@ -55,13 +120,46 @@ __all__ = [
     "SimulatorStateSnapshot",
     "ExecutionAuditRecord",
     "ExecutionLedger",
+    "GoalEvaluationCriterion",
+    "GoalToEvaluateWorkflow",
+    "GoalWorkflowReview",
+    "GoalWorkflowStatus",
+    "GoalWorkflowStep",
+    "HumanApprovalRecord",
     "WorkflowCheckpoint",
+    "WorkflowContextAssessment",
+    "WorkflowContextBundle",
+    "WorkflowContextItem",
     "CheckpointCapabilityRequirement",
     "CheckpointRevalidationIssue",
     "CheckpointRevalidationResult",
     "BackendSandboxCapabilities",
     "SandboxAssessment",
     "SandboxAssessmentStatus",
+    "SandboxControl",
+    "SandboxEnforcementEvidence",
     "SandboxEnvelope",
+    "SandboxEvidenceStatus",
     "assess_sandbox",
+    "ReadOnlyTransportManifest",
+    "ReadOnlyTransportOperation",
+    "TransportVerificationEvidence",
+    "TransportVerificationReport",
+    "TransportVerificationStatus",
+    "assess_transport",
+    "coppeliasim_zmq_read_only_manifest",
+    "DeterministicWorkflowPlan",
+    "EvaluationEvidence",
+    "EvaluationEvidenceClass",
+    "WorkflowEvidenceAssessment",
+    "WorkflowEvidenceStatus",
+    "WorkflowPlanStatus",
+    "WorkflowReviewTrace",
+    "WorkflowValidationIssue",
+    "assess_evaluation_evidence",
+    "assess_approval_chain",
+    "assess_dispatch_eligibility",
+    "assess_review_trace",
+    "build_deterministic_plan",
+    "assess_workflow_context",
 ]

@@ -29,6 +29,17 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - Checkpoint revalidation for policy provenance, capability versions, and backend allow-lists without resume behavior.
 - Fixture-backed read-only simulator project metadata and state extraction with sandbox assessment, policy checks, timeout handling, and cancellation-token cooperation.
 - `mirage simulator-metadata` for deterministic fixture inspection, with an explicitly unavailable non-connecting CoppeliaSim read-only boundary.
+- Read-only transport manifests and evidence assessment, including the unverified, non-connecting CoppeliaSim ZeroMQ reference manifest.
+- Sandbox enforcement-evidence contracts that reject OS-enforced envelope claims without matching declared controls and verified evidence.
+- Bounded goal-to-evaluate workflow review contracts, `review_goal_workflow@0.1`, and a human-review checkpoint that never executes or resumes work.
+- `mirage transport-assess` and `mirage goal-workflow-review` for deterministic local contract inspection.
+- Deterministic EIR-to-plan validation and evaluation-evidence assessment contracts that remain review-only and never invoke a model or backend.
+- `assess_workflow_evidence@0.1`, `mirage goal-workflow-plan`, and `mirage goal-workflow-evidence` for local workflow inspection.
+- Stronger integrity requirements for live transport and verified sandbox evidence claims.
+- Deterministic redacted context bundles and policy-bound provenance review traces for the M4 human-review foundation.
+- `inspect_workflow_context@0.1`, `assess_review_trace@0.1`, `mirage workflow-context-inspect`, and `mirage review-trace-assess` for local review-only inspection.
+- Audited human approval-chain and advisory dispatch-eligibility contracts that return prerequisite denial rather than authorize work.
+- `assess_human_approval@0.1`, `assess_dispatch_eligibility@0.1`, `mirage approval-chain-assess`, and `mirage dispatch-eligibility-assess` for local guarded review.
 
 ### Changed
 

@@ -2,49 +2,47 @@
 
 ## Task
 
-Complete the MIRAGE documentation reconciliation, remaining-work assessment, and requested branch delivery.
+Complete the guarded approval and advisory dispatch eligibility iteration for MIRAGE.
 
 ## Current status
 
-The documentation reconciliation pass is delivered. Commit `3e2f56e` was pushed to `feat/iteration-1-foundation`, and [PR #9](https://github.com/Unstable-Kernel/MIRAGE/pull/9) is open against `main`. README, architecture notes, runtime guides, the URCP specification, security boundary, examples, changelog, roadmap, code review, workflow context, and delivery status now align with the current runtime.
+The guarded workflow foundations and remote delivery tracking are pushed to `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main` because PR #9 was merged before the accumulated local safety work was pushed. Do not publish any package without an explicit user request.
 
 ## Completed work
 
-The repository baseline includes EIR validation, six provider adapters, revisioned ESG snapshots, URCP policy-gated execution, ledger and checkpoint primitives, declarative sandbox assessment, checkpoint revalidation, and fixture-backed read-only simulator metadata and state extraction. The documentation audit corrected stale references that described ESG, the model orchestrator, URCP definitions, and the execution foundation as future-only concepts.
+`approval_review.py` introduces `HumanApprovalRecord` and `ApprovalChain`. Each record binds an approver identifier, decision, workflow, review trace, policy provenance, digest linkage, and timestamp. Assessment checks trace, workflow, policy provenance, and latest decision. It returns a review result only and never sets execution permission.
 
-The new `docs/guides/delivery-status.md` records the accurate milestone accounting: M0 through M2 are complete, M3 is partially complete, and M4 through M7 are planned. It describes six primary remaining delivery streams and the cross-cutting hardening work needed to support them.
+`dispatch_eligibility.py` introduces an advisory preflight that combines approval readiness, simulation policy, transport report, and sandbox assessment. Its eligibility result is always non-executing. The fixture demonstrates why an approved local review still cannot dispatch when transport is only fixture-verified and the sandbox is declarative.
 
-The fixture adapter remains deterministic test infrastructure. `CoppeliaSimReadOnlyAdapter` remains unavailable and non-connecting until a real transport, semantic contract, fixture corpus, and safety review are independently verified. No simulator control, external side effect, physical actuation, automatic checkpoint resume, OS-enforced sandbox, package publication, or release automation is implemented.
+The URCP registry exposes `assess_human_approval@0.1` and `assess_dispatch_eligibility@0.1` as generic read-only declarations. The `approval-chain-assess` and `dispatch-eligibility-assess` CLI commands consume local JSON only. `examples/11-guarded-approval/` provides the canonical approval and blocked eligibility fixtures.
 
 ## Verification
 
 | Check | Result |
 |---|---|
-| Full Python tests | 35 passed |
+| Full Python tests | 64 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
-| Documentation verification | Every tracked Markdown file passed local-link checks; stale implementation-status scan passed |
-| CLI verification | Doctor, fixture capability discovery, and deterministic metadata/state inspection passed |
+| Documentation verification | Every tracked Markdown file passed local-link checks |
+| CLI verification | Approval chain returns review-ready; dispatch eligibility returns expected ineligible result; generic capability discovery passed |
 | Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
-| Pull request state | PR #8 is merged; a new PR is required after this branch is pushed |
 
 ## Known limitations
 
-The documentation pass is verified, committed, pushed, and submitted for review. The next recommended action is to review PR #9, then select the next vertical slice from `docs/guides/delivery-status.md` after merge.
+Approval records are local data contracts, not authenticated human identity or signatures. They are not stored durably, revocable, notified, or independently audited. Dispatch eligibility is advisory and does not dispatch a backend even if all supplied conditions appear ready.
 
-The fixture adapter is not a real simulator transport. Its `transport_verified` result only means fixture parsing and result semantics are deterministic and covered by tests. Endpoint configuration for CoppeliaSim is recorded without a connection attempt. Sandbox controls remain declarative on the local backend and do not provide cgroups, containers, filesystem mounts, CPU/RAM/disk quotas, network enforcement, or subprocess isolation.
+The live transport and OS-enforced sandbox prerequisites remain unavailable. The M4 workflow still lacks real controlled context, external evidence adapters, policy-bound evaluation, authenticated approval persistence, report artifacts, and an execution integration. Simulator control, external side effects, physical actuation, automatic checkpoint resume, package publication, and autonomous experimentation remain absent.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `README.md` | Public status, quickstart, and documentation entry points |
-| `ARCHITECTURE.md` and `docs/architecture/` | Current plane-level implementation and remaining boundaries |
-| `specs/URCP/README.md` | Current capability and runtime contract surface |
-| `docs/guides/delivery-status.md` | Quantified milestone accounting and remaining work |
-| `code_review.md` | Collaborator-facing current baseline and historical review record |
-| `todo.md` | Documentation reconciliation and delivery checklist |
+| `src/mirage/runtime/approval_review.py` | Approval chain models, digest linkage, and review-only assessment |
+| `src/mirage/runtime/dispatch_eligibility.py` | Advisory technical prerequisite assessment with structured denial reasons |
+| `src/mirage/cli.py` | Approval and eligibility local inspection commands |
+| `examples/11-guarded-approval/` | Canonical approved-yet-ineligible fixture set |
+| `docs/guides/guarded-approval-eligibility.md` | User-facing contract, refusal behavior, and safety limits |
 
 ## Next recommended action
 
-Finish documentation verification, update this context with final results, commit the documentation reconciliation, push `feat/iteration-1-foundation`, and create a new pull request because PR #8 is already merged. The recommended next implementation slice is an independently verified real read-only simulator transport, followed by an enforced backend sandbox. Neither slice should introduce simulator control without a distinct safety design and approval path.
+Review PR #10. The next locally safe M4 slice is an authenticated approval-persistence interface definition with no credential handling or execution path. It must remain advisory until verified live transport and an enforced sandbox exist.

@@ -12,22 +12,38 @@ import typer
 from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
 from .runtime import (
+    ApprovalChain,
     BackendSandboxCapabilities,
     CapabilityExecutor,
     CoppeliaSimReadOnlyAdapter,
+    EvaluationEvidence,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
     FixtureSimulatorAdapter,
+    GoalToEvaluateWorkflow,
+    ReadOnlyTransportManifest,
+    SandboxAssessment,
     SandboxEnvelope,
+    TransportVerificationEvidence,
     WorkflowCheckpoint,
+    WorkflowContextBundle,
+    WorkflowReviewTrace,
+    assess_approval_chain,
+    assess_dispatch_eligibility,
+    assess_evaluation_evidence,
+    assess_review_trace,
     assess_sandbox,
+    assess_transport,
+    assess_workflow_context,
+    build_deterministic_plan,
     default_inspection_backends,
     default_registry,
 )
 
 app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 FIXTURE_ARGUMENT = typer.Argument(default=None, help="Deterministic read-only fixture JSON path.")
+EVIDENCE_ARGUMENT = typer.Argument(default=None, help="Optional deterministic transport evidence JSON path.")
 
 
 def _result(path: Path) -> Any:
@@ -142,6 +158,147 @@ def simulator_metadata(
         statuses.append(snapshot.status.value)
     typer.echo(json.dumps(payload, sort_keys=True))
     if any(status != "available" for status in statuses):
+        raise typer.Exit(1)
+
+
+@app.command("transport-assess")
+def transport_assess(manifest_file: Path, evidence_file: Path | None = EVIDENCE_ARGUMENT) -> None:
+    """Assess read-only transport evidence without opening a simulator connection."""
+    manifest = ReadOnlyTransportManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    evidence = None
+    if evidence_file is not None:
+        evidence = TransportVerificationEvidence.model_validate_json(evidence_file.read_text(encoding="utf-8"))
+    report = assess_transport(manifest, evidence)
+    typer.echo(report.model_dump_json())
+    if not report.valid:
+        raise typer.Exit(1)
+
+
+@app.command("goal-workflow-review")
+def goal_workflow_review(file: Path, backend: str | None = None, allow_simulation: bool = False) -> None:
+    """Revalidate a goal-to-evaluate workflow for manual review without executing a step."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy(
+        allow_read_only=True,
+        allow_simulation=allow_simulation,
+        allowed_backends={backend} if backend else set(),
+    )
+    review = workflow.review(default_registry(), policy)
+    typer.echo(review.model_dump_json())
+    if review.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+def _workflow_document(eir_file: Path):
+    validation = validate_document(load_data(eir_file))
+    if not validation.ok:
+        typer.echo(json.dumps(validation.as_dict(), sort_keys=True))
+        raise typer.Exit(1)
+    assert validation.document is not None
+    return validation.document
+
+
+@app.command("goal-workflow-plan")
+def goal_workflow_plan(workflow_file: Path, eir_file: Path) -> None:
+    """Validate an EIR-bound goal workflow plan without model or backend invocation."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    typer.echo(plan.model_dump_json())
+    if plan.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("goal-workflow-evidence")
+def goal_workflow_evidence(workflow_file: Path, eir_file: Path, evidence_file: Path) -> None:
+    """Assess cited workflow evidence without evaluating or executing engineering work."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("workflow-context-inspect")
+def workflow_context_inspect(workflow_file: Path, eir_file: Path, context_file: Path) -> None:
+    """Validate a local redacted context bundle against a deterministic workflow plan."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    assessment = assess_workflow_context(context, workflow, plan, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("review-trace-assess")
+def review_trace_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path) -> None:
+    """Assess a complete local provenance trace without changing workflow state."""
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(context, workflow, plan, policy)
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+def _review_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(context, workflow, plan, policy)
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
+    return workflow, policy, trace_assessment
+
+
+@app.command("approval-chain-assess")
+def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
+    """Assess a local human approval chain without granting authority or changing workflow state."""
+    _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_chain(chain, trace_assessment, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "review_ready":
+        raise typer.Exit(1)
+
+
+@app.command("dispatch-eligibility-assess")
+def dispatch_eligibility_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    transport_manifest_file: Path,
+    transport_evidence_file: Path,
+    sandbox_assessment_file: Path,
+    allow_simulation: bool = False,
+) -> None:
+    """Assess prerequisites for future dispatch without invoking a backend or authorizing execution."""
+    _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    policy = policy.model_copy(update={"allow_simulation": allow_simulation})
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    approval = assess_approval_chain(chain, trace_assessment, policy)
+    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
+    evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    transport = assess_transport(manifest, evidence)
+    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    assessment = assess_dispatch_eligibility(approval, transport, sandbox, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "eligible_for_verified_dispatch":
         raise typer.Exit(1)
 
 

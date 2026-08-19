@@ -1,0 +1,19 @@
+{
+  "status": "declarative_only",
+  "backend": "local",
+  "envelope_id": "local-default",
+  "envelope_revision": "1",
+  "message": "local fixture has no enforced sandbox",
+  "capabilities": {
+    "backend": "local",
+    "enforces_cpu_limit": false,
+    "enforces_memory_limit": false,
+    "enforces_disk_limit": false,
+    "enforces_process_limit": false,
+    "enforces_network_limit": false,
+    "enforces_network_allowlist": false,
+    "enforces_read_only_filesystem": false,
+    "enforces_subprocess_policy": false,
+    "enforcement_evidence": null
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "workflow_id": "fixture-state-review-v1",
+  "goal": "Inspect a deterministic simulator state snapshot without simulator control.",
+  "eir_document_id": "fixture.pick-and-place",
+  "version": "0.1",
+  "steps": [
+    {
+      "step_id": "inspect-state",
+      "summary": "Inspect the deterministic fixture state snapshot.",
+      "capability": {
+        "capability_id": "inspect_simulator_state",
+        "version": "0.1",
+        "backend": "fixture"
+      },
+      "source_node_ids": [
+        "fixture.object"
+      ],
+      "expected_evidence": [
+        "bounded state snapshot",
+        "read-only transport assessment"
+      ],
+      "requires_human_approval": true
+    }
+  ],
+  "evaluation_criteria": [
+    {
+      "criterion_id": "snapshot-present",
+      "description": "A bounded state snapshot is available for manual engineering review.",
+      "evidence_required": true
+    }
+  ]
+}
