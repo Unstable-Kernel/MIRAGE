@@ -160,3 +160,7 @@
 - [x] Define and implement a supplied-declaration report seal consistency assessment with structured rejection reasons.
 - [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieval, signature verification, remote witnessing, mutation, or execution.
 - [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.
+
+## Build-Loop Policy Reverification
+
+- [x] Verify that the active three-hour schedule and repository handoff retain the exact local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
