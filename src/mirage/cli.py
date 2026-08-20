@@ -9,7 +9,7 @@ from typing import Any
 
 import typer
 
-from .eir import load_data, validate_document
+from .eir import ingest_eir_file, load_data, validate_document
 from .knowledge import EngineeringStateGraph
 from .runtime import (
     ApprovalChain,
@@ -99,6 +99,15 @@ def inspect(file: Path) -> None:
     for kind, count in sorted(counts.items()):
         typer.echo(f"  {kind}: {count}")
     typer.echo(f"relationships: {len(result.document.relationships)}")
+
+
+@app.command("eir-ingest")
+def eir_ingest(file: Path, allowed_root: Path | None = None) -> None:
+    """Ingest one local JSON or YAML EIR candidate without retrieval, execution, or provenance mutation."""
+    result = ingest_eir_file(file, allowed_root=allowed_root)
+    typer.echo(result.model_dump_json())
+    if not result.accepted:
+        raise typer.Exit(1)
 
 
 @app.command("esg-inspect")

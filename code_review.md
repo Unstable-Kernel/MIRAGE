@@ -399,3 +399,20 @@ The ledger slice adds a local JSONL integrity boundary without changing executio
 The guarantee is deliberately narrow. The chain detects accidental or unsophisticated local modification but does not add signatures, remote witnessing, trusted timestamps, encryption, a database transaction, storage migration, distributed coordination, or hostile-writer protection. The advisory lock is a local POSIX coordination mechanism, not a multi-host safety boundary. No simulator connection, sandbox runtime, credential handling, durable authority mutation, external side effect, physical actuation, package publication, or branch push was introduced.
 
 The full repository suite passes with 78 tests. Ruff, EIR schema consistency, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `c6cc0ff` with the message `feat: add ledger integrity retention`; the commit contains no co-author trailer or AI attribution. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged, and this ledger iteration remains unpushed pending an explicit user request.
+
+## Local EIR ingestion iteration review
+
+The local EIR ingestion slice introduces a bounded compiler frontend without implying general artifact extraction. `ingest_eir_file()` accepts only local UTF-8 JSON and YAML candidates, derives a source format, byte count, and SHA-256 digest, and delegates semantic acceptance entirely to the canonical EIR validator. The result keeps local source metadata separate from the input EIR document, so document, node, and relationship provenance are preserved rather than rewritten.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/eir/ingestion.py` | Deterministic local read, supported-format gate, source digest, allowed-root check, parse diagnostics, and canonical validation handoff |
+| `src/mirage/eir/__init__.py` | Exposes the ingestion contract through the public EIR API |
+| `src/mirage/cli.py` | Adds `eir-ingest`, a non-executing local inspection command with an optional allowed root |
+| `tests/test_eir_ingestion.py` | Covers JSON and YAML acceptance, preserved provenance, source digests, rejected formats, invalid syntax, mapping shape, canonical validation errors, path boundaries, and CLI behavior |
+| `examples/16-eir-ingestion/` | Provides a static local JSON EIR candidate and safe command example |
+| `docs/guides/eir-ingestion.md` | Defines local-only inputs, source metadata, diagnostics, and explicit non-goals |
+
+The adapter does not fetch URIs, parse repositories, papers, URDF, MATLAB, CAD, or arbitrary formats, execute source content, invoke a provider, mutate provenance, persist data, lower an EIR artifact, or dispatch a capability. The allowed-root option is a deterministic path-boundary check, not a filesystem sandbox or hostile-writer defense.
+
+The full repository suite passes with 85 tests. Ruff, EIR schema consistency, accepted CLI paths with and without an allowed root, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The local EIR ingestion iteration remains unpushed pending an explicit user request.

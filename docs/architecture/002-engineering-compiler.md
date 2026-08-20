@@ -18,15 +18,15 @@ Every extracted fact carries provenance and, where appropriate, confidence. Unsu
 
 ## Architecture
 
-Future frontends feed an EIR builder. The builder validates identifiers, relationships, units, schema version, and provenance before a compiler stage creates an execution graph.
+The local JSON and YAML ingestion adapter is the first bounded frontend contract. It preserves supplied EIR provenance, adds source format and digest metadata in a separate ingestion result, and delegates identifiers, relationships, units, schema version, and provenance validation to the canonical EIR validator. Future frontends feed an EIR builder before a compiler stage creates an execution graph.
 
 ## Interfaces
 
-Frontends accept artifacts and emit EIR candidates. Validators emit structured diagnostics. Backends accept only validated EIR or execution graphs.
+Frontends accept controlled local artifacts and emit EIR candidates. Validators emit structured diagnostics. Backends accept only validated EIR or execution graphs.
 
 ## Data flow
 
-Artifact → frontend → candidate EIR → validation → normalized EIR → lowering → adapter.
+Controlled local artifact → frontend → candidate EIR → validation → normalized EIR → lowering → adapter.
 
 ## Failure modes
 

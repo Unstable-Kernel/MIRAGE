@@ -139,3 +139,10 @@
 ## Build-Loop Policy Verification
 
 - [x] Verify that the active three-hour build-loop policy retains the required local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Local EIR Ingestion Adapter Iteration
+
+- [x] Inspect the existing EIR loading and validation boundary, then define a local provenance-preserving ingestion contract.
+- [x] Implement controlled local JSON and YAML ingestion with deterministic source-format diagnostics and canonical EIR validation.
+- [x] Add contract tests, CLI inspection, safe fixtures, and documentation without retrieval or external source access.
+- [x] Run full verification, update roadmap and handoff records, and create focused local commits without pushing.

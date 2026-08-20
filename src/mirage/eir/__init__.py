@@ -1,3 +1,11 @@
+from .ingestion import (
+    EIRIngestionDiagnostic,
+    EIRIngestionResult,
+    EIRIngestionStatus,
+    EIRSourceFormat,
+    LocalEIRSource,
+    ingest_eir_file,
+)
 from .schema import (
     EIRDocument,
     EIRNode,
@@ -24,4 +32,10 @@ __all__ = [
     "load_data",
     "load_document",
     "dump_document",
+    "EIRIngestionDiagnostic",
+    "EIRIngestionResult",
+    "EIRIngestionStatus",
+    "EIRSourceFormat",
+    "LocalEIRSource",
+    "ingest_eir_file",
 ]

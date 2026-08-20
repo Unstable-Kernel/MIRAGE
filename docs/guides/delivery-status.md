@@ -2,7 +2,7 @@
 
 ## Current baseline
 
-MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The local foundation now includes deterministic transport manifests and evidence, sandbox enforcement-evidence contracts, a non-executing M4 goal-to-evaluate workflow review model, and a versioned local ledger envelope with integrity inspection and bounded retention compaction. The full suite currently contains 78 passing tests.
+MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The local foundation now includes provenance-preserving JSON and YAML EIR candidate ingestion, deterministic transport manifests and evidence, sandbox enforcement-evidence contracts, a non-executing M4 goal-to-evaluate workflow review model, and a versioned local ledger envelope with integrity inspection and bounded retention compaction. The full suite test count is refreshed during final verification.
 
 ```mermaid
 flowchart LR
@@ -20,7 +20,7 @@ flowchart LR
 | Roadmap area | Status | Evidence in the repository |
 |---|---|---|
 | M0, organization and CI | Complete | Governance, contribution, security, CI, package boundaries, and CLI baseline |
-| M1, EIR 0.1 | Complete | Pydantic schema, JSON Schema export, JSON/YAML validation, deterministic CLI |
+| M1, EIR 0.1 | Complete | Pydantic schema, JSON Schema export, JSON/YAML validation, deterministic CLI, and controlled local candidate ingestion with source digests and diagnostics |
 | M2, provider matrix | Complete with mocked contracts | Typed adapter protocol and six explicit provider adapters, optional live smoke harness |
 | M3, bounded execution foundation | Partially complete | URCP, policy runtime, locally locked and digest-chained ledger with bounded retention, checkpoint revalidation, sandbox assessment, fixture-backed read-only adapter, transport evidence, and sandbox-evidence contracts |
 | M4, goal-to-evaluate workflow | Foundation implemented | Bounded review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context bundle, review trace, approval chain, advisory eligibility, persistence interface, revocation review, provenance seal, lifecycle validation, controlled context, deterministic report artifact, cross-artifact consistency, and readiness assessment; no planning model or execution pipeline |
