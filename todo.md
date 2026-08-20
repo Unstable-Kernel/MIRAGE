@@ -172,3 +172,10 @@
 ## Build-Loop Policy Reverification Continuation
 
 - [x] Reverify that the active three-hour schedule, repository handoff, roadmap, and pull request state preserve the exact local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Review-Trace Event Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied review-trace events, declared artifact references and digests, event coverage, and policy provenance without retrieval or signature verification.
+- [x] Implement the reference-only event consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.

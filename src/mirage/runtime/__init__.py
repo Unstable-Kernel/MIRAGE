@@ -113,6 +113,13 @@ from .review_trace import (
     WorkflowReviewTrace,
     assess_review_trace,
 )
+from .review_trace_consistency import (
+    ReviewTraceEventConsistencyAssessment,
+    ReviewTraceEventConsistencyManifest,
+    ReviewTraceEventConsistencyStatus,
+    ReviewTraceEventExpectation,
+    assess_review_trace_event_consistency,
+)
 from .revocation_review import (
     ApprovalRevocationAssessment,
     ApprovalRevocationRecord,
@@ -212,6 +219,10 @@ __all__ = [
     "ReviewTraceAssessment",
     "ReviewTraceEvent",
     "ReviewTraceEventType",
+    "ReviewTraceEventConsistencyAssessment",
+    "ReviewTraceEventConsistencyManifest",
+    "ReviewTraceEventConsistencyStatus",
+    "ReviewTraceEventExpectation",
     "ReviewPolicyAssessment",
     "ReviewPolicyStatus",
     "ReportLifecycleAssessment",
@@ -309,6 +320,7 @@ __all__ = [
     "assess_provenance_consistency",
     "assess_review_policy",
     "assess_review_trace",
+    "assess_review_trace_event_consistency",
     "build_deterministic_plan",
     "assess_workflow_context",
     "assess_workflow_readiness",

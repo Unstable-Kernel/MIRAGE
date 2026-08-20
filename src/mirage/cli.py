@@ -38,6 +38,7 @@ from .runtime import (
     ReportProvenanceSeal,
     ReportSealConsistencyManifest,
     ReviewTraceAssessment,
+    ReviewTraceEventConsistencyManifest,
     SandboxAssessment,
     SandboxEnvelope,
     TransportVerificationEvidence,
@@ -61,6 +62,7 @@ from .runtime import (
     assess_report_seal_consistency,
     assess_review_policy,
     assess_review_trace,
+    assess_review_trace_event_consistency,
     assess_sandbox,
     assess_transport,
     assess_workflow_context,
@@ -514,6 +516,18 @@ def report_seal_consistency_assess(
     trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
     manifest = ReportSealConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
     assessment = assess_report_seal_consistency(manifest, report, seal, provenance, trace, trace_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-trace-event-consistency-assess")
+def review_trace_event_consistency_assess(trace_file: Path, trace_assessment_file: Path, manifest_file: Path) -> None:
+    """Compare supplied review-trace event declarations without retrieval, signing, mutation, or execution."""
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
+    manifest = ReviewTraceEventConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_review_trace_event_consistency(manifest, trace, trace_assessment)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
         raise typer.Exit(1)

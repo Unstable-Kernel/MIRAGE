@@ -449,3 +449,19 @@ The report seal consistency slice adds a reference-only comparison among a suppl
 The report digest and sealer reference are compared as declared strings only. The assessment does not recompute a report digest, inspect source content, verify a signature, authenticate a sealer, create a trusted timestamp, contact a remote witness, store a seal, mutate lifecycle state, publish a report, invoke a backend, or authorize execution.
 
 The coordinated ten-phase flow completed local inspection, contract mapping, invariant definition, test planning, implementation, API and CLI exposure, fixtures, documentation, handoff reconciliation, and full validation. The final suite passed with 93 tests. Ruff, EIR schema consistency, the accepted report-seal consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The iteration is committed locally as `05813dc` with the message `feat: add report seal consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Review-trace event consistency iteration review
+
+The review-trace event consistency slice adds a deterministic, reference-only comparison across a supplied review trace, trace readiness assessment, and manifest. It validates trace, workflow, context-bundle, and policy-provenance identifiers, then validates the declared artifact reference and digest for every required review event. The result contains structured issues, records matching event types, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/review_trace_consistency.py` | Defines manifest, expected event, and consistency assessment contracts for supplied local trace declarations |
+| `src/mirage/cli.py` | Adds `review-trace-event-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_review_trace_event_consistency.py` | Covers aligned declarations, declared digest mismatch, policy-provenance mismatch, and CLI behavior |
+| `examples/19-review-trace-event-consistency/` | Provides trace, readiness, and manifest fixture declarations for all four event types |
+| `docs/guides/review-trace-event-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve an artifact, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 97 tests. Ruff, EIR schema consistency, the accepted review-trace event consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The implementation is pending its focused local commit and remains unpushed.
