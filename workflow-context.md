@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 ## Current status
 
-The controlled context and deterministic report iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch contains two unpushed governance handoff commits from the preceding iteration. Continue autonomously through safe local slices, but stop for an external prerequisite, safety decision, or explicit user choice.
+The controlled context and deterministic report iteration is committed locally as `e16d575` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch is three commits ahead of its remote. Continue autonomously through safe local slices, but stop for an external prerequisite, safety decision, or explicit user choice.
 
 ## Completed work
 
@@ -47,4 +47,4 @@ Live simulator transport and host-level sandbox enforcement remain unavailable. 
 
 ## Next recommended action
 
-Commit this iteration locally, then continue to deterministic policy-evaluation criteria and cross-artifact consistency checks. Do not add retrieval, a model, live transport, credentials, durable storage, dispatch, or a sandbox claim without independently verified external prerequisites.
+Continue to deterministic policy-evaluation criteria and cross-artifact consistency checks. Do not add retrieval, a model, live transport, credentials, durable storage, dispatch, or a sandbox claim without independently verified external prerequisites.

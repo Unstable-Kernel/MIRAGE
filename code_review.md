@@ -354,3 +354,5 @@ The report artifact remains a review graph, not a technical conclusion. No exter
 ## Controlled report verification
 
 The full suite passes with 70 tests. Ruff, EIR schema consistency, Markdown local-link checks, four controlled context and report CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The controlled context and deterministic report implementation is committed locally as `e16d575` with the message `feat: add controlled report artifacts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
