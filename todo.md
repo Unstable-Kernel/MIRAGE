@@ -105,3 +105,11 @@
 - [x] Implement unified workflow readiness assessment with structured denial reasons and no dispatch path.
 - [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
 - [x] Run complete verification, update code review and workflow context, commit, and determine whether external prerequisites block further safe work.
+
+## Scheduled Autonomous Build Review
+
+- [x] Configure the daily 09:00 IST autonomous MIRAGE build review with locally verifiable scope and external-prerequisite stop conditions.
+- [x] Deploy the associated Manus project through the Publish control so the recurring review schedule can be created.
+- [x] Define cadence, allowed autonomous scope, and external-prerequisite stop conditions for the recurring MIRAGE review.
+- [x] Configure the recurring autonomous review and verify that it preserves the established safety boundaries.
+- [x] Record the schedule handoff in workflow context and report the configured cadence.

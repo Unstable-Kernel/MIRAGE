@@ -377,3 +377,9 @@ The final readiness outcome, `ready_for_external_prerequisites`, is not a dispat
 The full suite passes with 72 tests. Ruff, EIR schema consistency, Markdown local-link checks, cross-artifact, review-policy, and readiness CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit. Further safe progress on the M4 execution path is now blocked by independently verified external transport and sandbox prerequisites.
 
 The cross-artifact readiness implementation is committed locally as `d14b7dc` with the message `feat: add cross artifact readiness`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Scheduled autonomous review handoff
+
+The repository now has one active recurring build review, titled `Daily MIRAGE build review`. It fires daily at 09:00 in `Asia/Calcutta` using cron expression `0 0 9 * * *`. The scheduled task inherits the current task context and includes GitHub and browser access already associated with the task.
+
+The schedule is constrained to locally verifiable MIRAGE work and must stop rather than fabricate live simulator transport, OS-level isolation, credentials, durable authority mutation, dispatch, simulator control, external side effects, physical actuation, publication, or a branch push. It must update tests, documentation, code review, workflow context, and local commits for any completed safe slice. It has been verified active after project deployment.

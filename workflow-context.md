@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 ## Current status
 
-The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch is five commits ahead of its remote. The active-session local-review backlog is now complete.
+The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch is five commits ahead of its remote. The active-session local-review backlog is now complete, and a daily autonomous build review is active.
 
 ## Completed work
 
@@ -43,4 +43,4 @@ No further safe execution, control, experiment, optimization, external side-effe
 
 ## Next recommended action
 
-Stop autonomous execution work and request an authorized live simulator integration environment plus an OS-enforced sandbox design before starting any transport or dispatcher implementation. Push the accumulated local commits to update PR #10 only on explicit user request.
+The schedule `Daily MIRAGE build review` is active daily at 09:00 `Asia/Calcutta` with cron `0 0 9 * * *`. It preserves the current task context, is limited to locally verifiable work, and must stop at live transport or OS-enforced sandbox prerequisites. Stop autonomous execution work and request an authorized live simulator integration environment plus an OS-enforced sandbox design before starting any transport or dispatcher implementation. Push the accumulated local commits to update PR #10 only on explicit user request.
