@@ -20,6 +20,7 @@ from .runtime import (
     ControlledContextEnvelope,
     ControlledContextSchema,
     CoppeliaSimReadOnlyAdapter,
+    DeterministicReviewPolicy,
     DeterministicReviewReport,
     EvaluationEvidence,
     EvidenceProvenanceSeal,
@@ -42,6 +43,7 @@ from .runtime import (
     assess_approval_persistence,
     assess_approval_revocation,
     assess_controlled_context,
+    assess_cross_artifacts,
     assess_deterministic_report,
     assess_dispatch_eligibility,
     assess_evaluation_evidence,
@@ -49,10 +51,12 @@ from .runtime import (
     assess_lifecycle_transition,
     assess_report_lifecycle_transition,
     assess_report_provenance,
+    assess_review_policy,
     assess_review_trace,
     assess_sandbox,
     assess_transport,
     assess_workflow_context,
+    assess_workflow_readiness,
     build_deterministic_plan,
     default_inspection_backends,
     default_registry,
@@ -323,6 +327,28 @@ def _report_artifacts(
     return envelope, report, assess_deterministic_report(report, controlled, provenance)
 
 
+def _cross_artifact_assessment(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+):
+    _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    _, _, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    _, report, report_assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    report_seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    report_provenance = assess_report_provenance(report, report_assessment, report_seal)
+    _, _, trace = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    return policy, approval, report, assess_cross_artifacts(controlled, trace, approval, report_assessment, report_provenance)
+
+
 @app.command("approval-chain-assess")
 def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
     """Assess a local human approval chain without granting authority or changing workflow state."""
@@ -475,6 +501,92 @@ def report_lifecycle_assess(
     lifecycle = assess_report_lifecycle_transition(transition, provenance)
     typer.echo(lifecycle.model_dump_json())
     if not lifecycle.valid:
+        raise typer.Exit(1)
+
+
+@app.command("cross-artifact-assess")
+def cross_artifact_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+) -> None:
+    """Validate local workflow, context, approval, and report artifact consistency without dispatch."""
+    _, _, _, assessment = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-policy-assess")
+def review_policy_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    policy_file: Path,
+) -> None:
+    """Apply deterministic review policy rules without generated content or dispatch."""
+    _, _, report, cross = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    assessment = assess_review_policy(review_policy, report, cross)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("workflow-readiness-assess")
+def workflow_readiness_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    policy_file: Path,
+    transport_manifest_file: Path,
+    transport_evidence_file: Path,
+    sandbox_assessment_file: Path,
+    allow_simulation: bool = False,
+) -> None:
+    """Aggregate review readiness and external prerequisite denials without invoking a backend."""
+    execution_policy, approval, report, cross = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    execution_policy = execution_policy.model_copy(update={"allow_simulation": allow_simulation})
+    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    policy_assessment = assess_review_policy(review_policy, report, cross)
+    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
+    transport_evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    transport = assess_transport(manifest, transport_evidence)
+    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    dispatch = assess_dispatch_eligibility(approval, transport, sandbox, execution_policy)
+    readiness = assess_workflow_readiness(cross, policy_assessment, dispatch)
+    typer.echo(readiness.model_dump_json())
+    if readiness.status.value != "ready_for_external_prerequisites":
         raise typer.Exit(1)
 
 

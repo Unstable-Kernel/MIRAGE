@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed controlled context and deterministic report iteration. The repository has 70 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, lifecycle, controlled context, and deterministic report primitives.
+The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed cross-artifact readiness iteration. The repository has 72 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, lifecycle, controlled context, deterministic report, cross-artifact consistency, review-policy, and readiness primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -23,6 +23,7 @@ The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/
 | Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
 | Governance foundations | Persistence interface, revocation record, provenance seal, and lifecycle transition validation | No credentials, durable storage, signatures, state mutation, or execution |
 | Controlled report artifacts | Schema-bound context envelopes, report citation graphs, provenance seal, and review lifecycle checks | No retrieval, generated claim, signature, publication, or execution |
+| Cross-artifact readiness | Review graph consistency, local policy, and preserved external prerequisite denials | No dispatch, live transport, sandbox enforcement, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -356,3 +357,21 @@ The report artifact remains a review graph, not a technical conclusion. No exter
 The full suite passes with 70 tests. Ruff, EIR schema consistency, Markdown local-link checks, four controlled context and report CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
 
 The controlled context and deterministic report implementation is committed locally as `e16d575` with the message `feat: add controlled report artifacts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Cross-artifact readiness iteration review
+
+The readiness layer is intentionally a convergence point for the review graph, not a control-plane escalation. It requires context, trace, approval, report, and report-provenance artifacts to agree on one workflow before applying bounded local report policy. It then retains advisory dispatch denials rather than converting a consistent graph into execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/cross_artifact_review.py` | Validates shared workflow identity and readiness of local review artifacts without mutation |
+| `src/mirage/runtime/review_policy.py` | Applies local section and citation constraints without generated engineering content |
+| `src/mirage/runtime/workflow_readiness.py` | Aggregates review readiness with advisory external denial reasons while keeping execution disabled |
+| `examples/14-cross-artifact-readiness/` | Canonical local policy fixture and expected external-prerequisite readiness example |
+| `tests/test_cross_artifact_readiness.py` and `tests/test_cross_artifact_cli.py` | Cover consistent review graph, local policy success, readiness output, and disabled execution |
+
+The final readiness outcome, `ready_for_external_prerequisites`, is not a dispatch-ready outcome. It explicitly preserves the missing verified live read-only transport and real enforced sandbox. The implementation adds no client, credential, storage, external action, sandbox runtime, simulator connection, model call, workflow mutation, or physical actuation.
+
+## Cross-artifact readiness verification
+
+The full suite passes with 72 tests. Ruff, EIR schema consistency, Markdown local-link checks, cross-artifact, review-policy, and readiness CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit. Further safe progress on the M4 execution path is now blocked by independently verified external transport and sandbox prerequisites.

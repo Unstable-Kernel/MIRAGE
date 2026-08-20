@@ -44,6 +44,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - `assess_approval_persistence@0.1`, `assess_approval_revocation@0.1`, `assess_evidence_provenance@0.1`, `assess_workflow_lifecycle@0.1`, and matching local CLI inspections.
 - Controlled context schemas, context envelopes, deterministic report artifacts, report provenance seals, and report lifecycle assessments.
 - `assess_controlled_context@0.1`, `assess_deterministic_report@0.1`, `assess_report_provenance@0.1`, `assess_report_lifecycle@0.1`, and matching local CLI inspections.
+- Cross-artifact consistency, deterministic review-policy, and unified readiness contracts that preserve external prerequisite denial reasons.
+- `assess_cross_artifact_consistency@0.1`, `assess_review_policy@0.1`, `assess_workflow_readiness@0.1`, and matching local CLI inspections.
 
 ### Changed
 

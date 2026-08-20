@@ -223,4 +223,28 @@ def default_registry() -> CapabilityRegistry:
             security_class=SecurityClass.READ_ONLY,
             postconditions=["lifecycle remains advisory", "execution remains disabled"],
         ),
+        CapabilityDescriptor(
+            capability_id="assess_cross_artifact_consistency",
+            version="0.1",
+            description="Validate local review artifact consistency without state mutation or dispatch.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["consistency remains advisory", "execution remains disabled"],
+        ),
+        CapabilityDescriptor(
+            capability_id="assess_review_policy",
+            version="0.1",
+            description="Apply deterministic review policy rules without generated content or dispatch.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["policy review remains local", "execution remains disabled"],
+        ),
+        CapabilityDescriptor(
+            capability_id="assess_workflow_readiness",
+            version="0.1",
+            description="Aggregate review readiness and external prerequisite denials without invoking a backend.",
+            compatible_backends=["generic"],
+            security_class=SecurityClass.READ_ONLY,
+            postconditions=["readiness remains advisory", "execution remains disabled"],
+        ),
     ])

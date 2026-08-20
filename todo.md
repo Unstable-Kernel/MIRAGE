@@ -97,3 +97,11 @@
 - [x] Implement report provenance and non-mutating report lifecycle validation.
 - [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
 - [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.
+
+## Cross-Artifact Readiness Integration
+
+- [x] Define cross-artifact consistency, deterministic policy-review, and unified readiness contracts.
+- [x] Implement cross-artifact consistency and policy-review assessment without mutating review artifacts.
+- [x] Implement unified workflow readiness assessment with structured denial reasons and no dispatch path.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and determine whether external prerequisites block further safe work.
