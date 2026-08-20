@@ -375,3 +375,5 @@ The final readiness outcome, `ready_for_external_prerequisites`, is not a dispat
 ## Cross-artifact readiness verification
 
 The full suite passes with 72 tests. Ruff, EIR schema consistency, Markdown local-link checks, cross-artifact, review-policy, and readiness CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit. Further safe progress on the M4 execution path is now blocked by independently verified external transport and sandbox prerequisites.
+
+The cross-artifact readiness implementation is committed locally as `d14b7dc` with the message `feat: add cross artifact readiness`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.

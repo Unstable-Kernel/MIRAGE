@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 ## Current status
 
-The cross-artifact readiness iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch currently has four unpushed commits from the previous governance and report iterations. The active-session local-review backlog is now complete.
+The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch is five commits ahead of its remote. The active-session local-review backlog is now complete.
 
 ## Completed work
 
@@ -43,4 +43,4 @@ No further safe execution, control, experiment, optimization, external side-effe
 
 ## Next recommended action
 
-Commit this final local integration iteration. Then stop autonomous execution work and request an authorized live simulator integration environment plus an OS-enforced sandbox design before starting any transport or dispatcher implementation. Push the accumulated local commits to update PR #10 only on explicit user request.
+Stop autonomous execution work and request an authorized live simulator integration environment plus an OS-enforced sandbox design before starting any transport or dispatcher implementation. Push the accumulated local commits to update PR #10 only on explicit user request.
