@@ -89,3 +89,11 @@
 - [x] Implement evidence provenance sealing and non-mutating lifecycle transition validation.
 - [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
 - [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.
+
+## Controlled Context and Report Artifact Iteration
+
+- [x] Define controlled context schemas, deterministic report artifact, report provenance, and review-lifecycle contracts.
+- [x] Implement controlled context and deterministic report contracts without external retrieval, storage, or generated engineering claims.
+- [x] Implement report provenance and non-mutating report lifecycle validation.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.

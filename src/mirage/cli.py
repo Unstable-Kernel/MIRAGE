@@ -17,7 +17,10 @@ from .runtime import (
     ApprovalRevocationRecord,
     BackendSandboxCapabilities,
     CapabilityExecutor,
+    ControlledContextEnvelope,
+    ControlledContextSchema,
     CoppeliaSimReadOnlyAdapter,
+    DeterministicReviewReport,
     EvaluationEvidence,
     EvidenceProvenanceSeal,
     ExecutionLedger,
@@ -26,6 +29,8 @@ from .runtime import (
     FixtureSimulatorAdapter,
     GoalToEvaluateWorkflow,
     ReadOnlyTransportManifest,
+    ReportLifecycleTransition,
+    ReportProvenanceSeal,
     SandboxAssessment,
     SandboxEnvelope,
     TransportVerificationEvidence,
@@ -36,10 +41,14 @@ from .runtime import (
     assess_approval_chain,
     assess_approval_persistence,
     assess_approval_revocation,
+    assess_controlled_context,
+    assess_deterministic_report,
     assess_dispatch_eligibility,
     assess_evaluation_evidence,
     assess_evidence_provenance,
     assess_lifecycle_transition,
+    assess_report_lifecycle_transition,
+    assess_report_provenance,
     assess_review_trace,
     assess_sandbox,
     assess_transport,
@@ -284,6 +293,36 @@ def _evidence_artifacts(workflow_file: Path, eir_file: Path, evidence_file: Path
     return workflow, evidence, assess_evaluation_evidence(workflow, plan, evidence)
 
 
+def _controlled_context_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, schema_file: Path, envelope_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    bundle = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(bundle, workflow, plan, policy)
+    schema = ControlledContextSchema.model_validate_json(schema_file.read_text(encoding="utf-8"))
+    envelope = ControlledContextEnvelope.model_validate_json(envelope_file.read_text(encoding="utf-8"))
+    controlled = assess_controlled_context(schema, envelope, bundle, context_assessment)
+    return workflow, envelope, controlled
+
+
+def _report_artifacts(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+):
+    _, envelope, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    return envelope, report, assess_deterministic_report(report, controlled, provenance)
+
+
 @app.command("approval-chain-assess")
 def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
     """Assess a local human approval chain without granting authority or changing workflow state."""
@@ -364,6 +403,78 @@ def lifecycle_transition_assess(
     assessment = assess_lifecycle_transition(transition, approval, provenance)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "valid":
+        raise typer.Exit(1)
+
+
+@app.command("controlled-context-assess")
+def controlled_context_assess(workflow_file: Path, eir_file: Path, context_file: Path, schema_file: Path, envelope_file: Path) -> None:
+    """Validate schema-bound local context claims without retrieving source content."""
+    _, _, assessment = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("deterministic-report-assess")
+def deterministic_report_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+) -> None:
+    """Validate a reference-only report artifact without generating a report or engineering claim."""
+    _, _, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("report-provenance-assess")
+def report_provenance_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+) -> None:
+    """Validate a report provenance seal without signing, storing, or publishing a report."""
+    _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    provenance = assess_report_provenance(report, assessment, seal)
+    typer.echo(provenance.model_dump_json())
+    if provenance.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("report-lifecycle-assess")
+def report_lifecycle_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    transition_file: Path,
+) -> None:
+    """Validate report lifecycle order without mutating, publishing, or dispatching a report."""
+    _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    provenance = assess_report_provenance(report, assessment, seal)
+    transition = ReportLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    lifecycle = assess_report_lifecycle_transition(transition, provenance)
+    typer.echo(lifecycle.model_dump_json())
+    if not lifecycle.valid:
         raise typer.Exit(1)
 
 

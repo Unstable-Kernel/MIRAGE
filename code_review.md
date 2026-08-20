@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed governance foundation iteration. The repository has 68 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, and lifecycle primitives.
+The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed controlled context and deterministic report iteration. The repository has 70 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, lifecycle, controlled context, and deterministic report primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -22,6 +22,7 @@ The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/
 | Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
 | Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
 | Governance foundations | Persistence interface, revocation record, provenance seal, and lifecycle transition validation | No credentials, durable storage, signatures, state mutation, or execution |
+| Controlled report artifacts | Schema-bound context envelopes, report citation graphs, provenance seal, and review lifecycle checks | No retrieval, generated claim, signature, publication, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -335,3 +336,21 @@ The contracts cannot be mistaken for production governance: no identity provider
 The full suite passes with 68 tests. Ruff, EIR schema consistency, Markdown local-link checks, four governance CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
 
 The active-session governance foundation is committed locally as `15b9033` with the message `feat: add governance foundation contracts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Controlled context and deterministic report iteration review
+
+The controlled context model narrows a redacted bundle into one declared claim per required schema field. It compares only identifiers, kinds, reference prefixes, and digests. This prevents a report artifact from silently referencing arbitrary or out-of-schema inputs while deliberately avoiding any content retrieval or model-prompt construction.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/controlled_context.py` | Schema, envelope, and local claim assessment restrict context references without exposing raw content |
+| `src/mirage/runtime/deterministic_report.py` | Report sections cite only known context claims and sealed evidence; no engineering prose is generated |
+| `src/mirage/runtime/report_provenance.py` | Report provenance validates identifiers and declared digest references without signing or storing data |
+| `src/mirage/runtime/report_lifecycle.py` | Report lifecycle order is validated without state mutation, publication, or dispatch |
+| `examples/13-controlled-report/` | Canonical local schema, envelope, report, seal, and lifecycle fixtures |
+
+The report artifact remains a review graph, not a technical conclusion. No external artifact is fetched, credential resolved, prompt composed, model called, report rendered, signature generated, report stored, report published, workflow state changed, backend dispatched, simulator connected, or hardware actuated. Every new result retains `execution_permitted: false`.
+
+## Controlled report verification
+
+The full suite passes with 70 tests. Ruff, EIR schema consistency, Markdown local-link checks, four controlled context and report CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.

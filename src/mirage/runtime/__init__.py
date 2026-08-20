@@ -23,6 +23,22 @@ from .context_review import (
     WorkflowContextItem,
     assess_workflow_context,
 )
+from .controlled_context import (
+    ControlledContextAssessment,
+    ControlledContextClaim,
+    ControlledContextEnvelope,
+    ControlledContextField,
+    ControlledContextSchema,
+    ControlledContextStatus,
+    assess_controlled_context,
+)
+from .deterministic_report import (
+    DeterministicReportAssessment,
+    DeterministicReportSection,
+    DeterministicReportStatus,
+    DeterministicReviewReport,
+    assess_deterministic_report,
+)
 from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
 from .evidence_provenance import (
     EvidenceProvenanceAssessment,
@@ -50,6 +66,18 @@ from .lifecycle_review import (
     WorkflowLifecycleState,
     WorkflowLifecycleTransition,
     assess_lifecycle_transition,
+)
+from .report_lifecycle import (
+    ReportLifecycleAssessment,
+    ReportLifecycleState,
+    ReportLifecycleTransition,
+    assess_report_lifecycle_transition,
+)
+from .report_provenance import (
+    ReportProvenanceAssessment,
+    ReportProvenanceSeal,
+    ReportProvenanceStatus,
+    assess_report_provenance,
 )
 from .review_trace import (
     ReviewTraceAssessment,
@@ -126,6 +154,12 @@ __all__ = [
     "ApprovalRevocationRecord",
     "ApprovalRevocationStatus",
     "CancellationToken",
+    "ControlledContextAssessment",
+    "ControlledContextClaim",
+    "ControlledContextEnvelope",
+    "ControlledContextField",
+    "ControlledContextSchema",
+    "ControlledContextStatus",
     "ContextBundleStatus",
     "ContextItemKind",
     "ExecutionPolicy",
@@ -139,9 +173,19 @@ __all__ = [
     "ResourceLimits",
     "DispatchEligibilityAssessment",
     "DispatchEligibilityStatus",
+    "DeterministicReportAssessment",
+    "DeterministicReportSection",
+    "DeterministicReportStatus",
+    "DeterministicReviewReport",
     "ReviewTraceAssessment",
     "ReviewTraceEvent",
     "ReviewTraceEventType",
+    "ReportLifecycleAssessment",
+    "ReportLifecycleState",
+    "ReportLifecycleTransition",
+    "ReportProvenanceAssessment",
+    "ReportProvenanceSeal",
+    "ReportProvenanceStatus",
     "CoppeliaSimBackend",
     "CoppeliaSimReadOnlyAdapter",
     "LocalSimulationBackend",
@@ -202,9 +246,13 @@ __all__ = [
     "assess_approval_chain",
     "assess_approval_persistence",
     "assess_approval_revocation",
+    "assess_controlled_context",
+    "assess_deterministic_report",
     "assess_dispatch_eligibility",
     "assess_evidence_provenance",
     "assess_lifecycle_transition",
+    "assess_report_lifecycle_transition",
+    "assess_report_provenance",
     "assess_review_trace",
     "build_deterministic_plan",
     "assess_workflow_context",

@@ -1,0 +1,7 @@
+{
+  "transition_id": "quadrotor-report-transition-v1",
+  "report_id": "quadrotor-review-report-v1",
+  "from_state": "ready_for_review",
+  "to_state": "sealed_for_review",
+  "transition_digest": "sha256:quadrotor-report-transition-v1"
+}

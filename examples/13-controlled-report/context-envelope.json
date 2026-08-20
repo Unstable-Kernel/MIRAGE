@@ -1,0 +1,20 @@
+{
+  "envelope_id": "quadrotor-controlled-context-v1",
+  "schema_id": "quadrotor-context-schema-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "context_bundle_id": "quadrotor-context-v1",
+  "claims": [
+    {
+      "claim_id": "claim-robot-v1",
+      "field_id": "robot",
+      "context_item_id": "robot-node",
+      "reference_digest": "sha256:quadrotor-robot-node-v1"
+    },
+    {
+      "claim_id": "claim-objective-v1",
+      "field_id": "objective",
+      "context_item_id": "objective-node",
+      "reference_digest": "sha256:inspection-objective-node-v1"
+    }
+  ]
+}

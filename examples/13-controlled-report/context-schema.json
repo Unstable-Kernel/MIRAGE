@@ -1,0 +1,19 @@
+{
+  "schema_id": "quadrotor-context-schema-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "version": "0.1",
+  "fields": [
+    {
+      "field_id": "robot",
+      "item_kind": "eir_node",
+      "required": true,
+      "allowed_reference_prefix": "EIR:"
+    },
+    {
+      "field_id": "objective",
+      "item_kind": "eir_node",
+      "required": true,
+      "allowed_reference_prefix": "EIR:"
+    }
+  ]
+}

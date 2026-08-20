@@ -2,49 +2,49 @@
 
 ## Task
 
-Continue MIRAGE within the active session through locally verifiable governance foundations.
+Continue MIRAGE within the active session through locally verifiable M4 workflow and governance foundations.
 
 ## Current status
 
-The governance foundation iteration is committed locally as `15b9033` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; the branch is one commit ahead of its remote. Continue autonomously through safe local slices, but stop for an external prerequisite, a safety decision, or an explicit user choice.
+The controlled context and deterministic report iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) remains open against `main`. The branch contains two unpushed governance handoff commits from the preceding iteration. Continue autonomously through safe local slices, but stop for an external prerequisite, safety decision, or explicit user choice.
 
 ## Completed work
 
-`approval_persistence.py` defines an integration-only persistence descriptor, identity evidence reference, and provider protocol. It has no credential value, write method, connection behavior, or identity-provider implementation. Assessment confirms only that local references are structurally consistent with the approval chain and active policy.
+`controlled_context.py` defines schemas, envelopes, and claim records that bind a workflow to expected redacted context item kinds, reference prefixes, and content digests. The assessment detects missing required claims, unknown fields and items, mismatched kinds, invalid prefixes, and digest drift without reading source content.
 
-`revocation_review.py` validates declared revocation records without applying them. `evidence_provenance.py` seals each locally declared evidence reference with a digest and verifier reference. `lifecycle_review.py` checks a limited review-state order from draft through eligibility assessment without mutating any workflow.
+`deterministic_report.py` adds a reference-only report artifact. Each section can cite controlled claim identifiers, sealed evidence identifiers, and stable artifact references. The report assessment refuses unknown claims or unsealed evidence without generating findings or prose.
 
-The dispatch eligibility model now recognizes a declared revocation as a blocking reason. The runtime registry adds four generic read-only declarations: approval persistence, approval revocation, evidence provenance, and workflow lifecycle assessment. Four corresponding local CLI commands and `examples/12-governance-foundations/` demonstrate the contracts.
+`report_provenance.py` and `report_lifecycle.py` add local report seal and review-state assessment contracts. They validate declared identifiers and ordering only. No signature, persistence, publication, or state mutation occurs. The registry adds four generic read-only capabilities, local CLI commands expose the checks, and `examples/13-controlled-report/` contains canonical fixtures.
 
 ## Verification
 
 | Check | Result |
 |---|---|
-| Full Python tests | 68 passed |
+| Full Python tests | 70 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
 | Documentation verification | Every tracked Markdown file passed local-link checks |
-| CLI verification | Persistence, revocation, provenance, lifecycle, and generic capability inspection passed |
+| CLI verification | Controlled context, deterministic report, report provenance, report lifecycle, and generic capability inspection passed |
 | Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
 
 ## Known limitations
 
-The governance foundation is interface and assessment work only. It does not authenticate users, store or revoke approvals, verify signatures, connect to an audit log, retrieve evidence, assess physical correctness, alter state, or execute a capability.
+Controlled context is a local schema for already redacted references. It is not an ingestion, retrieval, classification, authorization, or prompt-construction service. The deterministic report is a citation graph, not generated engineering prose or a rendered deliverable. Report provenance is a declared reference, not a cryptographic signature, and report lifecycle validation does not persist or publish state.
 
-Live simulator transport and host-level sandbox enforcement remain unavailable. The M4 workflow still lacks controlled external context, real evidence adapters, authenticated durable approval, report artifacts, and execution integration. Simulator control, external side effects, physical actuation, automatic checkpoint resume, package publication, and autonomous experimentation remain absent.
+Live simulator transport and host-level sandbox enforcement remain unavailable. The M4 workflow still lacks controlled external inputs, real evidence adapters, authenticated approval persistence, durable audit controls, rendered reports, and execution integration. Simulator control, external side effects, physical actuation, automatic checkpoint resume, package publication, and autonomous experimentation remain absent.
 
 ## Important files
 
 | File | Responsibility |
 |---|---|
-| `src/mirage/runtime/approval_persistence.py` | Future authenticated persistence descriptor and no-write protocol |
-| `src/mirage/runtime/revocation_review.py` | Declared revocation review without state mutation |
-| `src/mirage/runtime/evidence_provenance.py` | Local evidence reference sealing and coverage assessment |
-| `src/mirage/runtime/lifecycle_review.py` | Non-mutating review lifecycle transition assessment |
-| `src/mirage/cli.py` | Four local governance inspection commands |
-| `examples/12-governance-foundations/` | Canonical local governance fixtures |
-| `docs/guides/governance-foundations.md` | User-facing contract and safety documentation |
+| `src/mirage/runtime/controlled_context.py` | Schema-bound redacted context envelope and assessment |
+| `src/mirage/runtime/deterministic_report.py` | Reference-only deterministic report artifact and citation validation |
+| `src/mirage/runtime/report_provenance.py` | Local report seal validation without signing or storage |
+| `src/mirage/runtime/report_lifecycle.py` | Non-mutating report review lifecycle assessment |
+| `src/mirage/cli.py` | Four local controlled-context and report inspection commands |
+| `examples/13-controlled-report/` | Canonical controlled report fixtures |
+| `docs/guides/controlled-context-report.md` | User-facing contract and safety guide |
 
 ## Next recommended action
 
-Continue to a controlled-context schema and deterministic report-artifact contract. Do not add a live client, credentials, durable storage, dispatch path, or sandbox claim without independently verified external prerequisites.
+Commit this iteration locally, then continue to deterministic policy-evaluation criteria and cross-artifact consistency checks. Do not add retrieval, a model, live transport, credentials, durable storage, dispatch, or a sandbox claim without independently verified external prerequisites.
