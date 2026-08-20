@@ -333,3 +333,5 @@ The contracts cannot be mistaken for production governance: no identity provider
 ## Governance verification
 
 The full suite passes with 68 tests. Ruff, EIR schema consistency, Markdown local-link checks, four governance CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The active-session governance foundation is committed locally as `15b9033` with the message `feat: add governance foundation contracts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.

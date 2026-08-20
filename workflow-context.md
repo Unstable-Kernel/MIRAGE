@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable governance 
 
 ## Current status
 
-The governance foundation iteration is verified and ready for a focused local commit on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; the working iteration has not yet been pushed. Continue autonomously through safe local slices, but stop for an external prerequisite, a safety decision, or an explicit user choice.
+The governance foundation iteration is committed locally as `15b9033` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; the branch is one commit ahead of its remote. Continue autonomously through safe local slices, but stop for an external prerequisite, a safety decision, or an explicit user choice.
 
 ## Completed work
 
@@ -47,4 +47,4 @@ Live simulator transport and host-level sandbox enforcement remain unavailable. 
 
 ## Next recommended action
 
-Commit this iteration locally, then continue to a controlled-context schema and deterministic report-artifact contract. Do not add a live client, credentials, durable storage, dispatch path, or sandbox claim without independently verified external prerequisites.
+Continue to a controlled-context schema and deterministic report-artifact contract. Do not add a live client, credentials, durable storage, dispatch path, or sandbox claim without independently verified external prerequisites.
