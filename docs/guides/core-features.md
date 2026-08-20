@@ -2,7 +2,7 @@
 
 ## Current core surface
 
-MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, EIR-bound M4 workflow, evidence, context, review-trace, approval, advisory dispatch, persistence, revocation, provenance, lifecycle, controlled context, deterministic report, cross-artifact consistency, review-policy, and readiness primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
+MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based model orchestration, declarative URCP capabilities, a policy-gated execution runtime, local audit records, validated checkpoints, read-only transport manifests, sandbox enforcement-evidence contracts, EIR-bound M4 workflow, evidence, context, review-trace, approval, advisory dispatch, persistence, revocation, provenance, lifecycle, controlled context, deterministic report, cross-artifact consistency, reference-only provenance consistency, review-policy, and readiness primitives, release-ready Python artifacts, and a private npm launcher. The implementation emphasizes verified contracts over unverified integrations.
 
 ## Upcoming core features
 
@@ -23,6 +23,7 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 | Current | Governance persistence, revocation, provenance, and lifecycle review | Validate future-facing audit references and review-state order from local fixtures | No credential resolution, durable storage, signature verification, state mutation, or execution |
 | Current | Controlled context and deterministic reports | Validate schema-bound context references and report citation graphs from local fixtures | No retrieval, prompt construction, generated claims, report signing, publication, or execution |
 | Current | Cross-artifact readiness integration | Validate review graph consistency and preserve external prerequisite denial reasons | No dispatch, transport verification, sandbox enforcement, or execution |
+| Current | Reference-only provenance consistency | Compare supplied EIR source metadata, evidence-seal references and digests, and report provenance bindings | No evidence retrieval, evidence digest recomputation, signature verification, remote witness, report mutation, or execution |
 | Later | Goal-to-evaluate workflow | Connect goals, context, EIR, planning, simulation, evaluation, and report evidence | Keep model reasoning separate from deterministic validation |
 | Later | Cross-simulator translation | Map validated semantics across verified simulator adapters | No compatibility claim without adapter-specific tests |
 | Later | Research reproduction pipeline | Capture papers, artifacts, environments, and evidence for reproducible studies | No autonomous paper execution without sandboxing and review |

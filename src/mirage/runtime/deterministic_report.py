@@ -16,12 +16,19 @@ class DeterministicReportStatus(StrEnum):
     INVALID = "invalid"
 
 
+class ReportProvenanceReference(BaseModel):
+    evidence_id: str = Field(min_length=1)
+    source_reference: str = Field(min_length=1)
+    source_digest: str = Field(min_length=8)
+
+
 class DeterministicReportSection(BaseModel):
     section_id: str = Field(min_length=1)
     title: str = Field(min_length=1)
     context_claim_ids: set[str] = Field(default_factory=set)
     evidence_ids: set[str] = Field(default_factory=set)
     artifact_references: list[str] = Field(default_factory=list, max_length=16)
+    provenance_references: list[ReportProvenanceReference] = Field(default_factory=list, max_length=16)
 
 
 class DeterministicReviewReport(BaseModel):

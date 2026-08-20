@@ -1,0 +1,20 @@
+[
+  {
+    "seal_id": "quadrotor-robot-evidence-seal-v1",
+    "evidence_id": "eir-robot-validation",
+    "source_reference": "EIR:robot.quadrotor",
+    "source_digest": "sha256:quadrotor-robot-evidence-v1",
+    "capture_method": "deterministic-validation",
+    "captured_at": "2026-08-20T00:00:00Z",
+    "verifier_reference": "reviewer:local"
+  },
+  {
+    "seal_id": "quadrotor-objective-evidence-seal-v1",
+    "evidence_id": "eir-objective-validation",
+    "source_reference": "EIR:objective.inspect",
+    "source_digest": "sha256:quadrotor-objective-evidence-v1",
+    "capture_method": "deterministic-validation",
+    "captured_at": "2026-08-20T00:00:00Z",
+    "verifier_reference": "reviewer:local"
+  }
+]

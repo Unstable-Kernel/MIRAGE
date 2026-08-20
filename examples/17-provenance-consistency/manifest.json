@@ -1,0 +1,21 @@
+{
+  "manifest_id": "quadrotor-provenance-manifest-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "eir_document_id": "quadrotor-inspection",
+  "eir_source_reference": "examples/16-eir-ingestion/robot_model.json",
+  "eir_source_digest": "46ad088dfc2c164ffdd00336a9de7a75f464453e42aa58e157d69a24d25457c5",
+  "bindings": [
+    {
+      "evidence_id": "eir-robot-validation",
+      "source_reference": "EIR:robot.quadrotor",
+      "source_digest": "sha256:quadrotor-robot-evidence-v1",
+      "report_section_id": "inputs"
+    },
+    {
+      "evidence_id": "eir-objective-validation",
+      "source_reference": "EIR:objective.inspect",
+      "source_digest": "sha256:quadrotor-objective-evidence-v1",
+      "report_section_id": "inputs"
+    }
+  ]
+}

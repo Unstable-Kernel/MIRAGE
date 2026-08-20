@@ -146,3 +146,10 @@
 - [x] Implement controlled local JSON and YAML ingestion with deterministic source-format diagnostics and canonical EIR validation.
 - [x] Add contract tests, CLI inspection, safe fixtures, and documentation without retrieval or external source access.
 - [x] Run full verification, update roadmap and handoff records, and create focused local commits without pushing.
+
+## Ten-Phase Provenance Consistency Iteration
+
+- [x] Inspect the local EIR, evidence, report, policy, roadmap, and repository boundaries for a deterministic provenance-consistency slice.
+- [x] Define and implement a reference-only provenance consistency assessment with structured rejection reasons.
+- [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieving referenced sources.
+- [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.

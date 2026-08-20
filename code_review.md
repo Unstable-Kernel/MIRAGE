@@ -416,3 +416,20 @@ The local EIR ingestion slice introduces a bounded compiler frontend without imp
 The adapter does not fetch URIs, parse repositories, papers, URDF, MATLAB, CAD, or arbitrary formats, execute source content, invoke a provider, mutate provenance, persist data, lower an EIR artifact, or dispatch a capability. The allowed-root option is a deterministic path-boundary check, not a filesystem sandbox or hostile-writer defense.
 
 The full repository suite passes with 85 tests. Ruff, EIR schema consistency, accepted CLI paths with and without an allowed root, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `a4ea637` with the message `feat: add local EIR ingestion adapter`; the commit contains no co-author trailer or AI attribution. The local EIR ingestion iteration remains unpushed pending an explicit user request.
+
+## Coordinated provenance consistency iteration review
+
+The provenance consistency slice adds a deterministic reference-only assessment across a supplied local EIR source, evidence provenance seals, and report provenance bindings. `ProvenanceConsistencyManifest` records the expected EIR document identity, local source reference and digest, plus one evidence-to-report binding per evidence identifier. `assess_provenance_consistency()` compares those supplied declarations to local ingestion metadata, seals, the deterministic report, and prior review assessments.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/provenance_consistency.py` | Defines manifest, evidence-to-report binding, consistent or invalid status, explicit rejection reasons, and a permanently false execution permission |
+| `src/mirage/runtime/deterministic_report.py` | Adds structured report provenance references without changing report generation or report-lifecycle authority |
+| `src/mirage/cli.py` | Adds `provenance-consistency-assess`, which accepts only explicitly supplied local files and reports JSON |
+| `tests/test_provenance_consistency.py` | Covers aligned artifacts, EIR digest mismatch, missing report references, and read-only CLI assessment |
+| `examples/17-provenance-consistency/` | Provides a complete local manifest, evidence seals, readiness records, and report binding fixture |
+| `docs/guides/provenance-consistency.md` | Documents comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares the EIR digest against metadata returned by explicit local ingestion. It compares evidence and report digest declarations as strings only. It does not retrieve evidence, open a sealed reference, recalculate evidence contents, verify a signature, produce a trusted timestamp, use a remote witness, authenticate a reviewer, mutate a report, persist data, invoke a backend, or authorize execution. The report provenance reference field is a schema addition for inspection only and does not generate, sign, or publish any report content.
+
+The coordinated ten-phase flow completed local inspection, boundary mapping, contract definition, test planning, implementation, CLI exposure, fixtures, documentation, handoff reconciliation, and full quality validation. The final suite passed with 89 tests. Ruff, EIR schema consistency, the accepted provenance-consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The implementation is pending its focused local commit and remains unpushed.

@@ -20,15 +20,18 @@ from .runtime import (
     ControlledContextEnvelope,
     ControlledContextSchema,
     CoppeliaSimReadOnlyAdapter,
+    DeterministicReportAssessment,
     DeterministicReviewPolicy,
     DeterministicReviewReport,
     EvaluationEvidence,
+    EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
     FixtureSimulatorAdapter,
     GoalToEvaluateWorkflow,
+    ProvenanceConsistencyManifest,
     ReadOnlyTransportManifest,
     ReportLifecycleTransition,
     ReportProvenanceSeal,
@@ -49,6 +52,7 @@ from .runtime import (
     assess_evaluation_evidence,
     assess_evidence_provenance,
     assess_lifecycle_transition,
+    assess_provenance_consistency,
     assess_report_lifecycle_transition,
     assess_report_provenance,
     assess_review_policy,
@@ -510,6 +514,33 @@ def report_lifecycle_assess(
     lifecycle = assess_report_lifecycle_transition(transition, provenance)
     typer.echo(lifecycle.model_dump_json())
     if not lifecycle.valid:
+        raise typer.Exit(1)
+
+
+@app.command("provenance-consistency-assess")
+def provenance_consistency_assess(
+    eir_file: Path,
+    manifest_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    evidence_provenance_file: Path,
+    report_assessment_file: Path,
+) -> None:
+    """Compare local EIR, evidence, and report provenance references without retrieving any source."""
+    ingestion = ingest_eir_file(eir_file)
+    if not ingestion.accepted:
+        typer.echo(ingestion.model_dump_json())
+        raise typer.Exit(1)
+    assert ingestion.source is not None
+    assert ingestion.document is not None
+    manifest = ProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
+    assessment = assess_provenance_consistency(manifest, ingestion.source, ingestion.document, seals, evidence_provenance, report, report_assessment)
+    typer.echo(json.dumps({"source": ingestion.source.model_dump(mode="json"), "assessment": assessment.model_dump(mode="json")}, sort_keys=True))
+    if assessment.status.value != "consistent":
         raise typer.Exit(1)
 
 

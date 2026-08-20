@@ -38,6 +38,7 @@ from .deterministic_report import (
     DeterministicReportSection,
     DeterministicReportStatus,
     DeterministicReviewReport,
+    ReportProvenanceReference,
     assess_deterministic_report,
 )
 from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
@@ -78,6 +79,13 @@ from .lifecycle_review import (
     WorkflowLifecycleState,
     WorkflowLifecycleTransition,
     assess_lifecycle_transition,
+)
+from .provenance_consistency import (
+    EvidenceReportProvenanceBinding,
+    ProvenanceConsistencyAssessment,
+    ProvenanceConsistencyManifest,
+    ProvenanceConsistencyStatus,
+    assess_provenance_consistency,
 )
 from .report_lifecycle import (
     ReportLifecycleAssessment,
@@ -191,6 +199,7 @@ __all__ = [
     "DispatchEligibilityStatus",
     "DeterministicReportAssessment",
     "DeterministicReportSection",
+    "ReportProvenanceReference",
     "DeterministicReportStatus",
     "DeterministicReviewReport",
     "DeterministicReviewPolicy",
@@ -283,6 +292,11 @@ __all__ = [
     "assess_lifecycle_transition",
     "assess_report_lifecycle_transition",
     "assess_report_provenance",
+    "EvidenceReportProvenanceBinding",
+    "ProvenanceConsistencyAssessment",
+    "ProvenanceConsistencyManifest",
+    "ProvenanceConsistencyStatus",
+    "assess_provenance_consistency",
     "assess_review_policy",
     "assess_review_trace",
     "build_deterministic_plan",
