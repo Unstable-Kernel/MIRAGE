@@ -433,3 +433,19 @@ The provenance consistency slice adds a deterministic reference-only assessment 
 The assessment compares the EIR digest against metadata returned by explicit local ingestion. It compares evidence and report digest declarations as strings only. It does not retrieve evidence, open a sealed reference, recalculate evidence contents, verify a signature, produce a trusted timestamp, use a remote witness, authenticate a reviewer, mutate a report, persist data, invoke a backend, or authorize execution. The report provenance reference field is a schema addition for inspection only and does not generate, sign, or publish any report content.
 
 The coordinated ten-phase flow completed local inspection, boundary mapping, contract definition, test planning, implementation, CLI exposure, fixtures, documentation, handoff reconciliation, and full quality validation. The final suite passed with 89 tests. Ruff, EIR schema consistency, the accepted provenance-consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The iteration is committed locally as `9dcdb8a` with the message `feat: add provenance consistency assessment`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Coordinated report seal consistency iteration review
+
+The report seal consistency slice adds a reference-only comparison among a supplied deterministic report, report provenance seal, report-provenance readiness result, review trace, trace readiness result, and consistency manifest. It checks report identity, workflow identity, trace identity, declared report digest, sealer reference, and the report's declared trace artifact reference. The assessment returns structured issues and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/report_seal_consistency.py` | Defines manifest and assessment contracts for supplied report, seal, trace, and readiness declarations |
+| `src/mirage/cli.py` | Adds `report-seal-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_report_seal_consistency.py` | Covers aligned declarations, a report-digest mismatch, missing report trace reference, and CLI behavior |
+| `examples/18-report-seal-consistency/` | Provides report, seal, readiness, trace, and manifest fixture declarations |
+| `docs/guides/report-seal-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The report digest and sealer reference are compared as declared strings only. The assessment does not recompute a report digest, inspect source content, verify a signature, authenticate a sealer, create a trusted timestamp, contact a remote witness, store a seal, mutate lifecycle state, publish a report, invoke a backend, or authorize execution.
+
+The coordinated ten-phase flow completed local inspection, contract mapping, invariant definition, test planning, implementation, API and CLI exposure, fixtures, documentation, handoff reconciliation, and full validation. The final suite passed with 93 tests. Ruff, EIR schema consistency, the accepted report-seal consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The implementation is pending its focused local commit and remains unpushed.

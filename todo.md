@@ -153,3 +153,10 @@
 - [x] Define and implement a reference-only provenance consistency assessment with structured rejection reasons.
 - [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieving referenced sources.
 - [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.
+
+## Ten-Phase Report Seal Consistency Iteration
+
+- [x] Inspect report artifacts, report provenance seals, readiness assessments, policy, roadmap, and repository state for a local-only consistency slice.
+- [x] Define and implement a supplied-declaration report seal consistency assessment with structured rejection reasons.
+- [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieval, signature verification, remote witnessing, mutation, or execution.
+- [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.

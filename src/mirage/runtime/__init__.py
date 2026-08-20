@@ -99,6 +99,12 @@ from .report_provenance import (
     ReportProvenanceStatus,
     assess_report_provenance,
 )
+from .report_seal_consistency import (
+    ReportSealConsistencyAssessment,
+    ReportSealConsistencyManifest,
+    ReportSealConsistencyStatus,
+    assess_report_seal_consistency,
+)
 from .review_policy import DeterministicReviewPolicy, ReviewPolicyAssessment, ReviewPolicyStatus, assess_review_policy
 from .review_trace import (
     ReviewTraceAssessment,
@@ -292,6 +298,10 @@ __all__ = [
     "assess_lifecycle_transition",
     "assess_report_lifecycle_transition",
     "assess_report_provenance",
+    "ReportSealConsistencyAssessment",
+    "ReportSealConsistencyManifest",
+    "ReportSealConsistencyStatus",
+    "assess_report_seal_consistency",
     "EvidenceReportProvenanceBinding",
     "ProvenanceConsistencyAssessment",
     "ProvenanceConsistencyManifest",

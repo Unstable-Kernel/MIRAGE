@@ -1,0 +1,8 @@
+{
+  "manifest_id": "quadrotor-report-seal-manifest-v1",
+  "report_id": "quadrotor-review-report-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "report_digest": "sha256:quadrotor-review-report-v1",
+  "source_trace_id": "quadrotor-review-trace-v1",
+  "sealer_reference": "reviewer:local"
+}

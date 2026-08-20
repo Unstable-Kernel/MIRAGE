@@ -34,7 +34,10 @@ from .runtime import (
     ProvenanceConsistencyManifest,
     ReadOnlyTransportManifest,
     ReportLifecycleTransition,
+    ReportProvenanceAssessment,
     ReportProvenanceSeal,
+    ReportSealConsistencyManifest,
+    ReviewTraceAssessment,
     SandboxAssessment,
     SandboxEnvelope,
     TransportVerificationEvidence,
@@ -55,6 +58,7 @@ from .runtime import (
     assess_provenance_consistency,
     assess_report_lifecycle_transition,
     assess_report_provenance,
+    assess_report_seal_consistency,
     assess_review_policy,
     assess_review_trace,
     assess_sandbox,
@@ -490,6 +494,28 @@ def report_provenance_assess(
     provenance = assess_report_provenance(report, assessment, seal)
     typer.echo(provenance.model_dump_json())
     if provenance.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("report-seal-consistency-assess")
+def report_seal_consistency_assess(
+    report_file: Path,
+    seal_file: Path,
+    provenance_assessment_file: Path,
+    trace_file: Path,
+    trace_assessment_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied report seal and review-trace declarations without retrieval, signing, or mutation."""
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    seal = ReportProvenanceSeal.model_validate_json(seal_file.read_text(encoding="utf-8"))
+    provenance = ReportProvenanceAssessment.model_validate_json(provenance_assessment_file.read_text(encoding="utf-8"))
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
+    manifest = ReportSealConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_report_seal_consistency(manifest, report, seal, provenance, trace, trace_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
         raise typer.Exit(1)
 
 

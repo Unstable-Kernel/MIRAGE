@@ -1,0 +1,12 @@
+{
+  "trace_id": "quadrotor-review-trace-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "context_bundle_id": "quadrotor-context-v1",
+  "policy_provenance": {},
+  "events": [
+    {"event_id": "context-bound", "event_type": "context_bound", "artifact_reference": "context:quadrotor-context-v1", "artifact_digest": "sha256:quadrotor-context-v1"},
+    {"event_id": "plan-validated", "event_type": "plan_validated", "artifact_reference": "plan:quadrotor-inspection-review-v1", "artifact_digest": "sha256:quadrotor-plan-v1"},
+    {"event_id": "evidence-assessed", "event_type": "evidence_assessed", "artifact_reference": "evidence:quadrotor-inspection-review-v1", "artifact_digest": "sha256:quadrotor-evidence-v1"},
+    {"event_id": "human-review-requested", "event_type": "human_review_requested", "artifact_reference": "review:quadrotor-inspection-review-v1", "artifact_digest": "sha256:quadrotor-review-v1"}
+  ]
+}
