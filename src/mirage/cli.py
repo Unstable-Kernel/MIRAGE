@@ -13,10 +13,13 @@ from .eir import load_data, validate_document
 from .knowledge import EngineeringStateGraph
 from .runtime import (
     ApprovalChain,
+    ApprovalPersistenceDescriptor,
+    ApprovalRevocationRecord,
     BackendSandboxCapabilities,
     CapabilityExecutor,
     CoppeliaSimReadOnlyAdapter,
     EvaluationEvidence,
+    EvidenceProvenanceSeal,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
@@ -28,10 +31,15 @@ from .runtime import (
     TransportVerificationEvidence,
     WorkflowCheckpoint,
     WorkflowContextBundle,
+    WorkflowLifecycleTransition,
     WorkflowReviewTrace,
     assess_approval_chain,
+    assess_approval_persistence,
+    assess_approval_revocation,
     assess_dispatch_eligibility,
     assess_evaluation_evidence,
+    assess_evidence_provenance,
+    assess_lifecycle_transition,
     assess_review_trace,
     assess_sandbox,
     assess_transport,
@@ -263,6 +271,19 @@ def _review_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, e
     return workflow, policy, trace_assessment
 
 
+def _approval_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path):
+    workflow, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    return workflow, policy, chain, assess_approval_chain(chain, trace_assessment, policy)
+
+
+def _evidence_artifacts(workflow_file: Path, eir_file: Path, evidence_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    return workflow, evidence, assess_evaluation_evidence(workflow, plan, evidence)
+
+
 @app.command("approval-chain-assess")
 def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
     """Assess a local human approval chain without granting authority or changing workflow state."""
@@ -271,6 +292,78 @@ def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Pat
     assessment = assess_approval_chain(chain, trace_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "review_ready":
+        raise typer.Exit(1)
+
+
+@app.command("approval-persistence-assess")
+def approval_persistence_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    persistence_file: Path,
+) -> None:
+    """Assess an authenticated approval persistence interface without credentials or writes."""
+    _, policy, chain, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    descriptor = ApprovalPersistenceDescriptor.model_validate_json(persistence_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_persistence(descriptor, chain, approval, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_integration":
+        raise typer.Exit(1)
+
+
+@app.command("approval-revocation-assess")
+def approval_revocation_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    revocation_file: Path,
+) -> None:
+    """Validate a declared approval revocation without changing approval state."""
+    _, policy, chain, _ = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    record = ApprovalRevocationRecord.model_validate_json(revocation_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_revocation(record, chain, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "declared":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-provenance-assess")
+def evidence_provenance_assess(workflow_file: Path, eir_file: Path, evidence_file: Path, seals_file: Path) -> None:
+    """Assess local evidence reference seals without retrieving any evidence content."""
+    _, evidence, assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(assessment, evidence, seals)
+    typer.echo(provenance.model_dump_json())
+    if provenance.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("lifecycle-transition-assess")
+def lifecycle_transition_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    seals_file: Path,
+    transition_file: Path,
+) -> None:
+    """Validate a requested local lifecycle transition without mutating workflow state."""
+    _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
+    transition = WorkflowLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    assessment = assess_lifecycle_transition(transition, approval, provenance)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "valid":
         raise typer.Exit(1)
 
 

@@ -81,3 +81,11 @@
 
 - [x] Push the accumulated verified local commits to `origin/feat/iteration-1-foundation`.
 - [x] Create PR #10 because PR #9 is merged, then confirm the updated remote handoff.
+
+## Active-Session Governance Foundation
+
+- [x] Define approval persistence interface, revocation review, evidence provenance sealing, and lifecycle-transition contracts.
+- [x] Implement approval persistence and revocation review contracts without credential handling, durable storage, or authority mutation.
+- [x] Implement evidence provenance sealing and non-mutating lifecycle transition validation.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.

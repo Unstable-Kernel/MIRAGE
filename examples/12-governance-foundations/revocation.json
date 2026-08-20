@@ -1,0 +1,15 @@
+{
+  "revocation_id": "quadrotor-revocation-v1",
+  "chain_id": "quadrotor-approval-chain-v1",
+  "approval_id": "quadrotor-approval-v1",
+  "revoker_id": "reviewer@example.invalid",
+  "reason": "Fixture demonstrates a declared review-only revocation.",
+  "policy_provenance": {
+    "policy_id": "local-default",
+    "revision": "1",
+    "source": "local",
+    "approved_by": null
+  },
+  "revocation_digest": "sha256:quadrotor-revocation-v1",
+  "recorded_at": "2026-08-20T00:00:00Z"
+}

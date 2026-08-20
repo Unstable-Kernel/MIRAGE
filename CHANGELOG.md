@@ -40,6 +40,8 @@ All notable MIRAGE changes are recorded here. The project is pre-1.0 and follows
 - `inspect_workflow_context@0.1`, `assess_review_trace@0.1`, `mirage workflow-context-inspect`, and `mirage review-trace-assess` for local review-only inspection.
 - Audited human approval-chain and advisory dispatch-eligibility contracts that return prerequisite denial rather than authorize work.
 - `assess_human_approval@0.1`, `assess_dispatch_eligibility@0.1`, `mirage approval-chain-assess`, and `mirage dispatch-eligibility-assess` for local guarded review.
+- Persistence readiness, declared revocation, evidence provenance seals, and lifecycle-transition contracts for the non-executing governance foundation.
+- `assess_approval_persistence@0.1`, `assess_approval_revocation@0.1`, `assess_evidence_provenance@0.1`, `assess_workflow_lifecycle@0.1`, and matching local CLI inspections.
 
 ### Changed
 

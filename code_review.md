@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is PR #9 plus the unpushed deterministic workflow, context, review-trace, approval, and eligibility work. The repository has 64 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, and advisory eligibility primitives.
+The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed governance foundation iteration. The repository has 68 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, and lifecycle primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -21,6 +21,7 @@ The current baseline is PR #9 plus the unpushed deterministic workflow, context,
 | Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
 | Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
 | Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
+| Governance foundations | Persistence interface, revocation record, provenance seal, and lifecycle transition validation | No credentials, durable storage, signatures, state mutation, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -313,3 +314,22 @@ The full suite passes with 64 tests. Ruff, EIR schema consistency, Markdown loca
 The guarded approval and advisory eligibility implementation is committed locally as `fc796df` with the message `feat: add guarded approval eligibility`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
 
 The accumulated delivery is now pushed through `b024f18`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; it replaces PR #9, which was already merged before these later guarded workflow iterations were delivered.
+
+## Governance foundation iteration review
+
+The governance foundation extends the review model without adding a real authority path. The persistence descriptor contains references to future identity, signature, retention, and audit controls but holds no secret material. The persistence protocol declares only metadata and assessment methods. It does not include a write operation or a connection implementation.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/approval_persistence.py` | Future persistence adapter boundary uses credential references and integrity metadata only; no credentials or writes |
+| `src/mirage/runtime/revocation_review.py` | Declared revocations are structurally assessed without mutating an approval chain |
+| `src/mirage/runtime/evidence_provenance.py` | Every evidence reference needs a matching local provenance seal; assessment never retrieves evidence contents |
+| `src/mirage/runtime/lifecycle_review.py` | Lifecycle ordering is validated against approval and provenance readiness without saving state |
+| `src/mirage/runtime/dispatch_eligibility.py` | Declared revocation becomes an additional structured reason to block future eligibility |
+| `examples/12-governance-foundations/` | Local fixtures demonstrate readiness and declared review outcomes only |
+
+The contracts cannot be mistaken for production governance: no identity provider is queried, credential is resolved, signature is checked, durable audit record is stored, revocation is applied, external system is notified, evidence is retrieved, workflow state is changed, or backend is dispatched. `execution_permitted` remains false on every new result type.
+
+## Governance verification
+
+The full suite passes with 68 tests. Ruff, EIR schema consistency, Markdown local-link checks, four governance CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.

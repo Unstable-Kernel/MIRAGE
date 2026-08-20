@@ -1,3 +1,11 @@
+from .approval_persistence import (
+    ApprovalIdentityEvidence,
+    ApprovalPersistenceAssessment,
+    ApprovalPersistenceDescriptor,
+    ApprovalPersistenceProvider,
+    ApprovalPersistenceStatus,
+    assess_approval_persistence,
+)
 from .approval_review import (
     ApprovalChain,
     ApprovalChainAssessment,
@@ -16,6 +24,12 @@ from .context_review import (
     assess_workflow_context,
 )
 from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
+from .evidence_provenance import (
+    EvidenceProvenanceAssessment,
+    EvidenceProvenanceSeal,
+    EvidenceProvenanceStatus,
+    assess_evidence_provenance,
+)
 from .execution import (
     CancellationToken,
     CapabilityExecutor,
@@ -30,12 +44,25 @@ from .execution import (
 )
 from .goal_workflow import GoalEvaluationCriterion, GoalToEvaluateWorkflow, GoalWorkflowReview, GoalWorkflowStatus, GoalWorkflowStep
 from .ledger import ExecutionAuditRecord, ExecutionLedger
+from .lifecycle_review import (
+    LifecycleTransitionAssessment,
+    LifecycleTransitionStatus,
+    WorkflowLifecycleState,
+    WorkflowLifecycleTransition,
+    assess_lifecycle_transition,
+)
 from .review_trace import (
     ReviewTraceAssessment,
     ReviewTraceEvent,
     ReviewTraceEventType,
     WorkflowReviewTrace,
     assess_review_trace,
+)
+from .revocation_review import (
+    ApprovalRevocationAssessment,
+    ApprovalRevocationRecord,
+    ApprovalRevocationStatus,
+    assess_approval_revocation,
 )
 from .sandbox import (
     BackendSandboxCapabilities,
@@ -90,6 +117,14 @@ __all__ = [
     "ApprovalChainAssessment",
     "ApprovalChainStatus",
     "ApprovalDecision",
+    "ApprovalIdentityEvidence",
+    "ApprovalPersistenceAssessment",
+    "ApprovalPersistenceDescriptor",
+    "ApprovalPersistenceProvider",
+    "ApprovalPersistenceStatus",
+    "ApprovalRevocationAssessment",
+    "ApprovalRevocationRecord",
+    "ApprovalRevocationStatus",
     "CancellationToken",
     "ContextBundleStatus",
     "ContextItemKind",
@@ -97,6 +132,9 @@ __all__ = [
     "ExecutionRequest",
     "ExecutionResult",
     "ExecutionStatus",
+    "EvidenceProvenanceAssessment",
+    "EvidenceProvenanceSeal",
+    "EvidenceProvenanceStatus",
     "PolicyProvenance",
     "ResourceLimits",
     "DispatchEligibilityAssessment",
@@ -107,6 +145,8 @@ __all__ = [
     "CoppeliaSimBackend",
     "CoppeliaSimReadOnlyAdapter",
     "LocalSimulationBackend",
+    "LifecycleTransitionAssessment",
+    "LifecycleTransitionStatus",
     "CoppeliaSimInspectionBackend",
     "InspectionStatus",
     "SimulatorInspection",
@@ -153,12 +193,18 @@ __all__ = [
     "EvaluationEvidenceClass",
     "WorkflowEvidenceAssessment",
     "WorkflowEvidenceStatus",
+    "WorkflowLifecycleState",
+    "WorkflowLifecycleTransition",
     "WorkflowPlanStatus",
     "WorkflowReviewTrace",
     "WorkflowValidationIssue",
     "assess_evaluation_evidence",
     "assess_approval_chain",
+    "assess_approval_persistence",
+    "assess_approval_revocation",
     "assess_dispatch_eligibility",
+    "assess_evidence_provenance",
+    "assess_lifecycle_transition",
     "assess_review_trace",
     "build_deterministic_plan",
     "assess_workflow_context",
