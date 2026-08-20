@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 ## Current status
 
-The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged into `main`. The local ledger integrity and retention iteration is committed as `c6cc0ff`, and its handoff commit remains unpushed with it. The local EIR ingestion iteration is verified and pending its focused local commit. A three-hour autonomous build review is active.
+The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged into `main`. The local ledger integrity and retention iteration is committed as `c6cc0ff`, and its handoff commit remains unpushed with it. The local EIR ingestion iteration is committed as `a4ea637` and remains unpushed. A three-hour autonomous build review is active.
 
 ## Completed work
 
