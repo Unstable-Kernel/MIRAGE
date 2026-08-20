@@ -1,0 +1,7 @@
+{
+  "policy_id": "policy-review-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "status": "ready_for_review",
+  "issues": [],
+  "execution_permitted": false
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_id": "policy-provenance-consistency-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "context_bundle_id": "policy-context-v1",
+  "context_envelope_id": "policy-envelope-v1",
+  "trace_id": "policy-trace-v1",
+  "report_id": "policy-report-v1",
+  "review_policy_id": "policy-review-v1",
+  "policy_provenance": {"policy_id": "local-default", "revision": "1", "source": "local", "approved_by": null}
+}

@@ -80,6 +80,12 @@ from .lifecycle_review import (
     WorkflowLifecycleTransition,
     assess_lifecycle_transition,
 )
+from .policy_provenance_consistency import (
+    PolicyProvenanceConsistencyAssessment,
+    PolicyProvenanceConsistencyManifest,
+    PolicyProvenanceConsistencyStatus,
+    assess_policy_provenance_consistency,
+)
 from .provenance_consistency import (
     EvidenceReportProvenanceBinding,
     ProvenanceConsistencyAssessment,
@@ -207,6 +213,9 @@ __all__ = [
     "EvidenceProvenanceSeal",
     "EvidenceProvenanceStatus",
     "PolicyProvenance",
+    "PolicyProvenanceConsistencyAssessment",
+    "PolicyProvenanceConsistencyManifest",
+    "PolicyProvenanceConsistencyStatus",
     "ResourceLimits",
     "DispatchEligibilityAssessment",
     "DispatchEligibilityStatus",
@@ -307,6 +316,7 @@ __all__ = [
     "assess_dispatch_eligibility",
     "assess_evidence_provenance",
     "assess_lifecycle_transition",
+    "assess_policy_provenance_consistency",
     "assess_report_lifecycle_transition",
     "assess_report_provenance",
     "ReportSealConsistencyAssessment",

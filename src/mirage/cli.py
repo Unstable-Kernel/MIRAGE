@@ -31,12 +31,14 @@ from .runtime import (
     ExecutionRequest,
     FixtureSimulatorAdapter,
     GoalToEvaluateWorkflow,
+    PolicyProvenanceConsistencyManifest,
     ProvenanceConsistencyManifest,
     ReadOnlyTransportManifest,
     ReportLifecycleTransition,
     ReportProvenanceAssessment,
     ReportProvenanceSeal,
     ReportSealConsistencyManifest,
+    ReviewPolicyAssessment,
     ReviewTraceAssessment,
     ReviewTraceEventConsistencyManifest,
     SandboxAssessment,
@@ -56,6 +58,7 @@ from .runtime import (
     assess_evaluation_evidence,
     assess_evidence_provenance,
     assess_lifecycle_transition,
+    assess_policy_provenance_consistency,
     assess_provenance_consistency,
     assess_report_lifecycle_transition,
     assess_report_provenance,
@@ -528,6 +531,41 @@ def review_trace_event_consistency_assess(trace_file: Path, trace_assessment_fil
     trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
     manifest = ReviewTraceEventConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
     assessment = assess_review_trace_event_consistency(manifest, trace, trace_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("policy-provenance-consistency-assess")
+def policy_provenance_consistency_assess(
+    policy_file: Path,
+    context_bundle_file: Path,
+    context_envelope_file: Path,
+    trace_file: Path,
+    report_file: Path,
+    review_policy_file: Path,
+    review_policy_assessment_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied policy provenance declarations without retrieval, mutation, or execution."""
+    policy = ExecutionPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    context_bundle = WorkflowContextBundle.model_validate_json(context_bundle_file.read_text(encoding="utf-8"))
+    context_envelope = ControlledContextEnvelope.model_validate_json(context_envelope_file.read_text(encoding="utf-8"))
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
+    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
+    manifest = PolicyProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_policy_provenance_consistency(
+        manifest,
+        policy,
+        context_bundle,
+        context_envelope,
+        trace,
+        report,
+        review_policy,
+        review_policy_assessment,
+    )
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
         raise typer.Exit(1)

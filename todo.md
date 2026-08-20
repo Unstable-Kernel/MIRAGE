@@ -179,3 +179,10 @@
 - [x] Implement the reference-only event consistency assessment with public API and a non-executing CLI command.
 - [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
 - [x] Run full verification and create focused local commits without pushing.
+
+## Policy-Provenance Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied policy, context, trace, report, and review-policy declarations without retrieval or signature verification.
+- [x] Implement the reference-only policy-provenance consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.

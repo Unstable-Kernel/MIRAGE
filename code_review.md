@@ -465,3 +465,19 @@ The review-trace event consistency slice adds a deterministic, reference-only co
 The assessment compares supplied strings and structured declarations only. It does not retrieve an artifact, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
 
 The full repository suite passes with 97 tests. Ruff, EIR schema consistency, the accepted review-trace event consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `42e6db7` with the message `feat: add review trace event consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Policy-provenance consistency iteration review
+
+The policy-provenance consistency slice adds a deterministic, reference-only comparison across a supplied active execution policy, context bundle, context envelope, review trace, deterministic report, review policy, review-policy assessment, and manifest. It verifies policy provenance equality, expected identity declarations, and shared workflow identity. The result contains structured issues, records matching declarations, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/policy_provenance_consistency.py` | Defines manifest and consistency assessment contracts for supplied local policy-bearing declarations |
+| `src/mirage/cli.py` | Adds `policy-provenance-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_policy_provenance_consistency.py` | Covers aligned declarations, trace provenance drift, report workflow drift, and CLI behavior |
+| `examples/20-policy-provenance-consistency/` | Provides policy, context, trace, report, review-policy, readiness, and manifest fixture declarations |
+| `docs/guides/policy-provenance-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve content, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 101 tests. Ruff, EIR schema consistency, the accepted policy-provenance consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The implementation is pending its focused local commit and remains unpushed.
