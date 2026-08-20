@@ -135,3 +135,7 @@
 - [x] Implement deterministic chained record digests, bounded retention compaction, and safe malformed-ledger handling.
 - [x] Add ledger contract tests, CLI inspection, and a local fixture example without any external service.
 - [x] Update documentation, roadmap, code review, workflow context, and full verification evidence for the ledger slice.
+
+## Build-Loop Policy Verification
+
+- [x] Verify that the active three-hour build-loop policy retains the required local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
