@@ -58,3 +58,6 @@ artifacts/
 
 # Local review artifacts
 repository-review.md
+
+# Local JSONL ledger coordination artifacts
+*.jsonl.lock

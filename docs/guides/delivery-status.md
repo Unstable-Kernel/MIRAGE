@@ -2,7 +2,7 @@
 
 ## Current baseline
 
-MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The current parallel-foundation slice adds deterministic transport manifests and evidence, sandbox enforcement-evidence contracts, and a non-executing M4 goal-to-evaluate workflow review model. Full-suite test count is refreshed during final verification.
+MIRAGE has completed the organization foundation, EIR validation, provider-neutral orchestration, and a bounded execution foundation. The local foundation now includes deterministic transport manifests and evidence, sandbox enforcement-evidence contracts, a non-executing M4 goal-to-evaluate workflow review model, and a versioned local ledger envelope with integrity inspection and bounded retention compaction. The full suite currently contains 78 passing tests.
 
 ```mermaid
 flowchart LR
@@ -22,7 +22,7 @@ flowchart LR
 | M0, organization and CI | Complete | Governance, contribution, security, CI, package boundaries, and CLI baseline |
 | M1, EIR 0.1 | Complete | Pydantic schema, JSON Schema export, JSON/YAML validation, deterministic CLI |
 | M2, provider matrix | Complete with mocked contracts | Typed adapter protocol and six explicit provider adapters, optional live smoke harness |
-| M3, bounded execution foundation | Partially complete | URCP, policy runtime, ledger, checkpoint revalidation, sandbox assessment, fixture-backed read-only adapter, transport evidence, and sandbox-evidence contracts |
+| M3, bounded execution foundation | Partially complete | URCP, policy runtime, locally locked and digest-chained ledger with bounded retention, checkpoint revalidation, sandbox assessment, fixture-backed read-only adapter, transport evidence, and sandbox-evidence contracts |
 | M4, goal-to-evaluate workflow | Foundation implemented | Bounded review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context bundle, review trace, approval chain, advisory eligibility, persistence interface, revocation review, provenance seal, lifecycle validation, controlled context, deterministic report artifact, cross-artifact consistency, and readiness assessment; no planning model or execution pipeline |
 | M5 through M7 | Planned | No implementation claim |
 
@@ -39,7 +39,7 @@ The roadmap contains **eight milestone rows**. **Three are complete**, **two hav
 | 5 | M6 research reproduction | No controlled research artifact ingestion or reproducibility workflow exists | Provenance model, isolated environments, artifact validation, retention, and review gates |
 | 6 | M7 hypothesis and optimization | No autonomous hypothesis, experiment selection, diagnosis, or optimization runtime exists | Bounded objective model, safety policy, evidence provenance, evaluation, and human review controls |
 
-Cross-cutting work remains on ESG concurrency and durable storage, ledger locking and retention, stronger policy provenance, provider fallback and caching policy, isolated package-install verification, observability, and release governance. These are not substitutes for the six delivery streams above. They are foundations that must be delivered where their dependent milestones require them.
+Cross-cutting work remains on ESG concurrency and durable storage, ledger signatures or remote witnessing, stronger policy provenance, provider fallback and caching policy, isolated package-install verification, observability, and release governance. These are not substitutes for the six delivery streams above. They are foundations that must be delivered where their dependent milestones require them.
 
 ## Explicit boundaries
 

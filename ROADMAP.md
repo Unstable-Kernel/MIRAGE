@@ -22,7 +22,7 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 Each milestone must preserve provenance, reproducibility, model independence, simulator independence, human control, and deterministic validation. Future hardware work requires explicit safety gates and must not be inferred from simulation success.
 
 ## Next highest-value slice
-The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, hardening controls, sandbox assessment, checkpoint revalidation, fixture-backed simulator metadata/state extraction, transport evidence, sandbox enforcement-evidence contracts, and review-only M4 workflow foundation are now implemented. The next increment is a documented and independently verified real read-only simulator transport, followed by an OS-enforced backend sandbox and deterministic M4 evidence flow. Simulator control and experiment execution remain out of scope until these prerequisites are verified.
+The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, hardening controls, sandbox assessment, checkpoint revalidation, fixture-backed simulator metadata/state extraction, transport evidence, sandbox enforcement-evidence contracts, review-only M4 workflow foundation, and local ledger integrity and retention contracts are now implemented. The next blocked increment is a documented and independently verified real read-only simulator transport, followed by an OS-enforced backend sandbox and deterministic M4 evidence flow. Simulator control and experiment execution remain out of scope until these prerequisites are verified.
 
 ## Delivery accounting
 

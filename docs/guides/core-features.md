@@ -12,7 +12,7 @@ MIRAGE has a versioned EIR 0.1 semantic layer, ESG project state, role-based mod
 | Current | Read-only transport manifest and fixture evidence | Declare permitted read operations and prove deterministic fixture coverage | No real transport connection, live verification, or simulator control |
 | Next | Verified real simulator read-only transport | Read project metadata and state through an adapter-specific verified transport | No simulation control, experiment execution, or actuator path |
 | Current | Declarative sandbox envelope and enforcement evidence | Deny OS-level envelopes without matching backend claims and verified evidence | No claim of process isolation, cgroups, or container enforcement in the local backend |
-| Next | Ledger integrity and retention | Add locking, retention, tamper-evident records, and storage migration | No claim of distributed coordination yet |
+| Current | Ledger integrity and retention | Add local advisory locking, bounded retention compaction, versioned digest envelopes, and integrity inspection | No signature, remote witness, storage migration, or distributed coordination claim |
 | Current | Checkpoint revalidation | Revalidate policy provenance, capability versions, and backend availability before manual resume review | Never automatically execute on load |
 | Next | Enforced backend sandbox | Add verified process, CPU, memory, disk, network, filesystem, and cleanup controls around non-cooperative work | No host command execution by default |
 | Near-term | EIR ingestion adapters | Translate controlled source formats into EIR with provenance | Do not weaken the canonical EIR contract for one source format |

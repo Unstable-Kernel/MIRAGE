@@ -60,7 +60,18 @@ from .execution import (
     ResourceLimits,
 )
 from .goal_workflow import GoalEvaluationCriterion, GoalToEvaluateWorkflow, GoalWorkflowReview, GoalWorkflowStatus, GoalWorkflowStep
-from .ledger import ExecutionAuditRecord, ExecutionLedger
+from .ledger import (
+    LEDGER_FORMAT_VERSION,
+    ExecutionAuditRecord,
+    ExecutionLedger,
+    LedgerEnvelope,
+    LedgerFormatError,
+    LedgerIntegrityAssessment,
+    LedgerIntegrityError,
+    LedgerIntegrityIssue,
+    LedgerRetentionAnchor,
+    LedgerRetentionResult,
+)
 from .lifecycle_review import (
     LifecycleTransitionAssessment,
     LifecycleTransitionStatus,
@@ -210,8 +221,16 @@ __all__ = [
     "SimulatorObjectState",
     "SimulatorProjectMetadata",
     "SimulatorStateSnapshot",
+    "LEDGER_FORMAT_VERSION",
     "ExecutionAuditRecord",
     "ExecutionLedger",
+    "LedgerEnvelope",
+    "LedgerFormatError",
+    "LedgerIntegrityAssessment",
+    "LedgerIntegrityError",
+    "LedgerIntegrityIssue",
+    "LedgerRetentionAnchor",
+    "LedgerRetentionResult",
     "GoalEvaluationCriterion",
     "GoalToEvaluateWorkflow",
     "GoalWorkflowReview",

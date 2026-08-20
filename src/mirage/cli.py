@@ -649,6 +649,15 @@ def ledger_inspect(file: Path) -> None:
         typer.echo(f"{record.request_id} {record.status} {record.capability_id}@{record.version} backend={record.backend} actor={record.actor}")
 
 
+@app.command("ledger-verify")
+def ledger_verify(file: Path) -> None:
+    """Verify local ledger envelopes without executing, repairing, or compacting records."""
+    assessment = ExecutionLedger(file).verify_integrity()
+    typer.echo(assessment.model_dump_json())
+    if not assessment.valid:
+        raise typer.Exit(1)
+
+
 @app.command("checkpoint-inspect")
 def checkpoint_inspect(file: Path) -> None:
     """Inspect a validated workflow checkpoint without resuming execution."""

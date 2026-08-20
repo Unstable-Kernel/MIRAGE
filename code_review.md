@@ -380,6 +380,22 @@ The cross-artifact readiness implementation is committed locally as `d14b7dc` wi
 
 ## Scheduled autonomous review handoff
 
-The repository now has one active recurring build review, titled `Daily MIRAGE build review`. It fires daily at 09:00 in `Asia/Calcutta` using cron expression `0 0 9 * * *`. The scheduled task inherits the current task context and includes GitHub and browser access already associated with the task.
+The repository now has one active recurring build review, titled `Every 3 hours MIRAGE build review`. It runs every 10,800 seconds, equivalent to every three hours, in `Asia/Calcutta`. The schedule status confirms the interval trigger is active. The scheduled task inherits the current task context and includes GitHub and browser access already associated with the task.
 
-The schedule is constrained to locally verifiable MIRAGE work and must stop rather than fabricate live simulator transport, OS-level isolation, credentials, durable authority mutation, dispatch, simulator control, external side effects, physical actuation, publication, or a branch push. It must update tests, documentation, code review, workflow context, and local commits for any completed safe slice. It has been verified active after project deployment.
+The schedule is constrained to locally verifiable MIRAGE work. At each run, it must inspect the repository state, workflow context, todo list, code review, roadmap, and PR state before selecting the next coherent slice. Only deterministic review, validation, provenance, documentation, and contract work without external credentials or infrastructure is allowed. It must keep simulator control, physical actuation, external side effects, live transport, OS-level sandbox claims, retrieval, credential handling, durable authority mutation, package publication, and branch push disabled. Every completed safe slice must include tests, examples, documentation, code review, workflow context, todo updates, full verification, and focused local commits without co-author attribution. If a slice requires an authorized live simulator environment or a real OS-enforced sandbox, it must stop and report the exact prerequisite. It has been verified active after project deployment, and it must not push or publish without explicit user approval.
+
+## Ledger integrity and retention iteration review
+
+The ledger slice adds a local JSONL integrity boundary without changing execution authority. `ExecutionLedger` now writes a versioned envelope for every record, chains canonical SHA-256 digests, takes local POSIX advisory locks for reads and writes, and refuses appends or retention compaction when the current file does not verify. The `ledger-verify` command exposes a non-executing integrity assessment, while `retain(max_records)` keeps the newest bounded set and records the digest immediately before the discarded prefix in a retention anchor.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/ledger.py` | Versioned local envelope, chained digest calculation, advisory locking, malformed-file assessment, append refusal, and atomic retention compaction |
+| `src/mirage/cli.py` | Read-only `ledger-verify` command that reports integrity without repairing or executing records |
+| `tests/test_ledger_integrity.py` | Covers valid chains, tampering, malformed JSON, append refusal, retention anchors, locking, CLI inspection, and the canonical fixture |
+| `examples/15-ledger-integrity/` | Provides a retained two-record local fixture and a verification command |
+| `docs/guides/execution-ledger.md` | Documents the envelope, retention semantics, and explicit non-goals |
+
+The guarantee is deliberately narrow. The chain detects accidental or unsophisticated local modification but does not add signatures, remote witnessing, trusted timestamps, encryption, a database transaction, storage migration, distributed coordination, or hostile-writer protection. The advisory lock is a local POSIX coordination mechanism, not a multi-host safety boundary. No simulator connection, sandbox runtime, credential handling, durable authority mutation, external side effect, physical actuation, package publication, or branch push was introduced.
+
+The full repository suite passes with 78 tests. Ruff, EIR schema consistency, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged; this ledger iteration remains unpushed pending an explicit user request.

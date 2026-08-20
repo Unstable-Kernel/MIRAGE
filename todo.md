@@ -113,3 +113,25 @@
 - [x] Define cadence, allowed autonomous scope, and external-prerequisite stop conditions for the recurring MIRAGE review.
 - [x] Configure the recurring autonomous review and verify that it preserves the established safety boundaries.
 - [x] Record the schedule handoff in workflow context and report the configured cadence.
+
+## Scheduled Review Cadence Update
+
+- [x] Change the autonomous MIRAGE build review cadence to every three hours.
+- [x] Verify the revised recurring schedule and update the workflow handoff records.
+
+## Scheduled Review Instruction Refresh
+
+- [x] Apply the authoritative three-hour build-review instructions covering repository inspection, allowed local work, verification, and safety stop conditions.
+- [x] Verify the active schedule retains the requested restrictions and update the workflow handoff records.
+
+## Active Build Loop Continuation
+
+- [x] Inspect the repository and select the next coherent locally verifiable MIRAGE vertical slice.
+- [x] Complete the selected slice with contracts, tests, examples, documentation, full verification, a reviewed local commit, and an updated continuation handoff.
+
+## Ledger Integrity and Retention Iteration
+
+- [x] Define a local JSONL ledger integrity, retention, and versioned-envelope contract with no distributed-storage claim.
+- [x] Implement deterministic chained record digests, bounded retention compaction, and safe malformed-ledger handling.
+- [x] Add ledger contract tests, CLI inspection, and a local fixture example without any external service.
+- [x] Update documentation, roadmap, code review, workflow context, and full verification evidence for the ledger slice.
