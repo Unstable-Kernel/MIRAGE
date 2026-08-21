@@ -200,3 +200,10 @@
 - [x] Implement the reference-only evidence-capture declaration consistency assessment with public API and a non-executing CLI command.
 - [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
 - [x] Run full verification and create focused local commits without pushing.
+
+## Evidence-capture Lineage Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied capture declarations, predecessor identifiers, capture-assessment identifiers, and evidence bindings without retrieval or signature verification.
+- [x] Implement the reference-only evidence-capture lineage consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
+- [x] Run full verification, update governance records, and create focused local commits without pushing.

@@ -49,6 +49,13 @@ from .evidence_capture_consistency import (
     EvidenceCaptureDeclaration,
     assess_evidence_capture_consistency,
 )
+from .evidence_capture_lineage_consistency import (
+    EvidenceCaptureLineageConsistencyAssessment,
+    EvidenceCaptureLineageConsistencyManifest,
+    EvidenceCaptureLineageConsistencyStatus,
+    EvidenceCaptureLineageDeclaration,
+    assess_evidence_capture_lineage_consistency,
+)
 from .evidence_provenance import (
     EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
@@ -230,6 +237,10 @@ __all__ = [
     "EvidenceCaptureConsistencyManifest",
     "EvidenceCaptureConsistencyStatus",
     "EvidenceCaptureDeclaration",
+    "EvidenceCaptureLineageConsistencyAssessment",
+    "EvidenceCaptureLineageConsistencyManifest",
+    "EvidenceCaptureLineageConsistencyStatus",
+    "EvidenceCaptureLineageDeclaration",
     "PolicyProvenance",
     "PolicyProvenanceConsistencyAssessment",
     "PolicyProvenanceConsistencyManifest",
@@ -338,6 +349,7 @@ __all__ = [
     "assess_dispatch_eligibility",
     "assess_evidence_provenance",
     "assess_evidence_capture_consistency",
+    "assess_evidence_capture_lineage_consistency",
     "assess_lifecycle_transition",
     "assess_policy_provenance_consistency",
     "assess_report_lifecycle_transition",

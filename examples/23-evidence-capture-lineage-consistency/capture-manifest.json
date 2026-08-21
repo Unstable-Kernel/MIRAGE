@@ -1,0 +1,18 @@
+{
+  "manifest_id": "capture-lineage-source-v1",
+  "workflow_id": "capture-lineage-workflow-v1",
+  "review_policy_evidence_manifest_id": "capture-lineage-review-policy-v1",
+  "require_review_policy_evidence_consistency": true,
+  "captures": [
+    {
+      "capture_id": "capture-lineage-1",
+      "evidence_id": "evidence-lineage-1",
+      "source_reference": "fixture://evidence-lineage-1",
+      "source_digest": "sha256:evidence-lineage-digest-v1",
+      "capture_method": "fixture",
+      "captured_at": "2026-08-01T00:00:00Z",
+      "verifier_reference": "fixture://verifier",
+      "report_section_id": "lineage-summary"
+    }
+  ]
+}
