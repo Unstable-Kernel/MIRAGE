@@ -1,0 +1,14 @@
+{
+  "persistence_id": "quadrotor-approval-persistence-v1",
+  "backend_type": "external-audit-interface",
+  "audit_log_reference": "audit://approval-chain/quadrotor",
+  "signature_scheme": "detached-signature",
+  "retention_days": 365,
+  "identity_evidence": {
+    "subject_id": "reviewer@example.invalid",
+    "identity_provider": "example-identity",
+    "credential_reference": "credential://opaque-reviewer-reference",
+    "authentication_event_digest": "sha256:quadrotor-authentication-event-v1",
+    "authenticated_at": "2026-08-20T00:00:00Z"
+  }
+}

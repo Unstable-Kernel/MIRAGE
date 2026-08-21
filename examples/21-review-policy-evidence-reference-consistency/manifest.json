@@ -1,0 +1,17 @@
+{
+  "manifest_id": "review-policy-evidence-reference-v1",
+  "workflow_id": "evidence-reference-workflow-v1",
+  "review_policy_id": "evidence-reference-policy-v1",
+  "max_report_sections": 2,
+  "require_cross_artifact_consistency": true,
+  "require_reference_only_report": true,
+  "evidence_provenance_workflow_id": "evidence-reference-workflow-v1",
+  "bindings": [
+    {
+      "evidence_id": "evidence-reference-1",
+      "source_reference": "fixture://evidence-reference-1",
+      "source_digest": "sha256:evidence-reference-digest-v1",
+      "report_section_id": "evidence-summary"
+    }
+  ]
+}

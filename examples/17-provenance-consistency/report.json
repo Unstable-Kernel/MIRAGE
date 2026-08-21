@@ -1,0 +1,35 @@
+{
+  "report_id": "quadrotor-review-report-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "context_envelope_id": "quadrotor-controlled-context-v1",
+  "report_version": "0.1",
+  "sections": [
+    {
+      "section_id": "inputs",
+      "title": "Validated review inputs",
+      "context_claim_ids": [
+        "claim-robot-v1",
+        "claim-objective-v1"
+      ],
+      "evidence_ids": [
+        "eir-robot-validation",
+        "eir-objective-validation"
+      ],
+      "artifact_references": [
+        "workflow:quadrotor-inspection-review-v1"
+      ],
+      "provenance_references": [
+        {
+          "evidence_id": "eir-robot-validation",
+          "source_reference": "EIR:robot.quadrotor",
+          "source_digest": "sha256:quadrotor-robot-evidence-v1"
+        },
+        {
+          "evidence_id": "eir-objective-validation",
+          "source_reference": "EIR:objective.inspect",
+          "source_digest": "sha256:quadrotor-objective-evidence-v1"
+        }
+      ]
+    }
+  ]
+}

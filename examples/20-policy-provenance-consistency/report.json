@@ -1,0 +1,8 @@
+{
+  "report_id": "policy-report-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "context_envelope_id": "policy-envelope-v1",
+  "sections": [
+    {"section_id": "policy-summary", "title": "Policy provenance summary", "context_claim_ids": ["policy-claim"], "artifact_references": ["trace:policy-trace-v1"]}
+  ]
+}

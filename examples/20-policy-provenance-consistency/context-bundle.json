@@ -1,0 +1,9 @@
+{
+  "context_bundle_id": "policy-context-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "eir_document_id": "policy-consistency-eir-v1",
+  "policy_provenance": {"policy_id": "local-default", "revision": "1", "source": "local", "approved_by": null},
+  "items": [
+    {"context_item_id": "policy-item", "kind": "policy", "reference": "policy:local-default", "content_digest": "sha256:local-policy-v1"}
+  ]
+}

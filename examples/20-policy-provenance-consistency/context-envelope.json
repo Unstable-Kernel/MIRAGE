@@ -1,0 +1,9 @@
+{
+  "envelope_id": "policy-envelope-v1",
+  "schema_id": "policy-schema-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "context_bundle_id": "policy-context-v1",
+  "claims": [
+    {"claim_id": "policy-claim", "field_id": "policy-field", "context_item_id": "policy-item", "reference_digest": "sha256:local-policy-v1"}
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "policy_id": "quadrotor-review-policy-v1",
+  "max_report_sections": 4,
+  "require_cross_artifact_consistency": true,
+  "require_reference_only_report": true
+}

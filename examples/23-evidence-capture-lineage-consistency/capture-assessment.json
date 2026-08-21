@@ -1,0 +1,8 @@
+{
+  "manifest_id": "capture-lineage-source-v1",
+  "workflow_id": "capture-lineage-workflow-v1",
+  "status": "consistent",
+  "validated_capture_ids": ["capture-lineage-1"],
+  "issues": [],
+  "execution_permitted": false
+}

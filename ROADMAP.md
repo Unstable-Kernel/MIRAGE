@@ -6,13 +6,13 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 |---|---|---|
 | M0 | Organization foundation, CI, package boundaries, minimal CLI | Complete |
 
-| M1 | EIR 0.1 schema, serialization, validation, structured JSON/YAML frontend | Complete |
+| M1 | EIR 0.1 schema, serialization, validation, structured local JSON/YAML frontend | Complete |
 
 | M2 | Model orchestrator and complete initial provider matrix | Complete with mocked provider contracts |
 
 | M3 | First simulator adapter and URCP execution slice | Execution contracts, deterministic local backend, audit ledger, checkpoints, timeout/cancellation budgets, sandbox assessment, checkpoint revalidation, fixture-backed read-only metadata/state extraction, transport evidence, and sandbox enforcement-evidence contracts implemented; CoppeliaSim transport, real OS isolation, and simulator control remain unverified |
 
-| M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context, provenance review trace, approval chain, and advisory eligibility foundation implemented; controlled context, planning model, execution, policy-bound evaluation, authenticated approval, and report pipeline remain planned |
+| M4 | Goal → context → EIR → plan → simulate → evaluate → report workflow | Review-only goal, EIR-bound steps, criteria, policy-bound checkpoint, deterministic plan, evidence assessment, redacted context, provenance review trace, review-trace event consistency, policy-provenance consistency, review-policy evidence-reference consistency, evidence-capture declaration consistency, approval chain, advisory eligibility, persistence interface, revocation review, provenance seal, lifecycle validation, controlled context, deterministic report artifact, cross-artifact consistency, reference-only provenance consistency, report-seal consistency, and readiness foundation implemented; controlled real context, planning model, execution, policy-bound evaluation, authenticated approval persistence, and report pipeline remain planned |
 | M5 | Cross-simulator translation | Planned |
 | M6 | Research reproduction pipeline | Planned |
 | M7 | Hypothesis generation, experiment selection, diagnosis, optimization | Planned |
@@ -22,7 +22,7 @@ MIRAGE is built through small, testable vertical slices. A milestone is complete
 Each milestone must preserve provenance, reproducibility, model independence, simulator independence, human control, and deterministic validation. Future hardware work requires explicit safety gates and must not be inferred from simulation success.
 
 ## Next highest-value slice
-The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, hardening controls, sandbox assessment, checkpoint revalidation, fixture-backed simulator metadata/state extraction, transport evidence, sandbox enforcement-evidence contracts, and review-only M4 workflow foundation are now implemented. The next increment is a documented and independently verified real read-only simulator transport, followed by an OS-enforced backend sandbox and deterministic M4 evidence flow. Simulator control and experiment execution remain out of scope until these prerequisites are verified.
+The URCP execution contract, policy gate, deterministic local backend, execution ledger, workflow checkpoints, hardening controls, sandbox assessment, checkpoint revalidation, fixture-backed simulator metadata/state extraction, transport evidence, sandbox enforcement-evidence contracts, review-only M4 workflow foundation, local ledger integrity and retention contracts, local EIR candidate ingestion, reference-only EIR, evidence, and report provenance consistency, report-seal consistency, review-trace event consistency, policy-provenance consistency, review-policy evidence-reference consistency, and evidence-capture declaration consistency are now implemented. The next blocked increment is a documented and independently verified real read-only simulator transport, followed by an OS-enforced backend sandbox and deterministic M4 evidence flow. Simulator control and experiment execution remain out of scope until these prerequisites are verified.
 
 ## Delivery accounting
 

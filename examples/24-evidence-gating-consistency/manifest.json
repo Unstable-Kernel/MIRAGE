@@ -1,0 +1,1 @@
+{"manifest_id":"evidence-gating-consistency-v1","workflow_id":"evidence-gate-workflow-v1","capture_lineage_manifest_id":"capture-gate-lineage-v1","require_ineligible_dispatch":true,"bindings":[{"capture_id":"capture-gate-1","evidence_id":"evidence-gate-1","report_section_id":"gate-summary","required_dispatch_reasons":["active policy does not allow simulation"]}]}

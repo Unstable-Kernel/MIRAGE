@@ -1,0 +1,13 @@
+{
+  "manifest_id": "capture-lineage-consistency-v1",
+  "workflow_id": "capture-lineage-workflow-v1",
+  "evidence_capture_manifest_id": "capture-lineage-source-v1",
+  "require_evidence_capture_consistency": true,
+  "declarations": [
+    {
+      "capture_id": "capture-lineage-1",
+      "evidence_id": "evidence-lineage-1",
+      "predecessor_capture_ids": []
+    }
+  ]
+}

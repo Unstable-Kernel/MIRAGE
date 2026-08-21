@@ -1,0 +1,12 @@
+{
+  "trace_id": "policy-trace-v1",
+  "workflow_id": "policy-consistency-workflow-v1",
+  "context_bundle_id": "policy-context-v1",
+  "policy_provenance": {"policy_id": "local-default", "revision": "1", "source": "local", "approved_by": null},
+  "events": [
+    {"event_id": "context", "event_type": "context_bound", "artifact_reference": "context:policy-context-v1", "artifact_digest": "sha256:policy-context-v1"},
+    {"event_id": "plan", "event_type": "plan_validated", "artifact_reference": "plan:policy-consistency-workflow-v1", "artifact_digest": "sha256:policy-plan-v1"},
+    {"event_id": "evidence", "event_type": "evidence_assessed", "artifact_reference": "evidence:policy-consistency-workflow-v1", "artifact_digest": "sha256:policy-evidence-v1"},
+    {"event_id": "review", "event_type": "human_review_requested", "artifact_reference": "review:policy-consistency-workflow-v1", "artifact_digest": "sha256:policy-review-v1"}
+  ]
+}

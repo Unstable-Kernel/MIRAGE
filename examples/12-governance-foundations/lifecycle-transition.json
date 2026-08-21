@@ -1,0 +1,8 @@
+{
+  "transition_id": "quadrotor-transition-v1",
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "from_state": "review_ready",
+  "to_state": "approval_reviewed",
+  "trace_id": "quadrotor-review-trace-v1",
+  "transition_digest": "sha256:quadrotor-transition-v1"
+}

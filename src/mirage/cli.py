@@ -9,33 +9,79 @@ from typing import Any
 
 import typer
 
-from .eir import load_data, validate_document
+from .eir import ingest_eir_file, load_data, validate_document
 from .knowledge import EngineeringStateGraph
 from .runtime import (
     ApprovalChain,
+    ApprovalPersistenceDescriptor,
+    ApprovalRevocationRecord,
     BackendSandboxCapabilities,
     CapabilityExecutor,
+    ControlledContextEnvelope,
+    ControlledContextSchema,
     CoppeliaSimReadOnlyAdapter,
+    DeterministicReportAssessment,
+    DeterministicReviewPolicy,
+    DeterministicReviewReport,
+    DispatchEligibilityAssessment,
     EvaluationEvidence,
+    EvidenceCaptureConsistencyAssessment,
+    EvidenceCaptureConsistencyManifest,
+    EvidenceCaptureLineageConsistencyAssessment,
+    EvidenceCaptureLineageConsistencyManifest,
+    EvidenceGatingConsistencyManifest,
+    EvidenceProvenanceAssessment,
+    EvidenceProvenanceSeal,
     ExecutionLedger,
     ExecutionPolicy,
     ExecutionRequest,
     FixtureSimulatorAdapter,
     GoalToEvaluateWorkflow,
+    PolicyProvenanceConsistencyManifest,
+    ProvenanceConsistencyManifest,
     ReadOnlyTransportManifest,
+    ReportLifecycleTransition,
+    ReportProvenanceAssessment,
+    ReportProvenanceSeal,
+    ReportSealConsistencyManifest,
+    ReviewPolicyAssessment,
+    ReviewPolicyEvidenceConsistencyAssessment,
+    ReviewPolicyEvidenceConsistencyManifest,
+    ReviewTraceAssessment,
+    ReviewTraceEventConsistencyManifest,
     SandboxAssessment,
     SandboxEnvelope,
     TransportVerificationEvidence,
     WorkflowCheckpoint,
     WorkflowContextBundle,
+    WorkflowLifecycleTransition,
     WorkflowReviewTrace,
     assess_approval_chain,
+    assess_approval_persistence,
+    assess_approval_revocation,
+    assess_controlled_context,
+    assess_cross_artifacts,
+    assess_deterministic_report,
     assess_dispatch_eligibility,
     assess_evaluation_evidence,
+    assess_evidence_capture_consistency,
+    assess_evidence_capture_lineage_consistency,
+    assess_evidence_gating_consistency,
+    assess_evidence_provenance,
+    assess_lifecycle_transition,
+    assess_policy_provenance_consistency,
+    assess_provenance_consistency,
+    assess_report_lifecycle_transition,
+    assess_report_provenance,
+    assess_report_seal_consistency,
+    assess_review_policy,
+    assess_review_policy_evidence_consistency,
     assess_review_trace,
+    assess_review_trace_event_consistency,
     assess_sandbox,
     assess_transport,
     assess_workflow_context,
+    assess_workflow_readiness,
     build_deterministic_plan,
     default_inspection_backends,
     default_registry,
@@ -78,6 +124,15 @@ def inspect(file: Path) -> None:
     for kind, count in sorted(counts.items()):
         typer.echo(f"  {kind}: {count}")
     typer.echo(f"relationships: {len(result.document.relationships)}")
+
+
+@app.command("eir-ingest")
+def eir_ingest(file: Path, allowed_root: Path | None = None) -> None:
+    """Ingest one local JSON or YAML EIR candidate without retrieval, execution, or provenance mutation."""
+    result = ingest_eir_file(file, allowed_root=allowed_root)
+    typer.echo(result.model_dump_json())
+    if not result.accepted:
+        raise typer.Exit(1)
 
 
 @app.command("esg-inspect")
@@ -263,6 +318,71 @@ def _review_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, e
     return workflow, policy, trace_assessment
 
 
+def _approval_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path):
+    workflow, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    return workflow, policy, chain, assess_approval_chain(chain, trace_assessment, policy)
+
+
+def _evidence_artifacts(workflow_file: Path, eir_file: Path, evidence_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    return workflow, evidence, assess_evaluation_evidence(workflow, plan, evidence)
+
+
+def _controlled_context_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, schema_file: Path, envelope_file: Path):
+    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    policy = ExecutionPolicy()
+    plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
+    bundle = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context_assessment = assess_workflow_context(bundle, workflow, plan, policy)
+    schema = ControlledContextSchema.model_validate_json(schema_file.read_text(encoding="utf-8"))
+    envelope = ControlledContextEnvelope.model_validate_json(envelope_file.read_text(encoding="utf-8"))
+    controlled = assess_controlled_context(schema, envelope, bundle, context_assessment)
+    return workflow, envelope, controlled
+
+
+def _report_artifacts(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+):
+    _, envelope, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    return envelope, report, assess_deterministic_report(report, controlled, provenance)
+
+
+def _cross_artifact_assessment(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+):
+    _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    _, _, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    _, report, report_assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    report_seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    report_provenance = assess_report_provenance(report, report_assessment, report_seal)
+    _, _, trace = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
+    return policy, approval, report, assess_cross_artifacts(controlled, trace, approval, report_assessment, report_provenance)
+
+
 @app.command("approval-chain-assess")
 def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
     """Assess a local human approval chain without granting authority or changing workflow state."""
@@ -271,6 +391,425 @@ def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Pat
     assessment = assess_approval_chain(chain, trace_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "review_ready":
+        raise typer.Exit(1)
+
+
+@app.command("approval-persistence-assess")
+def approval_persistence_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    persistence_file: Path,
+) -> None:
+    """Assess an authenticated approval persistence interface without credentials or writes."""
+    _, policy, chain, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    descriptor = ApprovalPersistenceDescriptor.model_validate_json(persistence_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_persistence(descriptor, chain, approval, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_integration":
+        raise typer.Exit(1)
+
+
+@app.command("approval-revocation-assess")
+def approval_revocation_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    revocation_file: Path,
+) -> None:
+    """Validate a declared approval revocation without changing approval state."""
+    _, policy, chain, _ = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    record = ApprovalRevocationRecord.model_validate_json(revocation_file.read_text(encoding="utf-8"))
+    assessment = assess_approval_revocation(record, chain, policy)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "declared":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-provenance-assess")
+def evidence_provenance_assess(workflow_file: Path, eir_file: Path, evidence_file: Path, seals_file: Path) -> None:
+    """Assess local evidence reference seals without retrieving any evidence content."""
+    _, evidence, assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(assessment, evidence, seals)
+    typer.echo(provenance.model_dump_json())
+    if provenance.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("lifecycle-transition-assess")
+def lifecycle_transition_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    seals_file: Path,
+    transition_file: Path,
+) -> None:
+    """Validate a requested local lifecycle transition without mutating workflow state."""
+    _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
+    _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
+    transition = WorkflowLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    assessment = assess_lifecycle_transition(transition, approval, provenance)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "valid":
+        raise typer.Exit(1)
+
+
+@app.command("controlled-context-assess")
+def controlled_context_assess(workflow_file: Path, eir_file: Path, context_file: Path, schema_file: Path, envelope_file: Path) -> None:
+    """Validate schema-bound local context claims without retrieving source content."""
+    _, _, assessment = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("deterministic-report-assess")
+def deterministic_report_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+) -> None:
+    """Validate a reference-only report artifact without generating a report or engineering claim."""
+    _, _, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("report-provenance-assess")
+def report_provenance_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+) -> None:
+    """Validate a report provenance seal without signing, storing, or publishing a report."""
+    _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    provenance = assess_report_provenance(report, assessment, seal)
+    typer.echo(provenance.model_dump_json())
+    if provenance.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("report-seal-consistency-assess")
+def report_seal_consistency_assess(
+    report_file: Path,
+    seal_file: Path,
+    provenance_assessment_file: Path,
+    trace_file: Path,
+    trace_assessment_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied report seal and review-trace declarations without retrieval, signing, or mutation."""
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    seal = ReportProvenanceSeal.model_validate_json(seal_file.read_text(encoding="utf-8"))
+    provenance = ReportProvenanceAssessment.model_validate_json(provenance_assessment_file.read_text(encoding="utf-8"))
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
+    manifest = ReportSealConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_report_seal_consistency(manifest, report, seal, provenance, trace, trace_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-trace-event-consistency-assess")
+def review_trace_event_consistency_assess(trace_file: Path, trace_assessment_file: Path, manifest_file: Path) -> None:
+    """Compare supplied review-trace event declarations without retrieval, signing, mutation, or execution."""
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
+    manifest = ReviewTraceEventConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_review_trace_event_consistency(manifest, trace, trace_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("policy-provenance-consistency-assess")
+def policy_provenance_consistency_assess(
+    policy_file: Path,
+    context_bundle_file: Path,
+    context_envelope_file: Path,
+    trace_file: Path,
+    report_file: Path,
+    review_policy_file: Path,
+    review_policy_assessment_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied policy provenance declarations without retrieval, mutation, or execution."""
+    policy = ExecutionPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    context_bundle = WorkflowContextBundle.model_validate_json(context_bundle_file.read_text(encoding="utf-8"))
+    context_envelope = ControlledContextEnvelope.model_validate_json(context_envelope_file.read_text(encoding="utf-8"))
+    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
+    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
+    manifest = PolicyProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_policy_provenance_consistency(
+        manifest,
+        policy,
+        context_bundle,
+        context_envelope,
+        trace,
+        report,
+        review_policy,
+        review_policy_assessment,
+    )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-policy-evidence-consistency-assess")
+def review_policy_evidence_consistency_assess(
+    review_policy_file: Path,
+    review_policy_assessment_file: Path,
+    report_file: Path,
+    report_assessment_file: Path,
+    evidence_provenance_file: Path,
+    seals_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied review-policy evidence declarations without retrieval, mutation, or execution."""
+    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
+    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    manifest = ReviewPolicyEvidenceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_review_policy_evidence_consistency(
+        manifest,
+        review_policy,
+        review_policy_assessment,
+        report,
+        report_assessment,
+        evidence_provenance,
+        seals,
+    )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-capture-consistency-assess")
+def evidence_capture_consistency_assess(
+    evidence_provenance_file: Path,
+    review_policy_evidence_assessment_file: Path,
+    report_file: Path,
+    seals_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied evidence-capture declarations without retrieval, mutation, or execution."""
+
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    review_policy_evidence = ReviewPolicyEvidenceConsistencyAssessment.model_validate_json(
+        review_policy_evidence_assessment_file.read_text(encoding="utf-8")
+    )
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    manifest = EvidenceCaptureConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_evidence_capture_consistency(manifest, evidence_provenance, review_policy_evidence, report, seals)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-capture-lineage-consistency-assess")
+def evidence_capture_lineage_consistency_assess(
+    capture_manifest_file: Path,
+    capture_assessment_file: Path,
+    lineage_manifest_file: Path,
+) -> None:
+    """Compare supplied capture-lineage declarations without retrieval, mutation, or execution."""
+
+    capture_manifest = EvidenceCaptureConsistencyManifest.model_validate_json(capture_manifest_file.read_text(encoding="utf-8"))
+    capture_assessment = EvidenceCaptureConsistencyAssessment.model_validate_json(capture_assessment_file.read_text(encoding="utf-8"))
+    lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_evidence_capture_lineage_consistency(lineage_manifest, capture_manifest, capture_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-gating-consistency-assess")
+def evidence_gating_consistency_assess(
+    lineage_manifest_file: Path,
+    lineage_assessment_file: Path,
+    dispatch_assessment_file: Path,
+    report_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied evidence-gating declarations without retrieval, mutation, or execution."""
+
+    lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
+    lineage_assessment = EvidenceCaptureLineageConsistencyAssessment.model_validate_json(lineage_assessment_file.read_text(encoding="utf-8"))
+    dispatch_assessment = DispatchEligibilityAssessment.model_validate_json(dispatch_assessment_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    manifest = EvidenceGatingConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_evidence_gating_consistency(manifest, lineage_manifest, lineage_assessment, dispatch_assessment, report)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("report-lifecycle-assess")
+def report_lifecycle_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    transition_file: Path,
+) -> None:
+    """Validate report lifecycle order without mutating, publishing, or dispatching a report."""
+    _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
+    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    provenance = assess_report_provenance(report, assessment, seal)
+    transition = ReportLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    lifecycle = assess_report_lifecycle_transition(transition, provenance)
+    typer.echo(lifecycle.model_dump_json())
+    if not lifecycle.valid:
+        raise typer.Exit(1)
+
+
+@app.command("provenance-consistency-assess")
+def provenance_consistency_assess(
+    eir_file: Path,
+    manifest_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    evidence_provenance_file: Path,
+    report_assessment_file: Path,
+) -> None:
+    """Compare local EIR, evidence, and report provenance references without retrieving any source."""
+    ingestion = ingest_eir_file(eir_file)
+    if not ingestion.accepted:
+        typer.echo(ingestion.model_dump_json())
+        raise typer.Exit(1)
+    assert ingestion.source is not None
+    assert ingestion.document is not None
+    manifest = ProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
+    assessment = assess_provenance_consistency(manifest, ingestion.source, ingestion.document, seals, evidence_provenance, report, report_assessment)
+    typer.echo(json.dumps({"source": ingestion.source.model_dump(mode="json"), "assessment": assessment.model_dump(mode="json")}, sort_keys=True))
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("cross-artifact-assess")
+def cross_artifact_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+) -> None:
+    """Validate local workflow, context, approval, and report artifact consistency without dispatch."""
+    _, _, _, assessment = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-policy-assess")
+def review_policy_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    policy_file: Path,
+) -> None:
+    """Apply deterministic review policy rules without generated content or dispatch."""
+    _, _, report, cross = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    assessment = assess_review_policy(review_policy, report, cross)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "ready_for_review":
+        raise typer.Exit(1)
+
+
+@app.command("workflow-readiness-assess")
+def workflow_readiness_assess(
+    workflow_file: Path,
+    eir_file: Path,
+    context_file: Path,
+    evidence_file: Path,
+    trace_file: Path,
+    approval_file: Path,
+    schema_file: Path,
+    envelope_file: Path,
+    seals_file: Path,
+    report_file: Path,
+    report_seal_file: Path,
+    policy_file: Path,
+    transport_manifest_file: Path,
+    transport_evidence_file: Path,
+    sandbox_assessment_file: Path,
+    allow_simulation: bool = False,
+) -> None:
+    """Aggregate review readiness and external prerequisite denials without invoking a backend."""
+    execution_policy, approval, report, cross = _cross_artifact_assessment(
+        workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
+    )
+    execution_policy = execution_policy.model_copy(update={"allow_simulation": allow_simulation})
+    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    policy_assessment = assess_review_policy(review_policy, report, cross)
+    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
+    transport_evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    transport = assess_transport(manifest, transport_evidence)
+    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    dispatch = assess_dispatch_eligibility(approval, transport, sandbox, execution_policy)
+    readiness = assess_workflow_readiness(cross, policy_assessment, dispatch)
+    typer.echo(readiness.model_dump_json())
+    if readiness.status.value != "ready_for_external_prerequisites":
         raise typer.Exit(1)
 
 
@@ -331,6 +870,15 @@ def ledger_inspect(file: Path) -> None:
     """Inspect persisted execution audit records without executing them."""
     for record in ExecutionLedger(file).records():
         typer.echo(f"{record.request_id} {record.status} {record.capability_id}@{record.version} backend={record.backend} actor={record.actor}")
+
+
+@app.command("ledger-verify")
+def ledger_verify(file: Path) -> None:
+    """Verify local ledger envelopes without executing, repairing, or compacting records."""
+    assessment = ExecutionLedger(file).verify_integrity()
+    typer.echo(assessment.model_dump_json())
+    if not assessment.valid:
+        raise typer.Exit(1)
 
 
 @app.command("checkpoint-inspect")

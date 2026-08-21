@@ -1,0 +1,19 @@
+{
+  "report_id": "evidence-capture-report-v1",
+  "workflow_id": "evidence-capture-workflow-v1",
+  "context_envelope_id": "evidence-capture-envelope-v1",
+  "sections": [
+    {
+      "section_id": "capture-summary",
+      "title": "Capture declaration summary",
+      "evidence_ids": ["evidence-capture-1"],
+      "provenance_references": [
+        {
+          "evidence_id": "evidence-capture-1",
+          "source_reference": "fixture://evidence-capture-1",
+          "source_digest": "sha256:evidence-capture-digest-v1"
+        }
+      ]
+    }
+  ]
+}

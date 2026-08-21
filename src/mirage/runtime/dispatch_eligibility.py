@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from .approval_review import ApprovalChainAssessment, ApprovalChainStatus
 from .execution import ExecutionPolicy
+from .revocation_review import ApprovalRevocationAssessment, ApprovalRevocationStatus
 from .sandbox import SandboxAssessment, SandboxAssessmentStatus
 from .transport_verification import TransportVerificationReport, TransportVerificationStatus
 
@@ -32,12 +33,15 @@ def assess_dispatch_eligibility(
     transport: TransportVerificationReport,
     sandbox: SandboxAssessment,
     policy: ExecutionPolicy,
+    revocation: ApprovalRevocationAssessment | None = None,
 ) -> DispatchEligibilityAssessment:
     """Assess prerequisites for a future dispatcher without invoking any backend."""
 
     reasons: list[str] = []
     if approval.status != ApprovalChainStatus.REVIEW_READY:
         reasons.append("human approval chain is not ready for review")
+    if revocation and revocation.status == ApprovalRevocationStatus.DECLARED:
+        reasons.append("approval chain has a declared revocation")
     if not policy.allow_simulation:
         reasons.append("active policy does not allow simulation")
     if not transport.valid or transport.status != TransportVerificationStatus.LIVE_VERIFIED:

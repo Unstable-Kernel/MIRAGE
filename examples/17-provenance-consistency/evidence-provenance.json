@@ -1,0 +1,10 @@
+{
+  "workflow_id": "quadrotor-inspection-review-v1",
+  "status": "ready_for_review",
+  "sealed_evidence_ids": [
+    "eir-robot-validation",
+    "eir-objective-validation"
+  ],
+  "issues": [],
+  "execution_permitted": false
+}

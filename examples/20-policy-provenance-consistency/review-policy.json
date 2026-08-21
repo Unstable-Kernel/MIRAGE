@@ -1,0 +1,6 @@
+{
+  "policy_id": "policy-review-v1",
+  "max_report_sections": 8,
+  "require_cross_artifact_consistency": true,
+  "require_reference_only_report": true
+}

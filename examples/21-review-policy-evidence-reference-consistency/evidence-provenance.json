@@ -1,0 +1,7 @@
+{
+  "workflow_id": "evidence-reference-workflow-v1",
+  "status": "ready_for_review",
+  "sealed_evidence_ids": ["evidence-reference-1"],
+  "issues": [],
+  "execution_permitted": false
+}

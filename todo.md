@@ -81,3 +81,140 @@
 
 - [x] Push the accumulated verified local commits to `origin/feat/iteration-1-foundation`.
 - [x] Create PR #10 because PR #9 is merged, then confirm the updated remote handoff.
+
+## Active-Session Governance Foundation
+
+- [x] Define approval persistence interface, revocation review, evidence provenance sealing, and lifecycle-transition contracts.
+- [x] Implement approval persistence and revocation review contracts without credential handling, durable storage, or authority mutation.
+- [x] Implement evidence provenance sealing and non-mutating lifecycle transition validation.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.
+
+## Controlled Context and Report Artifact Iteration
+
+- [x] Define controlled context schemas, deterministic report artifact, report provenance, and review-lifecycle contracts.
+- [x] Implement controlled context and deterministic report contracts without external retrieval, storage, or generated engineering claims.
+- [x] Implement report provenance and non-mutating report lifecycle validation.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and continue to the next active-session slice.
+
+## Cross-Artifact Readiness Integration
+
+- [x] Define cross-artifact consistency, deterministic policy-review, and unified readiness contracts.
+- [x] Implement cross-artifact consistency and policy-review assessment without mutating review artifacts.
+- [x] Implement unified workflow readiness assessment with structured denial reasons and no dispatch path.
+- [x] Add contract tests, local CLI inspection, fixtures, examples, documentation, and roadmap updates.
+- [x] Run complete verification, update code review and workflow context, commit, and determine whether external prerequisites block further safe work.
+
+## Scheduled Autonomous Build Review
+
+- [x] Configure the daily 09:00 IST autonomous MIRAGE build review with locally verifiable scope and external-prerequisite stop conditions.
+- [x] Deploy the associated Manus project through the Publish control so the recurring review schedule can be created.
+- [x] Define cadence, allowed autonomous scope, and external-prerequisite stop conditions for the recurring MIRAGE review.
+- [x] Configure the recurring autonomous review and verify that it preserves the established safety boundaries.
+- [x] Record the schedule handoff in workflow context and report the configured cadence.
+
+## Scheduled Review Cadence Update
+
+- [x] Change the autonomous MIRAGE build review cadence to every three hours.
+- [x] Verify the revised recurring schedule and update the workflow handoff records.
+
+## Scheduled Review Instruction Refresh
+
+- [x] Apply the authoritative three-hour build-review instructions covering repository inspection, allowed local work, verification, and safety stop conditions.
+- [x] Verify the active schedule retains the requested restrictions and update the workflow handoff records.
+
+## Active Build Loop Continuation
+
+- [x] Inspect the repository and select the next coherent locally verifiable MIRAGE vertical slice.
+- [x] Complete the selected slice with contracts, tests, examples, documentation, full verification, a reviewed local commit, and an updated continuation handoff.
+
+## Ledger Integrity and Retention Iteration
+
+- [x] Define a local JSONL ledger integrity, retention, and versioned-envelope contract with no distributed-storage claim.
+- [x] Implement deterministic chained record digests, bounded retention compaction, and safe malformed-ledger handling.
+- [x] Add ledger contract tests, CLI inspection, and a local fixture example without any external service.
+- [x] Update documentation, roadmap, code review, workflow context, and full verification evidence for the ledger slice.
+
+## Build-Loop Policy Verification
+
+- [x] Verify that the active three-hour build-loop policy retains the required local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Local EIR Ingestion Adapter Iteration
+
+- [x] Inspect the existing EIR loading and validation boundary, then define a local provenance-preserving ingestion contract.
+- [x] Implement controlled local JSON and YAML ingestion with deterministic source-format diagnostics and canonical EIR validation.
+- [x] Add contract tests, CLI inspection, safe fixtures, and documentation without retrieval or external source access.
+- [x] Run full verification, update roadmap and handoff records, and create focused local commits without pushing.
+
+## Ten-Phase Provenance Consistency Iteration
+
+- [x] Inspect the local EIR, evidence, report, policy, roadmap, and repository boundaries for a deterministic provenance-consistency slice.
+- [x] Define and implement a reference-only provenance consistency assessment with structured rejection reasons.
+- [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieving referenced sources.
+- [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.
+
+## Ten-Phase Report Seal Consistency Iteration
+
+- [x] Inspect report artifacts, report provenance seals, readiness assessments, policy, roadmap, and repository state for a local-only consistency slice.
+- [x] Define and implement a supplied-declaration report seal consistency assessment with structured rejection reasons.
+- [x] Add public API, non-executing CLI inspection, contract tests, fixtures, examples, and documentation without retrieval, signature verification, remote witnessing, mutation, or execution.
+- [x] Complete the coordinated ten-phase verification, review, handoff, and focused local-commit flow without pushing.
+
+## Build-Loop Policy Reverification
+
+- [x] Verify that the active three-hour schedule and repository handoff retain the exact local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Build-Loop Policy Reverification Follow-up
+
+- [x] Reverify that the active three-hour schedule, repository handoff, roadmap, and pull request state retain the exact local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Build-Loop Policy Reverification Continuation
+
+- [x] Reverify that the active three-hour schedule, repository handoff, roadmap, and pull request state preserve the exact local-only scope, completion evidence, external-prerequisite stop conditions, and no-push/no-publication restriction.
+
+## Review-Trace Event Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied review-trace events, declared artifact references and digests, event coverage, and policy provenance without retrieval or signature verification.
+- [x] Implement the reference-only event consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.
+
+## Policy-Provenance Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied policy, context, trace, report, and review-policy declarations without retrieval or signature verification.
+- [x] Implement the reference-only policy-provenance consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.
+
+## Review-Policy Evidence-Reference Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied review-policy bounds, report evidence and provenance declarations, and evidence-provenance assessment identifiers without retrieval or signature verification.
+- [x] Implement the reference-only review-policy evidence-reference consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.
+
+## Evidence-capture Declaration Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied capture metadata, seal declarations, review-policy evidence assessment, and report-reference records without retrieval or signature verification.
+- [x] Implement the reference-only evidence-capture declaration consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.
+
+## Evidence-capture Lineage Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied capture declarations, predecessor identifiers, capture-assessment identifiers, and evidence bindings without retrieval or signature verification.
+- [x] Implement the reference-only evidence-capture lineage consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
+- [x] Run full verification, update governance records, and create focused local commits without pushing.
+
+## Evidence-gating Declaration Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied ineligible-dispatch declarations, capture-lineage identifiers, capture evidence bindings, and report citations without retrieval or signature verification.
+- [x] Implement the reference-only evidence-gating declaration consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.
+
+## Requested Remote Delivery
+
+- [x] Push the verified `feat/iteration-1-foundation` branch to origin and create or update its pull request against `main` without publishing artifacts.

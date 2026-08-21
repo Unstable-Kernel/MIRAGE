@@ -1,0 +1,1 @@
+{"workflow_id":"evidence-gate-workflow-v1","status":"ineligible","reasons":["active policy does not allow simulation","live read-only transport is not independently verified"],"approval_chain_id":"capture-gate-approval-v1","transport_manifest_id":"capture-gate-transport-v1","sandbox_envelope_id":"capture-gate-sandbox-v1","execution_permitted":false}

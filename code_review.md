@@ -6,7 +6,7 @@ This review accumulates the ESG and URCP vertical slices, policy-gated execution
 
 ## Current baseline audit
 
-The current baseline is PR #9 plus the unpushed deterministic workflow, context, review-trace, approval, and eligibility work. The repository has 64 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, and advisory eligibility primitives.
+The current baseline is [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) plus the unpushed cross-artifact readiness iteration. The repository has 72 passing tests and documents an implemented EIR layer, six provider adapters with mocked contract coverage, revisioned ESG snapshots, a policy-gated execution runtime, an audit ledger, checkpoint revalidation, declarative sandbox assessment, deterministic fixture-backed read-only simulator metadata and state extraction, transport verification manifests, sandbox enforcement-evidence contracts, and EIR-bound M4 workflow, evidence, context, provenance, approval, eligibility, persistence, revocation, lifecycle, controlled context, deterministic report, cross-artifact consistency, review-policy, and readiness primitives.
 
 | Surface | Current status | Boundary that remains explicit |
 |---|---|---|
@@ -21,6 +21,9 @@ The current baseline is PR #9 plus the unpushed deterministic workflow, context,
 | Deterministic workflow evidence | EIR-bound steps, criterion coverage, source-node checks, and review artifacts | No engineering correctness judgment, automatic approval, or backend invocation |
 | Context and review trace | Redacted references, policy provenance, required review stages, and local trace checks | No retrieval, raw artifacts, approval, execution, or checkpoint resume |
 | Approval and eligibility | Digest-linked approval chain plus advisory technical prerequisite assessment | No identity verification, signature, authority, dispatch, or execution |
+| Governance foundations | Persistence interface, revocation record, provenance seal, and lifecycle transition validation | No credentials, durable storage, signatures, state mutation, or execution |
+| Controlled report artifacts | Schema-bound context envelopes, report citation graphs, provenance seal, and review lifecycle checks | No retrieval, generated claim, signature, publication, or execution |
+| Cross-artifact readiness | Review graph consistency, local policy, and preserved external prerequisite denials | No dispatch, live transport, sandbox enforcement, or execution |
 | Distribution | Local build verification for Python and private npm launcher | No PyPI or npm publication |
 
 The remaining primary delivery streams are a real verified read-only simulator transport, a real enforced backend sandbox, the remaining M4 goal-to-evaluate pipeline, M5 cross-simulator translation, M6 research reproduction, and M7 hypothesis and optimization. `docs/guides/delivery-status.md` provides the associated evidence requirements and cross-cutting hardening backlog.
@@ -313,3 +316,212 @@ The full suite passes with 64 tests. Ruff, EIR schema consistency, Markdown loca
 The guarded approval and advisory eligibility implementation is committed locally as `fc796df` with the message `feat: add guarded approval eligibility`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
 
 The accumulated delivery is now pushed through `b024f18`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is open against `main`; it replaces PR #9, which was already merged before these later guarded workflow iterations were delivered.
+
+## Governance foundation iteration review
+
+The governance foundation extends the review model without adding a real authority path. The persistence descriptor contains references to future identity, signature, retention, and audit controls but holds no secret material. The persistence protocol declares only metadata and assessment methods. It does not include a write operation or a connection implementation.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/approval_persistence.py` | Future persistence adapter boundary uses credential references and integrity metadata only; no credentials or writes |
+| `src/mirage/runtime/revocation_review.py` | Declared revocations are structurally assessed without mutating an approval chain |
+| `src/mirage/runtime/evidence_provenance.py` | Every evidence reference needs a matching local provenance seal; assessment never retrieves evidence contents |
+| `src/mirage/runtime/lifecycle_review.py` | Lifecycle ordering is validated against approval and provenance readiness without saving state |
+| `src/mirage/runtime/dispatch_eligibility.py` | Declared revocation becomes an additional structured reason to block future eligibility |
+| `examples/12-governance-foundations/` | Local fixtures demonstrate readiness and declared review outcomes only |
+
+The contracts cannot be mistaken for production governance: no identity provider is queried, credential is resolved, signature is checked, durable audit record is stored, revocation is applied, external system is notified, evidence is retrieved, workflow state is changed, or backend is dispatched. `execution_permitted` remains false on every new result type.
+
+## Governance verification
+
+The full suite passes with 68 tests. Ruff, EIR schema consistency, Markdown local-link checks, four governance CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The active-session governance foundation is committed locally as `15b9033` with the message `feat: add governance foundation contracts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Controlled context and deterministic report iteration review
+
+The controlled context model narrows a redacted bundle into one declared claim per required schema field. It compares only identifiers, kinds, reference prefixes, and digests. This prevents a report artifact from silently referencing arbitrary or out-of-schema inputs while deliberately avoiding any content retrieval or model-prompt construction.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/controlled_context.py` | Schema, envelope, and local claim assessment restrict context references without exposing raw content |
+| `src/mirage/runtime/deterministic_report.py` | Report sections cite only known context claims and sealed evidence; no engineering prose is generated |
+| `src/mirage/runtime/report_provenance.py` | Report provenance validates identifiers and declared digest references without signing or storing data |
+| `src/mirage/runtime/report_lifecycle.py` | Report lifecycle order is validated without state mutation, publication, or dispatch |
+| `examples/13-controlled-report/` | Canonical local schema, envelope, report, seal, and lifecycle fixtures |
+
+The report artifact remains a review graph, not a technical conclusion. No external artifact is fetched, credential resolved, prompt composed, model called, report rendered, signature generated, report stored, report published, workflow state changed, backend dispatched, simulator connected, or hardware actuated. Every new result retains `execution_permitted: false`.
+
+## Controlled report verification
+
+The full suite passes with 70 tests. Ruff, EIR schema consistency, Markdown local-link checks, four controlled context and report CLI assessments, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit and remains unpushed.
+
+The controlled context and deterministic report implementation is committed locally as `e16d575` with the message `feat: add controlled report artifacts`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Cross-artifact readiness iteration review
+
+The readiness layer is intentionally a convergence point for the review graph, not a control-plane escalation. It requires context, trace, approval, report, and report-provenance artifacts to agree on one workflow before applying bounded local report policy. It then retains advisory dispatch denials rather than converting a consistent graph into execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/cross_artifact_review.py` | Validates shared workflow identity and readiness of local review artifacts without mutation |
+| `src/mirage/runtime/review_policy.py` | Applies local section and citation constraints without generated engineering content |
+| `src/mirage/runtime/workflow_readiness.py` | Aggregates review readiness with advisory external denial reasons while keeping execution disabled |
+| `examples/14-cross-artifact-readiness/` | Canonical local policy fixture and expected external-prerequisite readiness example |
+| `tests/test_cross_artifact_readiness.py` and `tests/test_cross_artifact_cli.py` | Cover consistent review graph, local policy success, readiness output, and disabled execution |
+
+The final readiness outcome, `ready_for_external_prerequisites`, is not a dispatch-ready outcome. It explicitly preserves the missing verified live read-only transport and real enforced sandbox. The implementation adds no client, credential, storage, external action, sandbox runtime, simulator connection, model call, workflow mutation, or physical actuation.
+
+## Cross-artifact readiness verification
+
+The full suite passes with 72 tests. Ruff, EIR schema consistency, Markdown local-link checks, cross-artifact, review-policy, and readiness CLI inspection, generic capability discovery, secret scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is ready for a local commit. Further safe progress on the M4 execution path is now blocked by independently verified external transport and sandbox prerequisites.
+
+The cross-artifact readiness implementation is committed locally as `d14b7dc` with the message `feat: add cross artifact readiness`. It contains no co-author trailer or AI attribution and remains unpushed pending an explicit user request.
+
+## Scheduled autonomous review handoff
+
+The repository now has one active recurring build review, titled `Every 3 hours MIRAGE build review`. It runs every 10,800 seconds, equivalent to every three hours, in `Asia/Calcutta`. The schedule status confirms the interval trigger is active. The scheduled task inherits the current task context and includes GitHub and browser access already associated with the task.
+
+The schedule is constrained to locally verifiable MIRAGE work. At each run, it must inspect the repository state, workflow context, todo list, code review, roadmap, and PR state before selecting the next coherent slice. Only deterministic review, validation, provenance, documentation, and contract work without external credentials or infrastructure is allowed. It must keep simulator control, physical actuation, external side effects, live transport, OS-level sandbox claims, retrieval, credential handling, durable authority mutation, package publication, and branch push disabled. Every completed safe slice must include tests, examples, documentation, code review, workflow context, todo updates, full verification, and focused local commits without co-author attribution. If a slice requires an authorized live simulator environment or a real OS-enforced sandbox, it must stop and report the exact prerequisite. The policy was reverified once more while PR #10 is merged, with the branch remaining local-only and ahead of its remote. It has been verified active after project deployment, and it must not push or publish without explicit user approval.
+
+## Ledger integrity and retention iteration review
+
+The ledger slice adds a local JSONL integrity boundary without changing execution authority. `ExecutionLedger` now writes a versioned envelope for every record, chains canonical SHA-256 digests, takes local POSIX advisory locks for reads and writes, and refuses appends or retention compaction when the current file does not verify. The `ledger-verify` command exposes a non-executing integrity assessment, while `retain(max_records)` keeps the newest bounded set and records the digest immediately before the discarded prefix in a retention anchor.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/ledger.py` | Versioned local envelope, chained digest calculation, advisory locking, malformed-file assessment, append refusal, and atomic retention compaction |
+| `src/mirage/cli.py` | Read-only `ledger-verify` command that reports integrity without repairing or executing records |
+| `tests/test_ledger_integrity.py` | Covers valid chains, tampering, malformed JSON, append refusal, retention anchors, locking, CLI inspection, and the canonical fixture |
+| `examples/15-ledger-integrity/` | Provides a retained two-record local fixture and a verification command |
+| `docs/guides/execution-ledger.md` | Documents the envelope, retention semantics, and explicit non-goals |
+
+The guarantee is deliberately narrow. The chain detects accidental or unsophisticated local modification but does not add signatures, remote witnessing, trusted timestamps, encryption, a database transaction, storage migration, distributed coordination, or hostile-writer protection. The advisory lock is a local POSIX coordination mechanism, not a multi-host safety boundary. No simulator connection, sandbox runtime, credential handling, durable authority mutation, external side effect, physical actuation, package publication, or branch push was introduced.
+
+The full repository suite passes with 78 tests. Ruff, EIR schema consistency, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `c6cc0ff` with the message `feat: add ledger integrity retention`; the commit contains no co-author trailer or AI attribution. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged, and this ledger iteration remains unpushed pending an explicit user request.
+
+## Local EIR ingestion iteration review
+
+The local EIR ingestion slice introduces a bounded compiler frontend without implying general artifact extraction. `ingest_eir_file()` accepts only local UTF-8 JSON and YAML candidates, derives a source format, byte count, and SHA-256 digest, and delegates semantic acceptance entirely to the canonical EIR validator. The result keeps local source metadata separate from the input EIR document, so document, node, and relationship provenance are preserved rather than rewritten.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/eir/ingestion.py` | Deterministic local read, supported-format gate, source digest, allowed-root check, parse diagnostics, and canonical validation handoff |
+| `src/mirage/eir/__init__.py` | Exposes the ingestion contract through the public EIR API |
+| `src/mirage/cli.py` | Adds `eir-ingest`, a non-executing local inspection command with an optional allowed root |
+| `tests/test_eir_ingestion.py` | Covers JSON and YAML acceptance, preserved provenance, source digests, rejected formats, invalid syntax, mapping shape, canonical validation errors, path boundaries, and CLI behavior |
+| `examples/16-eir-ingestion/` | Provides a static local JSON EIR candidate and safe command example |
+| `docs/guides/eir-ingestion.md` | Defines local-only inputs, source metadata, diagnostics, and explicit non-goals |
+
+The adapter does not fetch URIs, parse repositories, papers, URDF, MATLAB, CAD, or arbitrary formats, execute source content, invoke a provider, mutate provenance, persist data, lower an EIR artifact, or dispatch a capability. The allowed-root option is a deterministic path-boundary check, not a filesystem sandbox or hostile-writer defense.
+
+The full repository suite passes with 85 tests. Ruff, EIR schema consistency, accepted CLI paths with and without an allowed root, local Markdown link checks, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `a4ea637` with the message `feat: add local EIR ingestion adapter`; the commit contains no co-author trailer or AI attribution. The local EIR ingestion iteration remains unpushed pending an explicit user request.
+
+## Coordinated provenance consistency iteration review
+
+The provenance consistency slice adds a deterministic reference-only assessment across a supplied local EIR source, evidence provenance seals, and report provenance bindings. `ProvenanceConsistencyManifest` records the expected EIR document identity, local source reference and digest, plus one evidence-to-report binding per evidence identifier. `assess_provenance_consistency()` compares those supplied declarations to local ingestion metadata, seals, the deterministic report, and prior review assessments.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/provenance_consistency.py` | Defines manifest, evidence-to-report binding, consistent or invalid status, explicit rejection reasons, and a permanently false execution permission |
+| `src/mirage/runtime/deterministic_report.py` | Adds structured report provenance references without changing report generation or report-lifecycle authority |
+| `src/mirage/cli.py` | Adds `provenance-consistency-assess`, which accepts only explicitly supplied local files and reports JSON |
+| `tests/test_provenance_consistency.py` | Covers aligned artifacts, EIR digest mismatch, missing report references, and read-only CLI assessment |
+| `examples/17-provenance-consistency/` | Provides a complete local manifest, evidence seals, readiness records, and report binding fixture |
+| `docs/guides/provenance-consistency.md` | Documents comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares the EIR digest against metadata returned by explicit local ingestion. It compares evidence and report digest declarations as strings only. It does not retrieve evidence, open a sealed reference, recalculate evidence contents, verify a signature, produce a trusted timestamp, use a remote witness, authenticate a reviewer, mutate a report, persist data, invoke a backend, or authorize execution. The report provenance reference field is a schema addition for inspection only and does not generate, sign, or publish any report content.
+
+The coordinated ten-phase flow completed local inspection, boundary mapping, contract definition, test planning, implementation, CLI exposure, fixtures, documentation, handoff reconciliation, and full quality validation. The final suite passed with 89 tests. Ruff, EIR schema consistency, the accepted provenance-consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The iteration is committed locally as `9dcdb8a` with the message `feat: add provenance consistency assessment`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Coordinated report seal consistency iteration review
+
+The report seal consistency slice adds a reference-only comparison among a supplied deterministic report, report provenance seal, report-provenance readiness result, review trace, trace readiness result, and consistency manifest. It checks report identity, workflow identity, trace identity, declared report digest, sealer reference, and the report's declared trace artifact reference. The assessment returns structured issues and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/report_seal_consistency.py` | Defines manifest and assessment contracts for supplied report, seal, trace, and readiness declarations |
+| `src/mirage/cli.py` | Adds `report-seal-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_report_seal_consistency.py` | Covers aligned declarations, a report-digest mismatch, missing report trace reference, and CLI behavior |
+| `examples/18-report-seal-consistency/` | Provides report, seal, readiness, trace, and manifest fixture declarations |
+| `docs/guides/report-seal-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The report digest and sealer reference are compared as declared strings only. The assessment does not recompute a report digest, inspect source content, verify a signature, authenticate a sealer, create a trusted timestamp, contact a remote witness, store a seal, mutate lifecycle state, publish a report, invoke a backend, or authorize execution.
+
+The coordinated ten-phase flow completed local inspection, contract mapping, invariant definition, test planning, implementation, API and CLI exposure, fixtures, documentation, handoff reconciliation, and full validation. The final suite passed with 93 tests. Ruff, EIR schema consistency, the accepted report-seal consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks all passed. The iteration is committed locally as `05813dc` with the message `feat: add report seal consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Review-trace event consistency iteration review
+
+The review-trace event consistency slice adds a deterministic, reference-only comparison across a supplied review trace, trace readiness assessment, and manifest. It validates trace, workflow, context-bundle, and policy-provenance identifiers, then validates the declared artifact reference and digest for every required review event. The result contains structured issues, records matching event types, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/review_trace_consistency.py` | Defines manifest, expected event, and consistency assessment contracts for supplied local trace declarations |
+| `src/mirage/cli.py` | Adds `review-trace-event-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_review_trace_event_consistency.py` | Covers aligned declarations, declared digest mismatch, policy-provenance mismatch, and CLI behavior |
+| `examples/19-review-trace-event-consistency/` | Provides trace, readiness, and manifest fixture declarations for all four event types |
+| `docs/guides/review-trace-event-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve an artifact, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 97 tests. Ruff, EIR schema consistency, the accepted review-trace event consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `42e6db7` with the message `feat: add review trace event consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Policy-provenance consistency iteration review
+
+The policy-provenance consistency slice adds a deterministic, reference-only comparison across a supplied active execution policy, context bundle, context envelope, review trace, deterministic report, review policy, review-policy assessment, and manifest. It verifies policy provenance equality, expected identity declarations, and shared workflow identity. The result contains structured issues, records matching declarations, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/policy_provenance_consistency.py` | Defines manifest and consistency assessment contracts for supplied local policy-bearing declarations |
+| `src/mirage/cli.py` | Adds `policy-provenance-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_policy_provenance_consistency.py` | Covers aligned declarations, trace provenance drift, report workflow drift, and CLI behavior |
+| `examples/20-policy-provenance-consistency/` | Provides policy, context, trace, report, review-policy, readiness, and manifest fixture declarations |
+| `docs/guides/policy-provenance-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve content, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 101 tests. Ruff, EIR schema consistency, the accepted policy-provenance consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `94e308d` with the message `feat: add policy provenance consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Review-policy evidence-reference consistency iteration review
+
+The review-policy evidence-reference consistency slice adds a deterministic, reference-only comparison across supplied review-policy bounds, review-policy readiness, deterministic report declarations, report readiness, evidence-provenance readiness, seals, and manifest bindings. It verifies policy bounds, workflow identity, evidence seal coverage, source reference and digest declarations, report evidence citation, and report provenance-reference placement. The result contains structured issues, records validated evidence identifiers, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/review_policy_evidence_consistency.py` | Defines manifest, evidence binding, and consistency assessment contracts for supplied local review-policy and evidence declarations |
+| `src/mirage/cli.py` | Adds `review-policy-evidence-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_review_policy_evidence_consistency.py` | Covers aligned declarations, policy-bound drift, missing report provenance reference, and CLI behavior |
+| `examples/21-review-policy-evidence-reference-consistency/` | Provides review-policy, report, evidence-provenance, seal, and manifest fixture declarations |
+| `docs/guides/review-policy-evidence-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve evidence, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 105 tests. Ruff, EIR schema consistency, the accepted review-policy evidence-reference CLI fixture, local Markdown links, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `89ddba6` with the message `feat: add review policy evidence reference consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-capture declaration consistency iteration review
+
+The evidence-capture declaration consistency slice adds a deterministic, reference-only comparison across supplied capture declarations, evidence-provenance readiness, prior review-policy evidence assessment, deterministic report references, and provenance seals. It verifies workflow identity, manifest identity, sealed and review-policy-validated evidence declarations, source reference and digest declarations, capture method, capture timestamp, verifier reference, report section placement, and report provenance-reference placement. The result contains structured issues, records validated capture identifiers, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/evidence_capture_consistency.py` | Defines capture declarations, manifest, assessment, and supplied-reference consistency validation |
+| `src/mirage/cli.py` | Adds `evidence-capture-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_evidence_capture_consistency.py` | Covers aligned declarations, seal metadata drift, missing report provenance reference, and CLI behavior |
+| `examples/22-evidence-capture-consistency/` | Provides capture, evidence-provenance, review-policy evidence, report, seal, and manifest fixture declarations |
+| `docs/guides/evidence-capture-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings, timestamps, and structured declarations only. It does not retrieve evidence, invoke a capture method, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 109 tests. Ruff, EIR schema consistency, the accepted evidence-capture CLI fixture, local Markdown links, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `6ecda8d` with the message `feat: add evidence capture consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-capture lineage consistency iteration review
+
+The capture-lineage slice adds a deterministic comparison across supplied capture declarations, capture-assessment state, predecessor identifiers, and evidence bindings. It validates workflow and manifest identity, one declaration per supplied capture, matching evidence identifiers, required prior capture validation, unknown predecessors, self-references, and declared graph cycles. It compares declarations only, does not establish capture order, and keeps execution permanently disabled.
+
+The full repository suite passes with 113 tests. Ruff, EIR schema consistency, the accepted capture-lineage CLI fixture, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `370ed79` with the message `feat: add evidence capture lineage consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-gating declaration consistency iteration review
+
+The evidence-gating slice compares supplied ineligible-dispatch reasons, capture-lineage declarations, and report evidence citations without dispatching work. It rejects identifier drift, non-ineligible dispatch state, enabled execution, missing denial reasons, unknown captures, and absent report citations. Every result keeps execution disabled.
+
+The full repository suite passes with 116 tests. Ruff, EIR schema consistency, the accepted evidence-gating CLI fixture, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `c4f4c35` with the message `feat: add evidence gating consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
