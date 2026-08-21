@@ -513,3 +513,9 @@ The evidence-capture declaration consistency slice adds a deterministic, referen
 The assessment compares supplied strings, timestamps, and structured declarations only. It does not retrieve evidence, invoke a capture method, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
 
 The full repository suite passes with 109 tests. Ruff, EIR schema consistency, the accepted evidence-capture CLI fixture, local Markdown links, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `6ecda8d` with the message `feat: add evidence capture consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-capture lineage consistency iteration review
+
+The capture-lineage slice adds a deterministic comparison across supplied capture declarations, capture-assessment state, predecessor identifiers, and evidence bindings. It validates workflow and manifest identity, one declaration per supplied capture, matching evidence identifiers, required prior capture validation, unknown predecessors, self-references, and declared graph cycles. It compares declarations only, does not establish capture order, and keeps execution permanently disabled.
+
+The full repository suite passes with 113 tests. Ruff, EIR schema consistency, the accepted capture-lineage CLI fixture, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `370ed79` with the message `feat: add evidence capture lineage consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
