@@ -186,3 +186,10 @@
 - [x] Implement the reference-only policy-provenance consistency assessment with public API and a non-executing CLI command.
 - [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
 - [x] Run full verification and create focused local commits without pushing.
+
+## Review-Policy Evidence-Reference Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied review-policy bounds, report evidence and provenance declarations, and evidence-provenance assessment identifiers without retrieval or signature verification.
+- [x] Implement the reference-only review-policy evidence-reference consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, documentation, roadmap, code review, workflow context, and todo updates without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.

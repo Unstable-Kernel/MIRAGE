@@ -39,6 +39,7 @@ from .runtime import (
     ReportProvenanceSeal,
     ReportSealConsistencyManifest,
     ReviewPolicyAssessment,
+    ReviewPolicyEvidenceConsistencyManifest,
     ReviewTraceAssessment,
     ReviewTraceEventConsistencyManifest,
     SandboxAssessment,
@@ -64,6 +65,7 @@ from .runtime import (
     assess_report_provenance,
     assess_report_seal_consistency,
     assess_review_policy,
+    assess_review_policy_evidence_consistency,
     assess_review_trace,
     assess_review_trace_event_consistency,
     assess_sandbox,
@@ -565,6 +567,38 @@ def policy_provenance_consistency_assess(
         report,
         review_policy,
         review_policy_assessment,
+    )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("review-policy-evidence-consistency-assess")
+def review_policy_evidence_consistency_assess(
+    review_policy_file: Path,
+    review_policy_assessment_file: Path,
+    report_file: Path,
+    report_assessment_file: Path,
+    evidence_provenance_file: Path,
+    seals_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied review-policy evidence declarations without retrieval, mutation, or execution."""
+    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
+    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    manifest = ReviewPolicyEvidenceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_review_policy_evidence_consistency(
+        manifest,
+        review_policy,
+        review_policy_assessment,
+        report,
+        report_assessment,
+        evidence_provenance,
+        seals,
     )
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":

@@ -1,0 +1,15 @@
+{
+  "report_id": "evidence-reference-report-v1",
+  "workflow_id": "evidence-reference-workflow-v1",
+  "context_envelope_id": "evidence-reference-envelope-v1",
+  "sections": [
+    {
+      "section_id": "evidence-summary",
+      "title": "Evidence reference summary",
+      "evidence_ids": ["evidence-reference-1"],
+      "provenance_references": [
+        {"evidence_id": "evidence-reference-1", "source_reference": "fixture://evidence-reference-1", "source_digest": "sha256:evidence-reference-digest-v1"}
+      ]
+    }
+  ]
+}

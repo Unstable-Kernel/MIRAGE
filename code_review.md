@@ -481,3 +481,17 @@ The policy-provenance consistency slice adds a deterministic, reference-only com
 The assessment compares supplied strings and structured declarations only. It does not retrieve content, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
 
 The full repository suite passes with 101 tests. Ruff, EIR schema consistency, the accepted policy-provenance consistency CLI fixture, local Markdown links, secret-pattern scanning, tracked no-em-dash scanning, and diff integrity checks passed. The iteration is committed locally as `94e308d` with the message `feat: add policy provenance consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Review-policy evidence-reference consistency iteration review
+
+The review-policy evidence-reference consistency slice adds a deterministic, reference-only comparison across supplied review-policy bounds, review-policy readiness, deterministic report declarations, report readiness, evidence-provenance readiness, seals, and manifest bindings. It verifies policy bounds, workflow identity, evidence seal coverage, source reference and digest declarations, report evidence citation, and report provenance-reference placement. The result contains structured issues, records validated evidence identifiers, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/review_policy_evidence_consistency.py` | Defines manifest, evidence binding, and consistency assessment contracts for supplied local review-policy and evidence declarations |
+| `src/mirage/cli.py` | Adds `review-policy-evidence-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_review_policy_evidence_consistency.py` | Covers aligned declarations, policy-bound drift, missing report provenance reference, and CLI behavior |
+| `examples/21-review-policy-evidence-reference-consistency/` | Provides review-policy, report, evidence-provenance, seal, and manifest fixture declarations |
+| `docs/guides/review-policy-evidence-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings and structured declarations only. It does not retrieve evidence, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.

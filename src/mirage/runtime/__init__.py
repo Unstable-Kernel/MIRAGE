@@ -112,6 +112,13 @@ from .report_seal_consistency import (
     assess_report_seal_consistency,
 )
 from .review_policy import DeterministicReviewPolicy, ReviewPolicyAssessment, ReviewPolicyStatus, assess_review_policy
+from .review_policy_evidence_consistency import (
+    ReviewPolicyEvidenceConsistencyAssessment,
+    ReviewPolicyEvidenceConsistencyManifest,
+    ReviewPolicyEvidenceConsistencyStatus,
+    ReviewPolicyEvidenceReferenceBinding,
+    assess_review_policy_evidence_consistency,
+)
 from .review_trace import (
     ReviewTraceAssessment,
     ReviewTraceEvent,
@@ -233,6 +240,10 @@ __all__ = [
     "ReviewTraceEventConsistencyStatus",
     "ReviewTraceEventExpectation",
     "ReviewPolicyAssessment",
+    "ReviewPolicyEvidenceConsistencyAssessment",
+    "ReviewPolicyEvidenceConsistencyManifest",
+    "ReviewPolicyEvidenceConsistencyStatus",
+    "ReviewPolicyEvidenceReferenceBinding",
     "ReviewPolicyStatus",
     "ReportLifecycleAssessment",
     "ReportLifecycleState",
@@ -329,6 +340,7 @@ __all__ = [
     "ProvenanceConsistencyStatus",
     "assess_provenance_consistency",
     "assess_review_policy",
+    "assess_review_policy_evidence_consistency",
     "assess_review_trace",
     "assess_review_trace_event_consistency",
     "build_deterministic_plan",
