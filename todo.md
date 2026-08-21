@@ -217,4 +217,4 @@
 
 ## Requested Remote Delivery
 
-- [ ] Push the verified `feat/iteration-1-foundation` branch to origin and create or update its pull request against `main` without publishing artifacts.
+- [x] Push the verified `feat/iteration-1-foundation` branch to origin and create or update its pull request against `main` without publishing artifacts.
