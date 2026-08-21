@@ -497,3 +497,19 @@ The review-policy evidence-reference consistency slice adds a deterministic, ref
 The assessment compares supplied strings and structured declarations only. It does not retrieve evidence, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
 
 The full repository suite passes with 105 tests. Ruff, EIR schema consistency, the accepted review-policy evidence-reference CLI fixture, local Markdown links, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `89ddba6` with the message `feat: add review policy evidence reference consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-capture declaration consistency iteration review
+
+The evidence-capture declaration consistency slice adds a deterministic, reference-only comparison across supplied capture declarations, evidence-provenance readiness, prior review-policy evidence assessment, deterministic report references, and provenance seals. It verifies workflow identity, manifest identity, sealed and review-policy-validated evidence declarations, source reference and digest declarations, capture method, capture timestamp, verifier reference, report section placement, and report provenance-reference placement. The result contains structured issues, records validated capture identifiers, and has a permanently false execution permission.
+
+| File | Review outcome |
+|---|---|
+| `src/mirage/runtime/evidence_capture_consistency.py` | Defines capture declarations, manifest, assessment, and supplied-reference consistency validation |
+| `src/mirage/cli.py` | Adds `evidence-capture-consistency-assess`, which reads only explicitly supplied local files and emits JSON |
+| `tests/test_evidence_capture_consistency.py` | Covers aligned declarations, seal metadata drift, missing report provenance reference, and CLI behavior |
+| `examples/22-evidence-capture-consistency/` | Provides capture, evidence-provenance, review-policy evidence, report, seal, and manifest fixture declarations |
+| `docs/guides/evidence-capture-consistency.md` | Documents local comparison semantics, rejection reasons, and explicit non-goals |
+
+The assessment compares supplied strings, timestamps, and structured declarations only. It does not retrieve evidence, invoke a capture method, open a source reference, recompute a digest, validate a signature, authenticate a reviewer, create a trusted timestamp, contact a remote witness, mutate workflow state, persist data, publish a report, invoke a backend, dispatch a capability, or authorize execution.
+
+The full repository suite passes with 109 tests. Ruff, EIR schema consistency, the accepted evidence-capture CLI fixture, local Markdown links, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `6ecda8d` with the message `feat: add evidence capture consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
