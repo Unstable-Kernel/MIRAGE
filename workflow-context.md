@@ -8,7 +8,11 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged into `main`. The local ledger integrity and retention iteration is committed as `c6cc0ff`, and its handoff commit remains unpushed with it. The local EIR ingestion iteration is committed as `a4ea637` and remains unpushed. The coordinated provenance-consistency iteration is committed as `9dcdb8a` and remains unpushed. The coordinated report-seal consistency iteration is committed as `05813dc` and remains unpushed. The review-trace event consistency iteration is committed locally as `42e6db7` and remains unpushed. The policy-provenance consistency iteration is committed locally as `94e308d` and remains unpushed. The review-policy evidence-reference consistency iteration is committed locally as `89ddba6` and remains unpushed. The evidence-capture declaration consistency iteration is committed locally as `6ecda8d` and remains unpushed. The evidence-capture lineage consistency iteration is committed locally as `370ed79` and remains unpushed. The evidence-gating declaration consistency iteration is committed locally as `c4f4c35` and remains unpushed. A three-hour autonomous build review is active.
 
-The verified branch was pushed without publication, and [PR #11](https://github.com/Unstable-Kernel/MIRAGE/pull/11) is open from `feat/iteration-1-foundation` into `main`.
+The verified branch was pushed without publication, and [PR #11](https://github.com/Unstable-Kernel/MIRAGE/pull/11) is merged from `feat/iteration-1-foundation` into `main`.
+
+## Current build-loop decision
+
+The next governed build-loop inspection found no further coherent local-only implementation slice that would add meaningful capability without repeating existing reference-only checks. The roadmap and review records identify the remaining next increment as blocked by two external prerequisites: an independently verified, authorized live read-only simulator transport and a real OS-enforced sandbox backend. No simulator, transport, sandbox, credential, retrieval, dispatch, publication, or push action was attempted during this blocked iteration.
 
 ## Completed work
 
