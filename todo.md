@@ -214,3 +214,7 @@
 - [x] Implement the reference-only evidence-gating declaration consistency assessment with public API and a non-executing CLI command.
 - [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
 - [x] Run full verification and create focused local commits without pushing.
+
+## Requested Remote Delivery
+
+- [ ] Push the verified `feat/iteration-1-foundation` branch to origin and create or update its pull request against `main` without publishing artifacts.
