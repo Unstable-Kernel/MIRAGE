@@ -228,3 +228,9 @@
 
 - [x] Inspect available connector configuration, authorized read-only simulator endpoint evidence, and OS-enforced sandbox capabilities before attempting priority 1 or 2.
 - [x] Record the precise missing transport and sandbox prerequisites without fabricating enforcement or connection claims.
+
+## Authorized Package Release
+
+- [x] Verify the current Python and npm package metadata and build artifacts for the authorized release.
+- [ ] Publish `mirage-engineering` `0.1.0a0` to PyPI and the current `@unstable-kernel/mirage` version to npm without persisting credentials.
+- [ ] Verify registry metadata, record the release handoff, and rotate the exposed credentials.
