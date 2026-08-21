@@ -1,0 +1,8 @@
+{
+  "manifest_id": "evidence-capture-review-policy-evidence-v1",
+  "workflow_id": "evidence-capture-workflow-v1",
+  "status": "consistent",
+  "validated_evidence_ids": ["evidence-capture-1"],
+  "issues": [],
+  "execution_permitted": false
+}

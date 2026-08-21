@@ -24,6 +24,7 @@ from .runtime import (
     DeterministicReviewPolicy,
     DeterministicReviewReport,
     EvaluationEvidence,
+    EvidenceCaptureConsistencyManifest,
     EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
     ExecutionLedger,
@@ -39,6 +40,7 @@ from .runtime import (
     ReportProvenanceSeal,
     ReportSealConsistencyManifest,
     ReviewPolicyAssessment,
+    ReviewPolicyEvidenceConsistencyAssessment,
     ReviewPolicyEvidenceConsistencyManifest,
     ReviewTraceAssessment,
     ReviewTraceEventConsistencyManifest,
@@ -57,6 +59,7 @@ from .runtime import (
     assess_deterministic_report,
     assess_dispatch_eligibility,
     assess_evaluation_evidence,
+    assess_evidence_capture_consistency,
     assess_evidence_provenance,
     assess_lifecycle_transition,
     assess_policy_provenance_consistency,
@@ -600,6 +603,29 @@ def review_policy_evidence_consistency_assess(
         evidence_provenance,
         seals,
     )
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-capture-consistency-assess")
+def evidence_capture_consistency_assess(
+    evidence_provenance_file: Path,
+    review_policy_evidence_assessment_file: Path,
+    report_file: Path,
+    seals_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied evidence-capture declarations without retrieval, mutation, or execution."""
+
+    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    review_policy_evidence = ReviewPolicyEvidenceConsistencyAssessment.model_validate_json(
+        review_policy_evidence_assessment_file.read_text(encoding="utf-8")
+    )
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    manifest = EvidenceCaptureConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_evidence_capture_consistency(manifest, evidence_provenance, review_policy_evidence, report, seals)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
         raise typer.Exit(1)

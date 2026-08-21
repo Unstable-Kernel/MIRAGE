@@ -42,6 +42,13 @@ from .deterministic_report import (
     assess_deterministic_report,
 )
 from .dispatch_eligibility import DispatchEligibilityAssessment, DispatchEligibilityStatus, assess_dispatch_eligibility
+from .evidence_capture_consistency import (
+    EvidenceCaptureConsistencyAssessment,
+    EvidenceCaptureConsistencyManifest,
+    EvidenceCaptureConsistencyStatus,
+    EvidenceCaptureDeclaration,
+    assess_evidence_capture_consistency,
+)
 from .evidence_provenance import (
     EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
@@ -219,6 +226,10 @@ __all__ = [
     "EvidenceProvenanceAssessment",
     "EvidenceProvenanceSeal",
     "EvidenceProvenanceStatus",
+    "EvidenceCaptureConsistencyAssessment",
+    "EvidenceCaptureConsistencyManifest",
+    "EvidenceCaptureConsistencyStatus",
+    "EvidenceCaptureDeclaration",
     "PolicyProvenance",
     "PolicyProvenanceConsistencyAssessment",
     "PolicyProvenanceConsistencyManifest",
@@ -326,6 +337,7 @@ __all__ = [
     "assess_deterministic_report",
     "assess_dispatch_eligibility",
     "assess_evidence_provenance",
+    "assess_evidence_capture_consistency",
     "assess_lifecycle_transition",
     "assess_policy_provenance_consistency",
     "assess_report_lifecycle_transition",

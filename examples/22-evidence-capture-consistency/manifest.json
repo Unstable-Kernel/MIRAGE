@@ -1,0 +1,18 @@
+{
+  "manifest_id": "evidence-capture-consistency-v1",
+  "workflow_id": "evidence-capture-workflow-v1",
+  "review_policy_evidence_manifest_id": "evidence-capture-review-policy-evidence-v1",
+  "require_review_policy_evidence_consistency": true,
+  "captures": [
+    {
+      "capture_id": "capture-declaration-1",
+      "evidence_id": "evidence-capture-1",
+      "source_reference": "fixture://evidence-capture-1",
+      "source_digest": "sha256:evidence-capture-digest-v1",
+      "capture_method": "fixture",
+      "captured_at": "2026-08-01T00:00:00Z",
+      "verifier_reference": "fixture://verifier",
+      "report_section_id": "capture-summary"
+    }
+  ]
+}
