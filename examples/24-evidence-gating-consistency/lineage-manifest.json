@@ -1,0 +1,1 @@
+{"manifest_id":"capture-gate-lineage-v1","workflow_id":"evidence-gate-workflow-v1","evidence_capture_manifest_id":"capture-gate-source-v1","require_evidence_capture_consistency":true,"declarations":[{"capture_id":"capture-gate-1","evidence_id":"evidence-gate-1","predecessor_capture_ids":[]}]}

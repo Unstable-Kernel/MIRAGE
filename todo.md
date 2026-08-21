@@ -207,3 +207,10 @@
 - [x] Implement the reference-only evidence-capture lineage consistency assessment with public API and a non-executing CLI command.
 - [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
 - [x] Run full verification, update governance records, and create focused local commits without pushing.
+
+## Evidence-gating Declaration Consistency Iteration
+
+- [x] Define a deterministic local contract that compares supplied ineligible-dispatch declarations, capture-lineage identifiers, capture evidence bindings, and report citations without retrieval or signature verification.
+- [x] Implement the reference-only evidence-gating declaration consistency assessment with public API and a non-executing CLI command.
+- [x] Add contract tests, canonical fixtures, examples, and documentation without execution or remote side effects.
+- [x] Run full verification and create focused local commits without pushing.

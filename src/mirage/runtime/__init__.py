@@ -56,6 +56,13 @@ from .evidence_capture_lineage_consistency import (
     EvidenceCaptureLineageDeclaration,
     assess_evidence_capture_lineage_consistency,
 )
+from .evidence_gating_consistency import (
+    EvidenceGatingBinding,
+    EvidenceGatingConsistencyAssessment,
+    EvidenceGatingConsistencyManifest,
+    EvidenceGatingConsistencyStatus,
+    assess_evidence_gating_consistency,
+)
 from .evidence_provenance import (
     EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
@@ -241,6 +248,10 @@ __all__ = [
     "EvidenceCaptureLineageConsistencyManifest",
     "EvidenceCaptureLineageConsistencyStatus",
     "EvidenceCaptureLineageDeclaration",
+    "EvidenceGatingBinding",
+    "EvidenceGatingConsistencyAssessment",
+    "EvidenceGatingConsistencyManifest",
+    "EvidenceGatingConsistencyStatus",
     "PolicyProvenance",
     "PolicyProvenanceConsistencyAssessment",
     "PolicyProvenanceConsistencyManifest",
@@ -350,6 +361,7 @@ __all__ = [
     "assess_evidence_provenance",
     "assess_evidence_capture_consistency",
     "assess_evidence_capture_lineage_consistency",
+    "assess_evidence_gating_consistency",
     "assess_lifecycle_transition",
     "assess_policy_provenance_consistency",
     "assess_report_lifecycle_transition",

@@ -23,10 +23,13 @@ from .runtime import (
     DeterministicReportAssessment,
     DeterministicReviewPolicy,
     DeterministicReviewReport,
+    DispatchEligibilityAssessment,
     EvaluationEvidence,
     EvidenceCaptureConsistencyAssessment,
     EvidenceCaptureConsistencyManifest,
+    EvidenceCaptureLineageConsistencyAssessment,
     EvidenceCaptureLineageConsistencyManifest,
+    EvidenceGatingConsistencyManifest,
     EvidenceProvenanceAssessment,
     EvidenceProvenanceSeal,
     ExecutionLedger,
@@ -63,6 +66,7 @@ from .runtime import (
     assess_evaluation_evidence,
     assess_evidence_capture_consistency,
     assess_evidence_capture_lineage_consistency,
+    assess_evidence_gating_consistency,
     assess_evidence_provenance,
     assess_lifecycle_transition,
     assess_policy_provenance_consistency,
@@ -646,6 +650,27 @@ def evidence_capture_lineage_consistency_assess(
     capture_assessment = EvidenceCaptureConsistencyAssessment.model_validate_json(capture_assessment_file.read_text(encoding="utf-8"))
     lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
     assessment = assess_evidence_capture_lineage_consistency(lineage_manifest, capture_manifest, capture_assessment)
+    typer.echo(assessment.model_dump_json())
+    if assessment.status.value != "consistent":
+        raise typer.Exit(1)
+
+
+@app.command("evidence-gating-consistency-assess")
+def evidence_gating_consistency_assess(
+    lineage_manifest_file: Path,
+    lineage_assessment_file: Path,
+    dispatch_assessment_file: Path,
+    report_file: Path,
+    manifest_file: Path,
+) -> None:
+    """Compare supplied evidence-gating declarations without retrieval, mutation, or execution."""
+
+    lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
+    lineage_assessment = EvidenceCaptureLineageConsistencyAssessment.model_validate_json(lineage_assessment_file.read_text(encoding="utf-8"))
+    dispatch_assessment = DispatchEligibilityAssessment.model_validate_json(dispatch_assessment_file.read_text(encoding="utf-8"))
+    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    manifest = EvidenceGatingConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    assessment = assess_evidence_gating_consistency(manifest, lineage_manifest, lineage_assessment, dispatch_assessment, report)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
         raise typer.Exit(1)
