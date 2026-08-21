@@ -3,7 +3,7 @@
   "version": "0.1.0-alpha.0",
   "description": "Launcher for the MIRAGE engineering compiler and runtime CLI.",
   "license": "MPL-2.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "bin": {
     "mirage": "./bin/mirage.js"

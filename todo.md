@@ -218,3 +218,23 @@
 ## Requested Remote Delivery
 
 - [x] Push the verified `feat/iteration-1-foundation` branch to origin and create or update its pull request against `main` without publishing artifacts.
+
+## Next Governed Build-loop Iteration
+
+- [x] Inspect the branch, workflow context, checklist, collaborator review, roadmap, and pull request state, then implement only the next coherent deterministic local-only slice.
+- [x] Stop the iteration at the documented external prerequisite boundary because the remaining roadmap increment requires independently verified live read-only simulator transport and an OS-enforced sandbox backend.
+
+## Simulator Transport and Sandbox Foundation Assessment
+
+- [x] Inspect available connector configuration, authorized read-only simulator endpoint evidence, and OS-enforced sandbox capabilities before attempting priority 1 or 2.
+- [x] Record the precise missing transport and sandbox prerequisites without fabricating enforcement or connection claims.
+
+## Authorized Package Release
+
+- [x] Verify the current Python and npm package metadata and build artifacts for the authorized release.
+- [ ] Publish `mirage-engineering` `0.1.0a0` to PyPI and the current `@unstable-kernel/mirage` version to npm without persisting credentials.
+- [ ] Verify registry metadata, record the release handoff, and rotate the exposed credentials.
+
+## Requested Pre-publication Remote Delivery
+
+- [x] Push the current release-preparation commits and create a pull request against `main` before resuming package publication.
