@@ -6,7 +6,7 @@ Continue MIRAGE within the active session through locally verifiable M4 workflow
 
 ## Current status
 
-The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged into `main`. The local ledger integrity and retention iteration is committed as `c6cc0ff`, and its handoff commit remains unpushed with it. The local EIR ingestion iteration is committed as `a4ea637` and remains unpushed. The coordinated provenance-consistency iteration is committed as `9dcdb8a` and remains unpushed. The coordinated report-seal consistency iteration is committed as `05813dc` and remains unpushed. The review-trace event consistency iteration is committed locally as `42e6db7` and remains unpushed. The policy-provenance consistency iteration is committed locally as `94e308d` and remains unpushed. The review-policy evidence-reference consistency iteration is implemented and pending final verification plus its focused local commit. A three-hour autonomous build review is active.
+The cross-artifact readiness iteration is committed locally as `d14b7dc` on `feat/iteration-1-foundation`. [PR #10](https://github.com/Unstable-Kernel/MIRAGE/pull/10) is merged into `main`. The local ledger integrity and retention iteration is committed as `c6cc0ff`, and its handoff commit remains unpushed with it. The local EIR ingestion iteration is committed as `a4ea637` and remains unpushed. The coordinated provenance-consistency iteration is committed as `9dcdb8a` and remains unpushed. The coordinated report-seal consistency iteration is committed as `05813dc` and remains unpushed. The review-trace event consistency iteration is committed locally as `42e6db7` and remains unpushed. The policy-provenance consistency iteration is committed locally as `94e308d` and remains unpushed. The review-policy evidence-reference consistency iteration is committed locally as `89ddba6` and remains unpushed. A three-hour autonomous build review is active.
 
 ## Completed work
 
@@ -18,11 +18,11 @@ The readiness result intentionally returns `ready_for_external_prerequisites` ra
 
 | Check | Result |
 |---|---|
-| Full Python tests | 101 passed |
+| Full Python tests | 105 passed |
 | Ruff | Passed for `src`, `tests`, and `scripts` |
 | EIR schema consistency | Passed |
 | Documentation verification | Every tracked Markdown file passed local-link checks |
-| CLI verification | Cross-artifact, review-policy, readiness, and generic capability inspection passed |
+| CLI verification | Cross-artifact, review-policy, review-policy evidence-reference, readiness, and generic capability inspection passed |
 | Repository hygiene | Secret scan, tracked no-em-dash scan, and `git diff --check` passed |
 
 ## Blocking external prerequisites
