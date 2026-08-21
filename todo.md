@@ -234,3 +234,7 @@
 - [x] Verify the current Python and npm package metadata and build artifacts for the authorized release.
 - [ ] Publish `mirage-engineering` `0.1.0a0` to PyPI and the current `@unstable-kernel/mirage` version to npm without persisting credentials.
 - [ ] Verify registry metadata, record the release handoff, and rotate the exposed credentials.
+
+## Requested Pre-publication Remote Delivery
+
+- [ ] Push the current release-preparation commits and create a pull request against `main` before resuming package publication.
