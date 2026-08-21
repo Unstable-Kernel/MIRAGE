@@ -237,4 +237,4 @@
 
 ## Requested Pre-publication Remote Delivery
 
-- [ ] Push the current release-preparation commits and create a pull request against `main` before resuming package publication.
+- [x] Push the current release-preparation commits and create a pull request against `main` before resuming package publication.

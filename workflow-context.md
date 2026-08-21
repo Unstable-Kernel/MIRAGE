@@ -10,6 +10,8 @@ The cross-artifact readiness iteration is committed locally as `d14b7dc` on `fea
 
 The verified branch was pushed without publication, and [PR #11](https://github.com/Unstable-Kernel/MIRAGE/pull/11) is merged from `feat/iteration-1-foundation` into `main`.
 
+The release-preparation branch was pushed without registry publication, and [PR #12](https://github.com/Unstable-Kernel/MIRAGE/pull/12) is open from `feat/iteration-1-foundation` into `main`. Publication remains paused pending secure registry credential injection.
+
 ## Current build-loop decision
 
 The next governed build-loop inspection found no further coherent local-only implementation slice that would add meaningful capability without repeating existing reference-only checks. The roadmap and review records identify the remaining next increment as blocked by two external prerequisites: an independently verified, authorized live read-only simulator transport and a real OS-enforced sandbox backend. No simulator, transport, sandbox, credential, retrieval, dispatch, publication, or push action was attempted during this blocked iteration.
