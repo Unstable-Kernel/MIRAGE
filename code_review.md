@@ -519,3 +519,9 @@ The full repository suite passes with 109 tests. Ruff, EIR schema consistency, t
 The capture-lineage slice adds a deterministic comparison across supplied capture declarations, capture-assessment state, predecessor identifiers, and evidence bindings. It validates workflow and manifest identity, one declaration per supplied capture, matching evidence identifiers, required prior capture validation, unknown predecessors, self-references, and declared graph cycles. It compares declarations only, does not establish capture order, and keeps execution permanently disabled.
 
 The full repository suite passes with 113 tests. Ruff, EIR schema consistency, the accepted capture-lineage CLI fixture, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `370ed79` with the message `feat: add evidence capture lineage consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
+
+## Evidence-gating declaration consistency iteration review
+
+The evidence-gating slice compares supplied ineligible-dispatch reasons, capture-lineage declarations, and report evidence citations without dispatching work. It rejects identifier drift, non-ineligible dispatch state, enabled execution, missing denial reasons, unknown captures, and absent report citations. Every result keeps execution disabled.
+
+The full repository suite passes with 116 tests. Ruff, EIR schema consistency, the accepted evidence-gating CLI fixture, secret-pattern scanning, repository-wide no-em-dash scanning, and diff integrity checks passed. The implementation is committed locally as `c4f4c35` with the message `feat: add evidence gating consistency`; the commit contains no co-author trailer or AI attribution and remains unpushed.
