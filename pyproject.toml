@@ -43,7 +43,7 @@ dev = [
 ]
 providers = [
   "openai>=1.40,<2",
-  "anthropic>=0.34,<1",
+  "anthropic>=0.34,<2",
 ]
 
 [project.scripts]
