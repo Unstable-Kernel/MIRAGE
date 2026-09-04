@@ -5,9 +5,11 @@ import json
 import os
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import Any, NoReturn
 
 import typer
+import yaml
+from pydantic import BaseModel
 
 from .eir import ingest_eir_file, load_data, validate_document
 from .knowledge import EngineeringStateGraph
@@ -91,9 +93,55 @@ app = typer.Typer(help="MIRAGE engineering compiler and runtime CLI")
 FIXTURE_ARGUMENT = typer.Argument(default=None, help="Deterministic read-only fixture JSON path.")
 EVIDENCE_ARGUMENT = typer.Argument(default=None, help="Optional deterministic transport evidence JSON path.")
 
+# OSError covers missing/unreadable paths; ValueError covers JSONDecodeError and
+# pydantic ValidationError; YAMLError covers malformed YAML documents.
+INPUT_ERRORS = (OSError, ValueError, yaml.YAMLError)
+
+
+def _input_error(path: Path, error: BaseException) -> NoReturn:
+    typer.echo(f"error: cannot read {path}: {error}", err=True)
+    raise typer.Exit(1) from None
+
+
+def _read_text(path: Path) -> str:
+    """Read a user-supplied artifact, exiting with a concise message instead of a traceback."""
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError as error:
+        _input_error(path, error)
+
+
+def _validate_json_file(model: type[BaseModel], path: Path) -> Any:
+    try:
+        return model.model_validate_json(_read_text(path))
+    except INPUT_ERRORS as error:
+        _input_error(path, error)
+
+
+def _read_json(path: Path) -> Any:
+    try:
+        return json.loads(_read_text(path))
+    except INPUT_ERRORS as error:
+        _input_error(path, error)
+
 
 def _result(path: Path) -> Any:
-    return validate_document(load_data(path))
+    try:
+        return validate_document(load_data(path))
+    except INPUT_ERRORS as error:
+        _input_error(path, error)
+
+
+def _workflow_document(eir_file: Path):
+    try:
+        validation = validate_document(load_data(eir_file))
+    except INPUT_ERRORS as error:
+        _input_error(eir_file, error)
+    if not validation.ok:
+        typer.echo(json.dumps(validation.as_dict(), sort_keys=True))
+        raise typer.Exit(1)
+    assert validation.document is not None
+    return validation.document
 
 
 @app.command()
@@ -138,7 +186,10 @@ def eir_ingest(file: Path, allowed_root: Path | None = None) -> None:
 @app.command("esg-inspect")
 def esg_inspect(file: Path) -> None:
     """Inspect a persisted Engineering State Graph snapshot."""
-    graph = EngineeringStateGraph.load(file)
+    try:
+        graph = EngineeringStateGraph.load(file)
+    except INPUT_ERRORS as error:
+        _input_error(file, error)
     typer.echo(f"project_id: {graph.project_id}")
     typer.echo(f"revision: {graph.revision}")
     typer.echo(f"eir: {graph.eir.id}")
@@ -197,7 +248,10 @@ def simulator_metadata(
 ) -> None:
     """Read project metadata and an optional state snapshot without simulator control."""
     if fixture is not None:
-        adapter = FixtureSimulatorAdapter.from_file(fixture)
+        try:
+            adapter = FixtureSimulatorAdapter.from_file(fixture)
+        except INPUT_ERRORS as error:
+            _input_error(fixture, error)
     elif backend == "coppeliasim":
         adapter = CoppeliaSimReadOnlyAdapter(endpoint=endpoint)
     else:
@@ -219,10 +273,10 @@ def simulator_metadata(
 @app.command("transport-assess")
 def transport_assess(manifest_file: Path, evidence_file: Path | None = EVIDENCE_ARGUMENT) -> None:
     """Assess read-only transport evidence without opening a simulator connection."""
-    manifest = ReadOnlyTransportManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    manifest = _validate_json_file(ReadOnlyTransportManifest, manifest_file)
     evidence = None
     if evidence_file is not None:
-        evidence = TransportVerificationEvidence.model_validate_json(evidence_file.read_text(encoding="utf-8"))
+        evidence = _validate_json_file(TransportVerificationEvidence, evidence_file)
     report = assess_transport(manifest, evidence)
     typer.echo(report.model_dump_json())
     if not report.valid:
@@ -232,7 +286,7 @@ def transport_assess(manifest_file: Path, evidence_file: Path | None = EVIDENCE_
 @app.command("goal-workflow-review")
 def goal_workflow_review(file: Path, backend: str | None = None, allow_simulation: bool = False) -> None:
     """Revalidate a goal-to-evaluate workflow for manual review without executing a step."""
-    workflow = GoalToEvaluateWorkflow.model_validate_json(file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, file)
     policy = ExecutionPolicy(
         allow_read_only=True,
         allow_simulation=allow_simulation,
@@ -244,19 +298,10 @@ def goal_workflow_review(file: Path, backend: str | None = None, allow_simulatio
         raise typer.Exit(1)
 
 
-def _workflow_document(eir_file: Path):
-    validation = validate_document(load_data(eir_file))
-    if not validation.ok:
-        typer.echo(json.dumps(validation.as_dict(), sort_keys=True))
-        raise typer.Exit(1)
-    assert validation.document is not None
-    return validation.document
-
-
 @app.command("goal-workflow-plan")
 def goal_workflow_plan(workflow_file: Path, eir_file: Path) -> None:
     """Validate an EIR-bound goal workflow plan without model or backend invocation."""
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
     typer.echo(plan.model_dump_json())
     if plan.status.value != "ready_for_review":
@@ -266,9 +311,9 @@ def goal_workflow_plan(workflow_file: Path, eir_file: Path) -> None:
 @app.command("goal-workflow-evidence")
 def goal_workflow_evidence(workflow_file: Path, eir_file: Path, evidence_file: Path) -> None:
     """Assess cited workflow evidence without evaluating or executing engineering work."""
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence = [EvaluationEvidence.model_validate(item) for item in _read_json(evidence_file)]
     assessment = assess_evaluation_evidence(workflow, plan, evidence)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
@@ -278,10 +323,10 @@ def goal_workflow_evidence(workflow_file: Path, eir_file: Path, evidence_file: P
 @app.command("workflow-context-inspect")
 def workflow_context_inspect(workflow_file: Path, eir_file: Path, context_file: Path) -> None:
     """Validate a local redacted context bundle against a deterministic workflow plan."""
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     policy = ExecutionPolicy()
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context = _validate_json_file(WorkflowContextBundle, context_file)
     assessment = assess_workflow_context(context, workflow, plan, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
@@ -291,14 +336,14 @@ def workflow_context_inspect(workflow_file: Path, eir_file: Path, context_file: 
 @app.command("review-trace-assess")
 def review_trace_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path) -> None:
     """Assess a complete local provenance trace without changing workflow state."""
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     policy = ExecutionPolicy()
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context = _validate_json_file(WorkflowContextBundle, context_file)
     context_assessment = assess_workflow_context(context, workflow, plan, policy)
-    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence = [EvaluationEvidence.model_validate(item) for item in _read_json(evidence_file)]
     evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
-    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace = _validate_json_file(WorkflowReviewTrace, trace_file)
     assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
@@ -306,39 +351,39 @@ def review_trace_assess(workflow_file: Path, eir_file: Path, context_file: Path,
 
 
 def _review_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path):
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     policy = ExecutionPolicy()
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    context = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    context = _validate_json_file(WorkflowContextBundle, context_file)
     context_assessment = assess_workflow_context(context, workflow, plan, policy)
-    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence = [EvaluationEvidence.model_validate(item) for item in _read_json(evidence_file)]
     evidence_assessment = assess_evaluation_evidence(workflow, plan, evidence)
-    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
+    trace = _validate_json_file(WorkflowReviewTrace, trace_file)
     trace_assessment = assess_review_trace(trace, workflow, context_assessment, evidence_assessment, policy)
     return workflow, policy, trace_assessment
 
 
 def _approval_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path):
     workflow, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
-    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    chain = _validate_json_file(ApprovalChain, approval_file)
     return workflow, policy, chain, assess_approval_chain(chain, trace_assessment, policy)
 
 
 def _evidence_artifacts(workflow_file: Path, eir_file: Path, evidence_file: Path):
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    evidence = [EvaluationEvidence.model_validate(item) for item in json.loads(evidence_file.read_text(encoding="utf-8"))]
+    evidence = [EvaluationEvidence.model_validate(item) for item in _read_json(evidence_file)]
     return workflow, evidence, assess_evaluation_evidence(workflow, plan, evidence)
 
 
 def _controlled_context_artifacts(workflow_file: Path, eir_file: Path, context_file: Path, schema_file: Path, envelope_file: Path):
-    workflow = GoalToEvaluateWorkflow.model_validate_json(workflow_file.read_text(encoding="utf-8"))
+    workflow = _validate_json_file(GoalToEvaluateWorkflow, workflow_file)
     policy = ExecutionPolicy()
     plan = build_deterministic_plan(workflow, _workflow_document(eir_file))
-    bundle = WorkflowContextBundle.model_validate_json(context_file.read_text(encoding="utf-8"))
+    bundle = _validate_json_file(WorkflowContextBundle, context_file)
     context_assessment = assess_workflow_context(bundle, workflow, plan, policy)
-    schema = ControlledContextSchema.model_validate_json(schema_file.read_text(encoding="utf-8"))
-    envelope = ControlledContextEnvelope.model_validate_json(envelope_file.read_text(encoding="utf-8"))
+    schema = _validate_json_file(ControlledContextSchema, schema_file)
+    envelope = _validate_json_file(ControlledContextEnvelope, envelope_file)
     controlled = assess_controlled_context(schema, envelope, bundle, context_assessment)
     return workflow, envelope, controlled
 
@@ -355,9 +400,9 @@ def _report_artifacts(
 ):
     _, envelope, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
     _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
     provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
+    report = _validate_json_file(DeterministicReviewReport, report_file)
     return envelope, report, assess_deterministic_report(report, controlled, provenance)
 
 
@@ -377,7 +422,7 @@ def _cross_artifact_assessment(
     _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
     _, _, controlled = _controlled_context_artifacts(workflow_file, eir_file, context_file, schema_file, envelope_file)
     _, report, report_assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
-    report_seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    report_seal = _validate_json_file(ReportProvenanceSeal, report_seal_file)
     report_provenance = assess_report_provenance(report, report_assessment, report_seal)
     _, _, trace = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
     return policy, approval, report, assess_cross_artifacts(controlled, trace, approval, report_assessment, report_provenance)
@@ -387,7 +432,7 @@ def _cross_artifact_assessment(
 def approval_chain_assess(workflow_file: Path, eir_file: Path, context_file: Path, evidence_file: Path, trace_file: Path, approval_file: Path) -> None:
     """Assess a local human approval chain without granting authority or changing workflow state."""
     _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
-    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    chain = _validate_json_file(ApprovalChain, approval_file)
     assessment = assess_approval_chain(chain, trace_assessment, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "review_ready":
@@ -406,7 +451,7 @@ def approval_persistence_assess(
 ) -> None:
     """Assess an authenticated approval persistence interface without credentials or writes."""
     _, policy, chain, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
-    descriptor = ApprovalPersistenceDescriptor.model_validate_json(persistence_file.read_text(encoding="utf-8"))
+    descriptor = _validate_json_file(ApprovalPersistenceDescriptor, persistence_file)
     assessment = assess_approval_persistence(descriptor, chain, approval, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_integration":
@@ -425,7 +470,7 @@ def approval_revocation_assess(
 ) -> None:
     """Validate a declared approval revocation without changing approval state."""
     _, policy, chain, _ = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
-    record = ApprovalRevocationRecord.model_validate_json(revocation_file.read_text(encoding="utf-8"))
+    record = _validate_json_file(ApprovalRevocationRecord, revocation_file)
     assessment = assess_approval_revocation(record, chain, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "declared":
@@ -436,7 +481,7 @@ def approval_revocation_assess(
 def evidence_provenance_assess(workflow_file: Path, eir_file: Path, evidence_file: Path, seals_file: Path) -> None:
     """Assess local evidence reference seals without retrieving any evidence content."""
     _, evidence, assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
     provenance = assess_evidence_provenance(assessment, evidence, seals)
     typer.echo(provenance.model_dump_json())
     if provenance.status.value != "ready_for_review":
@@ -457,9 +502,9 @@ def lifecycle_transition_assess(
     """Validate a requested local lifecycle transition without mutating workflow state."""
     _, policy, _, approval = _approval_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file)
     _, evidence, evidence_assessment = _evidence_artifacts(workflow_file, eir_file, evidence_file)
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
     provenance = assess_evidence_provenance(evidence_assessment, evidence, seals)
-    transition = WorkflowLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    transition = _validate_json_file(WorkflowLifecycleTransition, transition_file)
     assessment = assess_lifecycle_transition(transition, approval, provenance)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "valid":
@@ -507,7 +552,7 @@ def report_provenance_assess(
 ) -> None:
     """Validate a report provenance seal without signing, storing, or publishing a report."""
     _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
-    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    seal = _validate_json_file(ReportProvenanceSeal, report_seal_file)
     provenance = assess_report_provenance(report, assessment, seal)
     typer.echo(provenance.model_dump_json())
     if provenance.status.value != "ready_for_review":
@@ -524,12 +569,12 @@ def report_seal_consistency_assess(
     manifest_file: Path,
 ) -> None:
     """Compare supplied report seal and review-trace declarations without retrieval, signing, or mutation."""
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    seal = ReportProvenanceSeal.model_validate_json(seal_file.read_text(encoding="utf-8"))
-    provenance = ReportProvenanceAssessment.model_validate_json(provenance_assessment_file.read_text(encoding="utf-8"))
-    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
-    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
-    manifest = ReportSealConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    seal = _validate_json_file(ReportProvenanceSeal, seal_file)
+    provenance = _validate_json_file(ReportProvenanceAssessment, provenance_assessment_file)
+    trace = _validate_json_file(WorkflowReviewTrace, trace_file)
+    trace_assessment = _validate_json_file(ReviewTraceAssessment, trace_assessment_file)
+    manifest = _validate_json_file(ReportSealConsistencyManifest, manifest_file)
     assessment = assess_report_seal_consistency(manifest, report, seal, provenance, trace, trace_assessment)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
@@ -539,9 +584,9 @@ def report_seal_consistency_assess(
 @app.command("review-trace-event-consistency-assess")
 def review_trace_event_consistency_assess(trace_file: Path, trace_assessment_file: Path, manifest_file: Path) -> None:
     """Compare supplied review-trace event declarations without retrieval, signing, mutation, or execution."""
-    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
-    trace_assessment = ReviewTraceAssessment.model_validate_json(trace_assessment_file.read_text(encoding="utf-8"))
-    manifest = ReviewTraceEventConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    trace = _validate_json_file(WorkflowReviewTrace, trace_file)
+    trace_assessment = _validate_json_file(ReviewTraceAssessment, trace_assessment_file)
+    manifest = _validate_json_file(ReviewTraceEventConsistencyManifest, manifest_file)
     assessment = assess_review_trace_event_consistency(manifest, trace, trace_assessment)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
@@ -560,14 +605,14 @@ def policy_provenance_consistency_assess(
     manifest_file: Path,
 ) -> None:
     """Compare supplied policy provenance declarations without retrieval, mutation, or execution."""
-    policy = ExecutionPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
-    context_bundle = WorkflowContextBundle.model_validate_json(context_bundle_file.read_text(encoding="utf-8"))
-    context_envelope = ControlledContextEnvelope.model_validate_json(context_envelope_file.read_text(encoding="utf-8"))
-    trace = WorkflowReviewTrace.model_validate_json(trace_file.read_text(encoding="utf-8"))
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
-    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
-    manifest = PolicyProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    policy = _validate_json_file(ExecutionPolicy, policy_file)
+    context_bundle = _validate_json_file(WorkflowContextBundle, context_bundle_file)
+    context_envelope = _validate_json_file(ControlledContextEnvelope, context_envelope_file)
+    trace = _validate_json_file(WorkflowReviewTrace, trace_file)
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    review_policy = _validate_json_file(DeterministicReviewPolicy, review_policy_file)
+    review_policy_assessment = _validate_json_file(ReviewPolicyAssessment, review_policy_assessment_file)
+    manifest = _validate_json_file(PolicyProvenanceConsistencyManifest, manifest_file)
     assessment = assess_policy_provenance_consistency(
         manifest,
         policy,
@@ -594,13 +639,13 @@ def review_policy_evidence_consistency_assess(
     manifest_file: Path,
 ) -> None:
     """Compare supplied review-policy evidence declarations without retrieval, mutation, or execution."""
-    review_policy = DeterministicReviewPolicy.model_validate_json(review_policy_file.read_text(encoding="utf-8"))
-    review_policy_assessment = ReviewPolicyAssessment.model_validate_json(review_policy_assessment_file.read_text(encoding="utf-8"))
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
-    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
-    manifest = ReviewPolicyEvidenceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    review_policy = _validate_json_file(DeterministicReviewPolicy, review_policy_file)
+    review_policy_assessment = _validate_json_file(ReviewPolicyAssessment, review_policy_assessment_file)
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    report_assessment = _validate_json_file(DeterministicReportAssessment, report_assessment_file)
+    evidence_provenance = _validate_json_file(EvidenceProvenanceAssessment, evidence_provenance_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
+    manifest = _validate_json_file(ReviewPolicyEvidenceConsistencyManifest, manifest_file)
     assessment = assess_review_policy_evidence_consistency(
         manifest,
         review_policy,
@@ -625,13 +670,13 @@ def evidence_capture_consistency_assess(
 ) -> None:
     """Compare supplied evidence-capture declarations without retrieval, mutation, or execution."""
 
-    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
+    evidence_provenance = _validate_json_file(EvidenceProvenanceAssessment, evidence_provenance_file)
     review_policy_evidence = ReviewPolicyEvidenceConsistencyAssessment.model_validate_json(
-        review_policy_evidence_assessment_file.read_text(encoding="utf-8")
+        _read_text(review_policy_evidence_assessment_file)
     )
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
-    manifest = EvidenceCaptureConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
+    manifest = _validate_json_file(EvidenceCaptureConsistencyManifest, manifest_file)
     assessment = assess_evidence_capture_consistency(manifest, evidence_provenance, review_policy_evidence, report, seals)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
@@ -646,9 +691,9 @@ def evidence_capture_lineage_consistency_assess(
 ) -> None:
     """Compare supplied capture-lineage declarations without retrieval, mutation, or execution."""
 
-    capture_manifest = EvidenceCaptureConsistencyManifest.model_validate_json(capture_manifest_file.read_text(encoding="utf-8"))
-    capture_assessment = EvidenceCaptureConsistencyAssessment.model_validate_json(capture_assessment_file.read_text(encoding="utf-8"))
-    lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
+    capture_manifest = _validate_json_file(EvidenceCaptureConsistencyManifest, capture_manifest_file)
+    capture_assessment = _validate_json_file(EvidenceCaptureConsistencyAssessment, capture_assessment_file)
+    lineage_manifest = _validate_json_file(EvidenceCaptureLineageConsistencyManifest, lineage_manifest_file)
     assessment = assess_evidence_capture_lineage_consistency(lineage_manifest, capture_manifest, capture_assessment)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
@@ -665,11 +710,11 @@ def evidence_gating_consistency_assess(
 ) -> None:
     """Compare supplied evidence-gating declarations without retrieval, mutation, or execution."""
 
-    lineage_manifest = EvidenceCaptureLineageConsistencyManifest.model_validate_json(lineage_manifest_file.read_text(encoding="utf-8"))
-    lineage_assessment = EvidenceCaptureLineageConsistencyAssessment.model_validate_json(lineage_assessment_file.read_text(encoding="utf-8"))
-    dispatch_assessment = DispatchEligibilityAssessment.model_validate_json(dispatch_assessment_file.read_text(encoding="utf-8"))
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    manifest = EvidenceGatingConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
+    lineage_manifest = _validate_json_file(EvidenceCaptureLineageConsistencyManifest, lineage_manifest_file)
+    lineage_assessment = _validate_json_file(EvidenceCaptureLineageConsistencyAssessment, lineage_assessment_file)
+    dispatch_assessment = _validate_json_file(DispatchEligibilityAssessment, dispatch_assessment_file)
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    manifest = _validate_json_file(EvidenceGatingConsistencyManifest, manifest_file)
     assessment = assess_evidence_gating_consistency(manifest, lineage_manifest, lineage_assessment, dispatch_assessment, report)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "consistent":
@@ -691,9 +736,9 @@ def report_lifecycle_assess(
 ) -> None:
     """Validate report lifecycle order without mutating, publishing, or dispatching a report."""
     _, report, assessment = _report_artifacts(workflow_file, eir_file, context_file, evidence_file, schema_file, envelope_file, seals_file, report_file)
-    seal = ReportProvenanceSeal.model_validate_json(report_seal_file.read_text(encoding="utf-8"))
+    seal = _validate_json_file(ReportProvenanceSeal, report_seal_file)
     provenance = assess_report_provenance(report, assessment, seal)
-    transition = ReportLifecycleTransition.model_validate_json(transition_file.read_text(encoding="utf-8"))
+    transition = _validate_json_file(ReportLifecycleTransition, transition_file)
     lifecycle = assess_report_lifecycle_transition(transition, provenance)
     typer.echo(lifecycle.model_dump_json())
     if not lifecycle.valid:
@@ -716,11 +761,11 @@ def provenance_consistency_assess(
         raise typer.Exit(1)
     assert ingestion.source is not None
     assert ingestion.document is not None
-    manifest = ProvenanceConsistencyManifest.model_validate_json(manifest_file.read_text(encoding="utf-8"))
-    seals = [EvidenceProvenanceSeal.model_validate(item) for item in json.loads(seals_file.read_text(encoding="utf-8"))]
-    report = DeterministicReviewReport.model_validate_json(report_file.read_text(encoding="utf-8"))
-    evidence_provenance = EvidenceProvenanceAssessment.model_validate_json(evidence_provenance_file.read_text(encoding="utf-8"))
-    report_assessment = DeterministicReportAssessment.model_validate_json(report_assessment_file.read_text(encoding="utf-8"))
+    manifest = _validate_json_file(ProvenanceConsistencyManifest, manifest_file)
+    seals = [EvidenceProvenanceSeal.model_validate(item) for item in _read_json(seals_file)]
+    report = _validate_json_file(DeterministicReviewReport, report_file)
+    evidence_provenance = _validate_json_file(EvidenceProvenanceAssessment, evidence_provenance_file)
+    report_assessment = _validate_json_file(DeterministicReportAssessment, report_assessment_file)
     assessment = assess_provenance_consistency(manifest, ingestion.source, ingestion.document, seals, evidence_provenance, report, report_assessment)
     typer.echo(json.dumps({"source": ingestion.source.model_dump(mode="json"), "assessment": assessment.model_dump(mode="json")}, sort_keys=True))
     if assessment.status.value != "consistent":
@@ -769,7 +814,7 @@ def review_policy_assess(
     _, _, report, cross = _cross_artifact_assessment(
         workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
     )
-    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    review_policy = _validate_json_file(DeterministicReviewPolicy, policy_file)
     assessment = assess_review_policy(review_policy, report, cross)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "ready_for_review":
@@ -800,12 +845,12 @@ def workflow_readiness_assess(
         workflow_file, eir_file, context_file, evidence_file, trace_file, approval_file, schema_file, envelope_file, seals_file, report_file, report_seal_file
     )
     execution_policy = execution_policy.model_copy(update={"allow_simulation": allow_simulation})
-    review_policy = DeterministicReviewPolicy.model_validate_json(policy_file.read_text(encoding="utf-8"))
+    review_policy = _validate_json_file(DeterministicReviewPolicy, policy_file)
     policy_assessment = assess_review_policy(review_policy, report, cross)
-    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
-    transport_evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    manifest = _validate_json_file(ReadOnlyTransportManifest, transport_manifest_file)
+    transport_evidence = _validate_json_file(TransportVerificationEvidence, transport_evidence_file)
     transport = assess_transport(manifest, transport_evidence)
-    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    sandbox = _validate_json_file(SandboxAssessment, sandbox_assessment_file)
     dispatch = assess_dispatch_eligibility(approval, transport, sandbox, execution_policy)
     readiness = assess_workflow_readiness(cross, policy_assessment, dispatch)
     typer.echo(readiness.model_dump_json())
@@ -829,12 +874,12 @@ def dispatch_eligibility_assess(
     """Assess prerequisites for future dispatch without invoking a backend or authorizing execution."""
     _, policy, trace_assessment = _review_artifacts(workflow_file, eir_file, context_file, evidence_file, trace_file)
     policy = policy.model_copy(update={"allow_simulation": allow_simulation})
-    chain = ApprovalChain.model_validate_json(approval_file.read_text(encoding="utf-8"))
+    chain = _validate_json_file(ApprovalChain, approval_file)
     approval = assess_approval_chain(chain, trace_assessment, policy)
-    manifest = ReadOnlyTransportManifest.model_validate_json(transport_manifest_file.read_text(encoding="utf-8"))
-    evidence = TransportVerificationEvidence.model_validate_json(transport_evidence_file.read_text(encoding="utf-8"))
+    manifest = _validate_json_file(ReadOnlyTransportManifest, transport_manifest_file)
+    evidence = _validate_json_file(TransportVerificationEvidence, transport_evidence_file)
     transport = assess_transport(manifest, evidence)
-    sandbox = SandboxAssessment.model_validate_json(sandbox_assessment_file.read_text(encoding="utf-8"))
+    sandbox = _validate_json_file(SandboxAssessment, sandbox_assessment_file)
     assessment = assess_dispatch_eligibility(approval, transport, sandbox, policy)
     typer.echo(assessment.model_dump_json())
     if assessment.status.value != "eligible_for_verified_dispatch":
@@ -859,7 +904,11 @@ def sandbox_assess(
 def checkpoint_revalidate(file: Path, allow_simulation: bool = False, backend: str | None = None) -> None:
     """Revalidate a checkpoint for manual review without resuming its workflow."""
     policy = ExecutionPolicy(allow_simulation=allow_simulation, allowed_backends={backend} if backend else set())
-    result = WorkflowCheckpoint.load(file).revalidate(default_registry(), policy)
+    try:
+        checkpoint = WorkflowCheckpoint.load(file)
+    except INPUT_ERRORS as error:
+        _input_error(file, error)
+    result = checkpoint.revalidate(default_registry(), policy)
     typer.echo(result.model_dump_json())
     if not result.valid:
         raise typer.Exit(1)
@@ -884,7 +933,10 @@ def ledger_verify(file: Path) -> None:
 @app.command("checkpoint-inspect")
 def checkpoint_inspect(file: Path) -> None:
     """Inspect a validated workflow checkpoint without resuming execution."""
-    checkpoint = WorkflowCheckpoint.load(file)
+    try:
+        checkpoint = WorkflowCheckpoint.load(file)
+    except INPUT_ERRORS as error:
+        _input_error(file, error)
     typer.echo(f"workflow_id: {checkpoint.workflow_id}")
     typer.echo(f"revision: {checkpoint.revision}")
     typer.echo(f"stage: {checkpoint.stage}")

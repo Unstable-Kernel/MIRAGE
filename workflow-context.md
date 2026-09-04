@@ -1,5 +1,14 @@
 # Workflow Context
 
+## Active iteration: CLI UX papercut audit (2026-09-04)
+
+Audited the main CLI user flows (the README quickstart commands plus their error paths). Two verified, highest-impact papercuts were fixed on the thread branch `hoplite/katane-fb8a21bd`:
+
+1. `uv sync` (the documented first step in README and CONTRIBUTING) failed because `tool.uv.default-groups = ["dev"]` referenced a PEP 735 dependency group that did not exist. Fix: the dev dependency list is defined in a `[dependency-groups]` table in `pyproject.toml` for uv, and the same list is kept as a `dev` extra under `[project.optional-dependencies]` for pip-based installs such as CI's `pip install -e '.[dev]'`.
+2. Every command that reads a user-supplied file produced a 30-line rich traceback for missing, unreadable, or malformed input files, while `eir-ingest` already returned clean diagnostics. Fix in `src/mirage/cli.py`: added `INPUT_ERRORS`, `_input_error` (one-line message to stderr, exit 1), `_read_text`, `_validate_json_file`, and `_read_json` helpers, and routed all ~88 artifact reads plus the `EngineeringStateGraph.load`, `WorkflowCheckpoint.load`, and `FixtureSimulatorAdapter.from_file` call sites through them. `validate`/`inspect` EIR loading (`_result`, `_workflow_document`) covers malformed JSON/YAML and non-mapping roots.
+
+Verification before handoff: `uv run pytest` 116 passed, `uv run ruff check .` clean, README quickstart happy paths exit 0, and `validate`/`inspect`/`transport-assess`/`esg-inspect`/`checkpoint-inspect`/`checkpoint-revalidate`/`simulator-metadata` error paths print one clean `error: cannot read <path>: ...` line with exit code 1. CI ran the full test, lint, schema-check, and packaging matrix green on the final head `b65fb94`.
+
 ## Task
 
 Continue MIRAGE within the active session through locally verifiable M4 workflow and governance foundations.
