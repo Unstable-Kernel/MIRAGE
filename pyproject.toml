@@ -42,7 +42,7 @@ dev = [
   "mypy>=1.10,<2",
 ]
 providers = [
-  "openai>=1.40,<2",
+  "openai>=1.40,<4",
   "anthropic>=0.34,<1",
 ]
 
